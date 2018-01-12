@@ -22,5 +22,7 @@ public class DiarioSurBean implements Serializable {
 		System.out.println("Entra en setName()");
 		this.name = name;
 	}
+	
+	//olé
  
 }
