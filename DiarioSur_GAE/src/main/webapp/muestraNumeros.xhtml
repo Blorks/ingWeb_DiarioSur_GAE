@@ -4,16 +4,20 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:h="http://java.sun.com/jsf/html">
- 
+
 <h:head>
 	<title>GAE + JSF</title>
 </h:head>
 <h:body>
 	<h1>Google App Engine + JSF 2.2 example - hello.xhtml</h1>
 	<h:form>
-		<h:inputText value="#{diarioSurBean.numero}"></h:inputText>
-		<h:commandButton value="Introducir" action="#{diarioSurBean.introNum()}"></h:commandButton>
-		<h:commandButton value="Mostrar Numeros" action="muestraNumeros"></h:commandButton>
+		<h:dataTable value="#{diarioSurBean.mostrarNum()}" var="numero">
+
+			<h:column>
+				<f:facet name="numero">Numero</f:facet>    				
+      				#{numero}
+   			</h:column>
+		</h:dataTable>
 	</h:form>
 </h:body>
 </html>

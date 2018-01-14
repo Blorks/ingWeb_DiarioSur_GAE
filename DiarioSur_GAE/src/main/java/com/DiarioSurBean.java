@@ -2,27 +2,33 @@ package com;
  
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
- 
+
 import java.io.Serializable;
+import java.util.List;
  
 @ManagedBean
 @SessionScoped
 public class DiarioSurBean implements Serializable {
  
 	private static final long serialVersionUID = 1L;
- 
-	private String name;
- 
-	public String getName() {
-		System.out.println("Entra en getName()");
-		return name;
+	private DiarioSurFachada dsf = new DiarioSurFachada();
+	private String numero = "";
+	
+	public String getNumero() {
+		return numero;
 	}
- 
-	public void setName(String name) {
-		System.out.println("Entra en setName()");
-		this.name = name;
+
+	public void setNumero(String numero) {
+		this.numero = numero;
 	}
 	
-	//olé
+
+	public void introNum() {
+		dsf.introducirNumero(numero);
+	}
+	
+	public List<String> mostrarNum() {
+		return dsf.encontrarNumeros();
+	}
  
 }
