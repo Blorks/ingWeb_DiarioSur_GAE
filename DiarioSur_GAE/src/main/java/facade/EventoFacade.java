@@ -32,7 +32,7 @@ public class EventoFacade implements Serializable{
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
 		String id;
 		
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 				
 		if(listaEntidades.isEmpty()) {
 			id = "0";
@@ -149,7 +149,7 @@ public class EventoFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
@@ -166,7 +166,7 @@ public class EventoFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("estaRevisado", FilterOperator.EQUAL, condicion);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
@@ -183,7 +183,7 @@ public class EventoFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("usuarioID", FilterOperator.EQUAL, userID);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
@@ -200,7 +200,7 @@ public class EventoFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("precio", FilterOperator.LESS_THAN_OR_EQUAL, precio);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
@@ -217,7 +217,7 @@ public class EventoFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("estaRevisado", FilterOperator.EQUAL, condicion);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
@@ -234,7 +234,7 @@ public class EventoFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("DateevID", FilterOperator.EQUAL, fechaID);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
@@ -250,7 +250,7 @@ public class EventoFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		
 		Key key = listaEntidades.get(0).getKey();
 		datastore.delete(conexion, key);
@@ -265,7 +265,7 @@ public class EventoFacade implements Serializable{
 		
 		Query q = new Query("Evento").addSort("titulo", Query.SortDirection.ASCENDING);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
@@ -279,7 +279,7 @@ public class EventoFacade implements Serializable{
 		
 		Query q = new Query("Evento").addSort("titulo", Query.SortDirection.DESCENDING);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
@@ -293,7 +293,7 @@ public class EventoFacade implements Serializable{
 		
 		Query q = new Query("Evento").addSort("precio", Query.SortDirection.ASCENDING);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
@@ -307,10 +307,24 @@ public class EventoFacade implements Serializable{
 		
 		Query q = new Query("Evento").addSort("precio", Query.SortDirection.DESCENDING);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
 		lista = crearEntidades(listaEntidades);
 		
 		return lista;
 	}
+	
+	public List<Evento> encontrarTodosLosEventos(){
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		List<Evento> lista = new ArrayList<>();
 		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
+
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
+		lista = crearEntidades(listaEntidades);
+		
+		return lista;
+	}
+	
 }
