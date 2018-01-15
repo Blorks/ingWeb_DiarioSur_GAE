@@ -19,6 +19,7 @@ public class DiarioSurBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	EventoFacade ef = new EventoFacade();
+	DateevFacade def = new DateevFacade();
 	
 	private Usuario usuario = new Usuario();
     private double usuarioLatitud = 0.0;
@@ -100,5 +101,19 @@ public class DiarioSurBean implements Serializable {
     
    public List<Evento> mostrarEventosFiltradosPorFecha() {
 	   	return ef.encontrarEventosPorFecha(fecha.getId().toString());
+   }
+   
+   //////////////// Alvaro
+   
+   public List<Dateev> encontrarFechaPorID(String id){
+	   return def.encontrarFechaPorID(id);
+   }
+   
+   public List<Dateev> mostrarTodasLasFechasUnicas(){
+	   return def.encontrarFechaPorUnica();
+   }
+   
+   public List<Dateev> mostrarTodasLasFechasRango(){
+	   return def.encontrarFechaPorRango();
    }
 }
