@@ -1,3 +1,4 @@
+
 package com;
  
 import javax.faces.bean.ManagedBean;
@@ -16,6 +17,8 @@ public class DiarioSurBean implements Serializable {
 	 * Attributes
 	 */
 	private static final long serialVersionUID = 1L;
+	
+	EventoFacade ef = new EventoFacade();
 	
 	private Usuario usuario = new Usuario();
     private double usuarioLatitud = 0.0;
@@ -64,33 +67,38 @@ public class DiarioSurBean implements Serializable {
      * Methods
      */
     public List<Evento> mostrarTodosLosEventos() {
-    	EventoFacade ef = new EventoFacade();
-        List<Evento> eventos = null;
+        List<Evento> eventos = ef.encontrarTodosLosEventos();
         
         return eventos;
     }
     
     public int ultimoIDEventoIncrementado() {
-    	EventoFacade ef = new EventoFacade();
         return Integer.parseInt(ef.ultimoIdInsertado()) + 1;
     }
     
+    ////////////////////////////////////////////////////
     
+   private Evento encontrarEventoID(String id) {
+    	return ef.encontrarEventoPorID(id).get(0);
+    }
     
+   public List<Evento> mostrarTodosLosEventosRevisados() {
+	   return ef.encontrarEventosRevisados();
+   }
     
+   public List<Evento> filtrarEventosDeUsuario() {
+	   return ef.encontrarEventoPorUsuario(usuario.getId().toString());
+   }
     
+   public List<Evento> mostrarEventosFiltradosPorPrecio() {
+	   return ef.encontrarEventoPorPrecioMaximo(precioMax);
+   }
     
+   public List<Evento> mostrarTodosLosEventosNoRevisados() {
+	   return ef.encontrarEventosNoRevisados();
+   }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-
+   public List<Evento> mostrarEventosFiltradosPorFecha() {
+	   	return ef.encontrarEventosPorFecha(fecha.getId().toString());
+   }
 }
