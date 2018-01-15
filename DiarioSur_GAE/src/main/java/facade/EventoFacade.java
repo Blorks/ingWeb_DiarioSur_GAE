@@ -26,7 +26,7 @@ public class EventoFacade implements Serializable{
 	
 	public EventoFacade(){}
 	
-	private String ultimoIdInsertado(){
+	public String ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
@@ -43,13 +43,13 @@ public class EventoFacade implements Serializable{
 		return id;
 	}
 	
-	private String incrementarID(String id) {
+	public String incrementarID(String id) {
 		int num = Integer.parseInt(id);
 		num++;
 		return String.valueOf(num);
 	}
 	
-	private List<Evento> crearEntidades(List<Entity> listaEntidades) {
+	public List<Evento> crearEntidades(List<Entity> listaEntidades) {
 		List<Evento> lista = new ArrayList<>();
 		
 		for(Entity e: listaEntidades) {
