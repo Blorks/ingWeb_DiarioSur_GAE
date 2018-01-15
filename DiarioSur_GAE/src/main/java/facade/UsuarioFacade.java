@@ -104,7 +104,7 @@ public class UsuarioFacade implements Serializable{
 		
 		entidad.setProperty("ID", ultimoID);
 		entidad.setProperty("nombre", user.getNombre());
-		entidad.setProperty("subtitulo", ev.getSubtitulo());
+		entidad.setProperty("apellidos", user.getApellidos());
 		entidad.setProperty("descripcion", ev.getDescripcion());
 		entidad.setProperty("direccionFisica", ev.getDireccionfisica());
 		entidad.setProperty("precio", ev.getPrecio());
