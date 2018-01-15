@@ -11,7 +11,7 @@ import java.util.List;
 public class DiarioSurBean implements Serializable {
  
 	private static final long serialVersionUID = 1L;
-	private DiarioSurFachada dsf = new DiarioSurFachada();
+	private facade.DiarioSurFachada dsf = new facade.DiarioSurFachada();
 	private String numero = "";
 	
 	public String getNumero() {
@@ -25,10 +25,19 @@ public class DiarioSurBean implements Serializable {
 
 	public void introNum() {
 		dsf.introducirNumero(numero);
+		irPortada();
 	}
 	
 	public List<String> mostrarNum() {
 		return dsf.encontrarNumeros();
+	}
+	
+	public String irMostrarNumeros() {
+		return "muestraNumeros.xhtml";
+	}
+	
+	public String irPortada() {
+		return "hello.xhtml";
 	}
  
 }

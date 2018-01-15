@@ -13,7 +13,7 @@
 	<h:form>
 		<h:inputText value="#{diarioSurBean.numero}"></h:inputText>
 		<h:commandButton value="Introducir" action="#{diarioSurBean.introNum()}"></h:commandButton>
-		<h:commandButton value="Mostrar Numeros" action="muestraNumeros"></h:commandButton>
+		<h:commandButton value="Mostrar Numeros" action="#{diarioSurBean.irMostrarNumeros()}"></h:commandButton>
 	</h:form>
 </h:body>
 </html>

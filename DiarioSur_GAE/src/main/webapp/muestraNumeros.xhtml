@@ -9,15 +9,9 @@
 	<title>GAE + JSF</title>
 </h:head>
 <h:body>
-	<h1>Google App Engine + JSF 2.2 example - hello.xhtml</h1>
+	<h1>Google App Engine + JSF 2.2 example - muestraNumeros.xhtml</h1>
 	<h:form>
-		<h:dataTable value="#{diarioSurBean.mostrarNum()}" var="numero">
-
-			<h:column>
-				<f:facet name="numero">Numero</f:facet>    				
-      				#{numero}
-   			</h:column>
-		</h:dataTable>
+		<h:commandButton value="Mostrar Numeros" action="#{diarioSurBean.irPortada()}"></h:commandButton>
 	</h:form>
 </h:body>
 </html>

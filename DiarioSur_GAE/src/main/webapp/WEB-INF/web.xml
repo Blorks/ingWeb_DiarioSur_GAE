@@ -69,7 +69,7 @@
      </session-config>
 
      <welcome-file-list>
-          <welcome-file>faces/hello.xhtml</welcome-file>
+          	<welcome-file>faces/hello.xhtml</welcome-file>
      </welcome-file-list>
 
 </web-app>
