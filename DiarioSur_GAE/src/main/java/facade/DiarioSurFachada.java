@@ -28,10 +28,15 @@ public class DiarioSurFachada implements Serializable{
 	public void introducirNumero(String num) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		
-		entidad = new Entity("Numero");
+		entidad = new Entity("Dateev");
 		key = entidad.getKey();
 		
 		entidad.setProperty("valor", num);
+		entidad.setProperty("valor", num);
+		entidad.setProperty("valor", num);
+		entidad.setProperty("valor", num);
+		entidad.setProperty("valor", num);
+		
 		conexion = datastore.beginTransaction();
 		
 		datastore.put(conexion, entidad);

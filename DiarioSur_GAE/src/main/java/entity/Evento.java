@@ -15,8 +15,8 @@ public class Evento {
     private List<Calendario> calendarioList;
     private List<Tagevento> tageventoList;
     private List<Archivos> archivosList;
-    private Dateev dateevId;
-    private Usuario usuarioId;
+    private int dateevId;
+    private int usuarioId;
 
     public Evento() {
     }
@@ -121,19 +121,19 @@ public class Evento {
         this.archivosList = archivosList;
     }
 
-    public Dateev getDateevId() {
+    public int getDateevId() {
         return dateevId;
     }
 
-    public void setDateevId(Dateev dateevId) {
+    public void setDateevId(int dateevId) {
         this.dateevId = dateevId;
     }
 
-    public Usuario getUsuarioId() {
+    public int getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(Usuario usuarioId) {
+    public void setUsuarioId(int usuarioId) {
         this.usuarioId = usuarioId;
     }
 
