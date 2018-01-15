@@ -7,7 +7,7 @@ public class Fileev {
     private String nombre;
     private String url;
     private String tipo;
-    private List<Archivos> archivosList;
+    private List<Puntuacion> archivosList;
 
     public Fileev() {
     }
@@ -48,11 +48,11 @@ public class Fileev {
         this.tipo = tipo;
     }
 
-    public List<Archivos> getArchivosList() {
+    public List<Puntuacion> getArchivosList() {
         return archivosList;
     }
 
-    public void setArchivosList(List<Archivos> archivosList) {
+    public void setArchivosList(List<Puntuacion> archivosList) {
         this.archivosList = archivosList;
     }
 

@@ -14,7 +14,7 @@ public class Evento {
     private Integer estarevisado;
     private List<Calendario> calendarioList;
     private List<Tagevento> tageventoList;
-    private List<Archivos> archivosList;
+    private List<Puntuacion> archivosList;
     private int dateevId;
     private int usuarioId;
 
@@ -113,11 +113,11 @@ public class Evento {
         this.tageventoList = tageventoList;
     }
 
-    public List<Archivos> getArchivosList() {
+    public List<Puntuacion> getArchivosList() {
         return archivosList;
     }
 
-    public void setArchivosList(List<Archivos> archivosList) {
+    public void setArchivosList(List<Puntuacion> archivosList) {
         this.archivosList = archivosList;
     }
 
