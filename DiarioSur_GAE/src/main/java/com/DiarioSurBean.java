@@ -19,7 +19,7 @@ public class DiarioSurBean implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	EventoFacade ef = new EventoFacade();
-	
+	PuntuacionFacade pf = new PuntuacionFacade();
 	private Usuario usuario = new Usuario();
     private double usuarioLatitud = 0.0;
     private double usuarioLongitud = 0.0;
@@ -68,7 +68,6 @@ public class DiarioSurBean implements Serializable {
      */
     public List<Evento> mostrarTodosLosEventos() {
         List<Evento> eventos = ef.encontrarTodosLosEventos();
-        
         return eventos;
     }
     
@@ -101,4 +100,95 @@ public class DiarioSurBean implements Serializable {
    public List<Evento> mostrarEventosFiltradosPorFecha() {
 	   	return ef.encontrarEventosPorFecha(fecha.getId().toString());
    }
+
+//   public String borrarEvento(Evento ev) {
+//       clienteEventos cliente = new clienteEventos();
+//       clienteDateev clienteFecha = new clienteDateev();
+//       clienteTag cliente3 = new clienteTag();
+//       List<Tag> listaTags = encontrarTagsDeEvento();
+//
+//       //Elimino tags de evento
+//       Response r;
+//       List<Tag> listaTemp;
+//       GenericType<List<Tag>> genericType;
+//       for(int i=0; i<listaTags.size(); i++){
+//           r = cliente3.encontrarTagPorNombre_XML(Response.class, listaTags.get(i).getNombre());
+//           if(r.getStatus() == 200){
+//               genericType = new GenericType<List<Tag>>(){};
+//               listaTemp = r.readEntity(genericType);
+//
+//               if(!listaTemp.isEmpty()){
+//                   eliminarTagEvento(listaTemp.get(0));
+//               }
+//           }
+//       }
+//       	
+//       //Elimino Evento
+//       r = clienteFecha.encontrarFechaPorID_XML(Response.class, ev.getDateevId().getId().toString());
+//       if (r.getStatus() == 200) {
+//           GenericType<List<Dateev>> genericType2 = new GenericType<List<Dateev>>() {
+//           };
+//           List<Dateev> listaFecha = r.readEntity(genericType2);
+//
+//           cliente.remove(ev.getId().toString());
+//
+//           //Elimino Fecha de Evento
+//           r = cliente.encontrarEventosPorFecha_XML(Response.class, listaFecha.get(0).getId().toString());
+//           if (r.getStatus() == 200) {
+//               GenericType<List<Evento>> genericType3 = new GenericType<List<Evento>>() {
+//               };
+//               List<Evento> listaEvento = r.readEntity(genericType3);
+//
+//               if (listaEvento.isEmpty()) {
+//                   clienteFecha.remove(ev.getDateevId().getId().toString());
+//               }
+//           }
+//       }
+//
+//       crearNotificacion("Has eliminado el evento con exito!", usuario);
+//
+//       return "todoloseventos.xhtml";
+//   }
+   		public List<Evento> mostrarEventosOrdenadosAlfabeticamente() {
+   			return ef.ordenarEventosAlfabeticamente();
+   		}
+   		
+   	    public List<Evento> mostrarEventosOrdenadosAlfabeticamenteDESC() {
+   	    	return ef.ordenarEventosAlfabeticamenteDESC();
+   	    }
+   	    public List<Evento> mostrarEventosOrdenadosPorPrecio() {
+   	    	return ef.ordenarEventosPorPrecio();
+   	    }
+   	    public List<Evento> mostrarEventosOrdenadosPorPrecioDESC() {
+   	    	return ef.ordenarEventosPorPrecioDESC();
+   	    }
+   	    
+//   	  public void actualizarPuntuacion(String punto, String evId) {
+//          Evento ev = ef.encontrarEventoPorID(evId).get(0);
+//        
+//          List<Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEventoYUsuario(usuario.getId().toString(), evId);
+//          
+//          Puntuacion pt = new Puntuacion();
+//              if (puntuaciones.isEmpty()) {
+//                  pt.setPuntuacion(Double.parseDouble(punto));
+//                  pt.setEventoId(ev.getId());
+//                  pt.setUsuarioId(usuario.getId());
+//                  pf.crearPuntuacion(pt);
+//              } else {
+//                  pt = puntuaciones.get(0);
+//                  pt.setPuntuacion(Double.parseDouble(punto));
+//             //  pf.
+//              }
+//          }
+   	  public double mostrarPuntuacionMedia(Evento ev) {
+		List <Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
+		double puntuacionTotal = 0;
+		
+		for (int i = 0; i < puntuaciones.size(); i++) {
+		    puntuacionTotal += puntuaciones.get(i).getPuntuacion();
+		}
+
+		return puntuacionTotal / puntuaciones.size();
+	
+   	  }
 }
