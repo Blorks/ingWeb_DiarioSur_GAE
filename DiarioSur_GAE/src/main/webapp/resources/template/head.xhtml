@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />		
+
+        <title><h:outputText value="Diario Sur" /></title>
+    </f:facet>
+
+
+    <!-- favicon -->
+    <link rel="icon" type="image/x-icon" href="/ingWeb_DiarioSur_REST_JSF/faces/resources/images/favicon.ico"/>
+
+
+    <!-- Bootstrap CSS -->
+    <h:outputStylesheet name="twitter-bootstrap/css/bootstrap.min.css"/>
+    <h:outputStylesheet name="css/style.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"/>
+
+
+    <!-- JQuery -->
+    <h:outputScript name="js/jquery.min.js" />
+    <h:outputScript name="twitter-bootstrap/js/bootstrap.js" />
+    <h:outputScript name="js/hello.all.js" />
+
+    <script>
+        hello.init({
+            google: '612950088841-a7jdgmhbmfjh3h6ah9h1n774mfg5i9ue.apps.googleusercontent.com',
+            facebook: '2034071323504737'
+        }, {
+            scope: 'email',
+            redirect_uri: 'http://localhost:54747/ingWeb_DiarioSur_REST_JSF/'
+        });
+        function rrss_login(rrss) {
+            hello(rrss).login();
+            hello.on('auth.login', function (auth) {
+                hello(auth.network).api('/me').then(function (resp) {
+                    $.ajax({
+                        type: 'get',
+                        data: resp,
+                        url: "/ingWeb_DiarioSur_REST_JSF/faces/index.xhtml"
+                    }).done(function () {
+                        window.location.href = "/ingWeb_DiarioSur_REST_JSF/faces/index.xhtml";
+                    });
+                });
+            });
+        }
+
+        // remove the greeting when we log out
+        
+        hello.on('auth.logout', function () {
+            //var lab = document.getElementById("pic_and_greet");
+            //if (lab != null)
+            //document.body.removeChild(lab);
+        });
+    </script>
+
+    <ui:insert name="script-individual">
+    </ui:insert>
+</html>
