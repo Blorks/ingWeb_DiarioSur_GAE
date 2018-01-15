@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8' ?> 
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:h="http://java.sun.com/jsf/html">
+
+    <h:head>
+        <ui:insert name="head" >
+            <ui:include src="/resources/template/head.xhtml" />
+        </ui:insert>
+    </h:head>
+    
+    <h:body>
+
+        <div id="menu" style="margin-bottom: 150px;">
+            <ui:insert name="menu-principal" >
+                <ui:include src="/resources/template/menuprincipal.xhtml" />
+            </ui:insert>
+        </div>
+
+        <div id="contenido-site">
+            <ui:insert name="contenido" >
+                Aquí se coloca el contenido
+            </ui:insert>
+        </div>
+        
+        <div id="notificaciones">
+            <ui:insert name="notificaciones">
+                <ui:include src="/resources/template/notificaciones.xhtml" />
+            </ui:insert>
+        </div>
+                 
+        <div id="footer-site">
+            <ui:insert name="footer" >
+                <ui:include src="/resources/template/footer.xhtml" />
+            </ui:insert>
+        </div>
+
+    </h:body>
+
+</html>

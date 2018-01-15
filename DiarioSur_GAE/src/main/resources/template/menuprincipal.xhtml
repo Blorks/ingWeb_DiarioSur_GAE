@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <nav class="navbar navbar-default navbar-doublerow navbar-trans navbar-fixed-top">
+        <!-- top nav -->
+        <nav class="navbar navbar-top hidden-xs">
+            <div class="container">
+                <!-- left nav top -->
+                <ul class="nav navbar-nav pull-left">
+                    <li><a target="_blank" href="https://www.facebook.com/diariosur/"><span class="glyphicon glyphicon-thumbs-up"></span></a></li>
+                    <li><a target="_blank" href="http://www.diariosur.es"><span class="glyphicon glyphicon-globe"></span></a></li>
+                    <li><a href="#"><span class="glyphicon glyphicon-pushpin "></span></a></li>
+                    <li><a href="tel: +34952649600"><span class="">Informar de evento: <b>+034 952 64 96 00</b></span></a></li>
+                </ul>
+                <!-- right nav top -->
+                <ul class="nav navbar-nav pull-right">
+                    <li><a href="#" class="">Sobre nosotros</a></li>
+                    <li><a target="_blank" href="http://www.diariosur.es/contacta.html" class="">Contactar</a></li> 
+                </ul>
+            </div>
+            <div class="dividline light-grey"></div>
+        </nav>
+        <!-- down nav -->
+        <nav class="navbar navbar-down">
+            <div class="container">
+                <div class="flex-container">  
+                    <div class="navbar-header flex-item">
+                        <h:form>
+                        <div class="navbar-brand"><h:commandLink action="#{diarioSurBean.volver()}" class="no-hover">#{varg.app_title} <sub>#{varg.app_subtitle}</sub></h:commandLink></div>
+                        </h:form>
+                    </div>
+                    <ul class="nav navbar-nav flex-item hidden-xs ">
+                        <c:if test="#{!diarioSurBean.isLogin()}">
+                            <li>
+                                <h:link outcome="#{diarioSurBean.irCrearEvento()}" ><i class="glyphicon glyphicon-open"></i> Crear evento</h:link>
+                            </li>
+                        </c:if>
+                        <!--    
+                                                        Log in/out
+                        -->
+                        <ul class="nav navbar-nav flex-item hidden-xs">
+                            <li class="dropdown">
+                                <a href="#" class="dropdown-toggle no-hover" data-toggle="dropdown"><b><i class="glyphicon glyphicon-user"></i></b> <span class="caret"></span></a>
+                                <ui:insert name="log" >
+                                    <ui:include src="#{diarioSurBean.isLoginIncl()}" />
+                                </ui:insert>
+                            </li>
+                        </ul>
+                    </ul>
+                </div>  
+            </div>
+        </nav>
+    </nav> 
+    <h:outputScript target="head">
+        $(window).scroll(function() {
+        if($(this).scrollTop() > 50){
+        $('.navbar-trans').addClass('afterscroll');
+        }else{
+        $('.navbar-trans').removeClass('afterscroll');
+        }  
+        });
+    </h:outputScript>
+</html>

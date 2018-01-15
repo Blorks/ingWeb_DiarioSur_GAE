@@ -1,0 +1,597 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="plantilla.xhtml"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:t="http://xmlns.jcp.org/jsf/passthrough">
+
+    <ui:define name="contenido">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <section>
+                        <div class="wizard">
+                            <div class="wizard-inner">
+                                <div class="connecting-line"></div>
+                                <ul class="nav nav-tabs" role="tablist">
+
+                                    <li role="presentation" class="active">
+                                        <a href="#step1" data-toggle="tab" aria-controls="step1" role="tab" title="Paso 1">
+                                            <span class="round-tab">
+                                                <i class="glyphicon glyphicon-pencil"></i>
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li role="presentation" class="disabled">
+                                        <a href="#step2" data-toggle="tab" aria-controls="step2" role="tab" title="Paso 2">
+                                            <span class="round-tab">
+                                                <i class="glyphicon glyphicon-calendar"></i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li role="presentation" class="disabled">
+                                        <a href="#step3" data-toggle="tab" aria-controls="step3" role="tab" title="Paso 3">
+                                            <span class="round-tab">
+                                                <i class="glyphicon glyphicon-map-marker"></i>
+                                            </span>
+                                        </a>
+                                    </li>
+
+                                    <li role="presentation" class="disabled">
+                                        <a href="#complete" data-toggle="tab" aria-controls="complete" role="tab" title="Verifica los datos">
+                                            <span class="round-tab">
+                                                <i class="glyphicon glyphicon-ok"></i>
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <f:view>
+                                <h:form>
+                                    <div class="tab-content" style="margin: 25px;">
+                                        <div class="tab-pane active" role="tabpanel" id="step1">
+                                            <div class="step33">
+                                                <h5><strong>Crear evento</strong></h5>
+                                                <hr/>
+                                                <div class="row mar_ned">
+
+                                                </div>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4">
+                                                        <p align="right"><stong>Título</stong></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h:inputText class="form-control" id="ev_titulo" value="#{diarioSurBean.evento.titulo}" required="true"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4">
+                                                        <p align="right"><stong>Subiítulo</stong></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h:inputText class="form-control" id="ev_subtitulo" value="#{diarioSurBean.evento.subtitulo}" required="true"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4">
+                                                        <p align="right"><stong>Contenido</stong></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h:inputTextarea class="form-control input-sm" id="ev_descripcion" rows="7" value="#{diarioSurBean.evento.descripcion}" required="true"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4">
+                                                        <p align="right"><stong>Precio</stong></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h:inputText class="form-control input-sm" id="ev_precio" value="#{diarioSurBean.evento.precio}" required="true"/>
+                                                    </div>
+                                                </div>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4 col-xs-3">
+                                                        <!-- -->
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-xs-6 wdth">
+                                                                <!-- -->
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mar_ned">
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <ul class="list-inline pull-right">
+                                                <li><button type="button" class="btn btn-primary next-step">Guardar y continuar</button></li>
+                                            </ul>
+                                        </div>
+                                        <div class="tab-pane" role="tabpanel" id="step2">
+
+                                            <div class="step33">
+                                                <h5><strong>Fecha del evento</strong></h5>
+                                                <hr/>
+                                                <div class="row mar_ned">
+                                                    <div class="btn-group" role="group" style="margin-left: 20px;margin-bottom: 30px;">
+                                                        <button id="btn-dia-unico" type="button" class="btn btn-default active"><i class="glyphicon glyphicon-pushpin"></i> Un día</button>
+                                                        <button id="btn-desde-hasta" type="button" class="btn btn-default"><i class="glyphicon glyphicon-retweet"></i> Desde - Hasta</button>
+                                                        <button id="btn-dias-fechas" type="button" class="btn btn-default"><i class="glyphicon glyphicon-calendar"></i> Días concretos</button>
+                                                    </div>
+                                                </div>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4 col-xs-3">
+                                                        <p align="right"><stong>Un solo día</stong></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <input type="date" class="form-control" id="dia-unico" t:type="date" value=""/>
+                                                            <h:inputText id="fechaEsunico" class="hidden" value="#{diarioSurBean.fecha.esunico}"/>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4">
+                                                        <p align="right"><stong>Desde - hasta</stong></p>
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <div class="row">
+                                                            <div class="form-inline">
+                                                                <input type="date" class="form-control" disabled="true" t:type="date" id="dia-desde" value=""/>
+                                                                <input type="date" class="form-control" disabled="true" style="margin-left: 25px" t:type="date" id="dia-hasta" value=""/>
+                                                                <h:inputText id="fechaTodoslosdias" class="hidden" value="#{diarioSurBean.fecha.todoslosdias}"/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4">
+                                                        <p align="right"><stong>Días concretos</stong></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <input type="date" id="dias-fechas" class="form-control" disabled="true" t:type="date" value=""/>
+                                                            <h:inputText id="fechaVariosdias" class="hidden" value="#{diarioSurBean.fecha.variosdias}"/>
+                                                            <div class="col-md-6 col-xs-6 ">
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mar_ned">
+                                                        <div class="container">
+                                                            <div class="row">
+                                                                <div id="lista-fecha" class="col-md-12" style="margin-top: 20px">
+
+
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- disabled -->
+                                                        <div id="alert-lista" class="col-md-2 alert-to-clone hidden">
+                                                            <div class="alert alert-warning alert-dismissible fade in" role="alert">
+                                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button> 
+                                                                <strong class="dates"></strong>
+                                                            </div>      
+                                                        </div>
+                                                        <!-- /disabled -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <h:inputText id="fechaOcult" class="hidden" value="#{diarioSurBean.listaDias}"/>
+                                            <ul class="list-inline pull-right">
+                                                <li><button type="button" class="btn btn-default prev-step">Atrás</button></li>
+                                                <li><button id="nextDates" type="button" class="btn btn-primary next-step">Guardar y continuar</button></li>
+                                            </ul>
+                                        </div>
+                                        <div class="tab-pane" role="tabpanel" id="step3">
+                                            <div class="step33">
+                                                <h:inputText id="latitudOculta" class="hidden" value="#{diarioSurBean.evento.latitud}"/>
+                                                <h:inputText id="longitudOculta" class="hidden" value="#{diarioSurBean.evento.longitud}"/>
+                                                <h:inputText id="direccionOculta" class="hidden" value="#{diarioSurBean.evento.direccionfisica}"/>
+
+                                                <h5>Dirección del evento: <span id="info-mapa"></span></h5>
+                                                <div id="map" style="height: 500px;margin-left: -10px;"></div>
+                                            </div>
+                                            <ul class="list-inline pull-right">
+                                                <li><button type="button" class="btn btn-default prev-step">Atrás</button></li>
+                                                <li><button type="button" class="btn btn-default next-step go-resume">Saltar</button></li>
+                                                <li><button type="button" class="btn btn-primary btn-info-full next-step go-resume">Guardar y continuar</button></li>
+                                            </ul>
+                                        </div>
+                                        <div class="tab-pane" role="tabpanel" id="complete">
+                                            <div class="step33">
+                                                <h5><strong>Verificación de los datos</strong></h5>
+                                                <hr/>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4">
+                                                        <p align="right"><stong>Lista de tags:</stong></p>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <h:inputTextarea class="form-control" id="listtag" value="#{diarioSurBean.tagsEvento}" required="true"/>
+                                                        <br />
+                                                        <div class="well well-lg">
+                                                            Ejemplo:<br />
+                                                            coche, accidente, carretera, etc..                                         
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row mar_ned">
+                                                    <div class="col-md-4 col-xs-3">
+                                                        <!-- -->
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="row">
+                                                            <div class="col-md-6 col-xs-6 wdth" style="min-width: 400px; ">
+                                                                <p id="mostrar_ev_titulo"></p>
+                                                                <p id="mostrar_ev_subtitulo"></p>
+                                                                <p id="mostrar_ev_descripcion"></p>
+                                                                <p id="mostrar_ev_precio"></p>
+                                                                <p id="mostrar_ev_direccion"></p>
+                                                                <p id="mostrar_diaunico"></p>
+                                                                <p><span id="mostrar_ev_fecha_desde"></span> - <span id="mostrar_ev_fecha_hasta"></span></p>
+                                                                <p id="mostrar_ev_lista_fechas"></p>
+
+                                                                <div class="container-fluid">
+                                                                    <div class="row">
+                                                                        <div class="col-md-12">
+                                                                            <div class="btn-group">
+
+                                                                            </div>
+                                                                            <ul class="list-inline pull-right">
+                                                                                <li><button type="button" class="btn btn-default prev-step">Atrás</button></li>
+                                                                                <li><h:commandButton class="btn btn-warning" value="Crear evento" action="#{diarioSurBean.nuevoEvento()}" /></li>
+                                                                            </ul>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="row mar_ned">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="clearfix"></div>
+                                    </div>
+                                </h:form>
+                            </f:view>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+
+
+    <ui:define name="script-individual">
+
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyAb7jwWqPc7TD6J69V6dZS_9lucF5CxkF8"></script>
+
+        <script>
+            $(document).ready(function () {
+                /*
+                 * Mapas (36.71589398816918, -4.477620013640262) teleco
+                 */
+                var latitud = 36.71589398816918;
+                var longitud = -4.477620013640262;
+                var mapDiv = document.getElementById('map');
+                var latlng = new google.maps.LatLng(latitud, longitud);
+                var options = {
+                    center: latlng,
+                    zoom: 8,
+                    mapTypeControl: true,
+                    mapTypeControlOptions: {
+                        style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
+                        position: google.maps.ControlPosition.TOP_CENTER
+                    },
+                    zoomControl: true,
+                    zoomControlOptions: {
+                        position: google.maps.ControlPosition.LEFT_CENTER
+                    },
+                    scaleControl: true,
+                    streetViewControl: true,
+                    streetViewControlOptions: {
+                        position: google.maps.ControlPosition.LEFT_TOP
+                    },
+                    fullscreenControl: true,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                            // mas opciones en https://developers.google.com/maps/documentation/javascript/reference?hl=es#MapOptions
+                };
+                var map;
+                function inicializarMapa() {
+                    map = new google.maps.Map(mapDiv, options);
+                    var geocoder = new google.maps.Geocoder();
+
+                    var marca_map = marca(latitud, longitud, 'titulo al poner el raton encima de la marca', 'contenido al clicar en la marca');
+
+                    // recoge la lat y long al clicar el mapa
+                    // importante que esté debajo de el evento marca(...) no antes
+                    google.maps.event.addListener(map, 'click', function (e) {
+                        marca_map.setMap(null);
+                        marca_map = marca(e.latLng.lat(), e.latLng.lng(), 'Nueva dirección', 'Nueva dirección');
+                        $('input[id$="latitudOculta"]').val(e.latLng.lat());
+                        $('input[id$="longitudOculta"]').val(e.latLng.lng());
+
+                        // devuelve direccion
+                        geocoder.geocode({
+                            latLng: e.latLng
+                        }, function (r, status) {
+                            if (status === google.maps.GeocoderStatus.OK) {
+                                if (r[0]) {
+                                    $('input[id$="direccionOculta"]').val(r[0].formatted_address);
+                                    $('#info-mapa').text(r[0].formatted_address /*+ " (" + e.latLng.lat() + ", " + e.latLng.lng() + ")"*/); // quito que se vea las coordenadas que no es un dato importante para mostrar
+                                }
+                            }
+                        });
+                    });
+                }
+                function marca(lat, long, tit, cont) {
+                    var marker = new google.maps.Marker({
+                        position: new google.maps.LatLng(lat, long),
+                        map: map,
+                        title: tit
+                    });
+
+                    // evento de clicar encima de la marca
+                    google.maps.event.addListener(marker, 'click', function (e) {
+                        console.log(e);
+                        var infowindow = new google.maps.InfoWindow({
+                            content: cont
+                        });
+                        infowindow.open(map, marker);
+                    });
+                    return marker;
+                }
+
+                function showPosition(position) {
+                    map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+                    marca(position.coords.latitude, position.coords.longitude, 'posicion actual', 'contenido actualizado');
+                }
+
+
+
+                /*
+                 * Fechas
+                 */
+                var esUnico = true;
+                var todosLosDias = false;       // desde-hasta
+                var variosDias = false;         //list
+                //var listaDias[];
+
+                $("#nextDates").click(function () {
+                    inicializarMapa();
+                    var listDates = "";
+                    var i = 1;
+                    $(".dates").each(function () {
+                        if ($(".dates").length > i) {
+                            listDates += $(this).text();
+                        }
+                        if (($(".dates").length - 1) > i) {
+                            listDates += ", ";
+                        }
+                        i++;
+                    });
+
+
+                    if (esUnico) {
+                        $('input[id$="fechaEsunico"]').val(1);
+                        $('input[id$="fechaTodoslosdias"]').val(0);
+                        $('input[id$="fechaVariosdias"]').val(0);
+
+                        var diaUnico = new Date($("#dia-unico").val());
+                        $('input[id$="fechaOcult"]').val(diaUnico.getDate() + "/" + (diaUnico.getMonth() + 1) + "/" + diaUnico.getFullYear());
+                    } else if (todosLosDias) {
+                        $('input[id$="fechaEsunico"]').val(0);
+                        $('input[id$="fechaTodoslosdias"]').val(1);
+                        $('input[id$="fechaVariosdias"]').val(0);
+
+                        var diaDesde = new Date($("#dia-desde").val());
+                        var diaHasta = new Date($("#dia-hasta").val());
+                        $('input[id$="fechaOcult"]').val(diaDesde.getDate() + "/" + (diaDesde.getMonth() + 1) + "/" + diaDesde.getFullYear() + ", " + diaHasta.getDate() + "/" + (diaHasta.getMonth() + 1) + "/" + diaHasta.getFullYear());
+                    } else {
+                        $('input[id$="fechaEsunico"]').val(0);
+                        $('input[id$="fechaTodoslosdias"]').val(0);
+                        $('input[id$="fechaVariosdias"]').val(1);
+                        $('input[id$="fechaOcult"]').val(listDates);
+                    }
+                });
+
+                $("#btn-dia-unico").click(function () {
+                    esUnico = true;
+                    todosLosDias = false;
+                    variosDias = false;
+
+                    $(this).addClass("active");
+                    $("#btn-desde-hasta, #btn-dias-fechas").removeClass("active");
+                    $('input[id$="dia-unico"]').removeAttr("disabled");
+                    $('input[id$="dia-desde"], input[id$="dia-hasta"], input[id$="dias-fechas"]').attr("disabled", true);
+                });
+
+                $("#btn-desde-hasta").click(function () {
+                    esUnico = false;
+                    todosLosDias = true;
+                    variosDias = false;
+
+                    $(this).addClass("active");
+                    $("#btn-dia-unico, #btn-dias-fechas").removeClass("active");
+                    $('input[id$="dia-desde"], input[id$="dia-hasta"]').removeAttr("disabled");
+                    $('input[id$="dia-unico"], input[id$="dias-fechas"]').attr("disabled", true);
+                });
+
+                $("#btn-dias-fechas").click(function () {
+                    esUnico = false;
+                    todosLosDias = false;
+                    variosDias = true;
+
+                    $(this).addClass("active");
+                    $("#btn-dia-unico, #btn-desde-hasta").removeClass("active");
+                    $('input[id$="dias-fechas"]').removeAttr("disabled");
+                    $('input[id$="dia-desde"], input[id$="dia-hasta"], input[id$="dia-unico"]').attr("disabled", true);
+                });
+
+                $('input[id$="dias-fechas"]').change(function () {
+                    var date = new Date(this.value);
+                    var dateFormateada = (date.getDate() + '/' + (date.getMonth() + 1) + '/' + date.getFullYear());
+                    $('#alert-lista .dates').text(dateFormateada);
+                    var alerta = $('#alert-lista').clone().removeClass('hidden').removeAttr("id");
+                    $('#lista-fecha').append(alerta);
+                });
+
+                $(".go-resume").click(function () {
+                    $("#mostrar_ev_titulo").html($('input[id$="ev_titulo"]').val());
+                    $("#mostrar_ev_subtitulo").html($('input[id$="ev_subtitulo"]').val());
+                    $("#mostrar_ev_descripcion").html($('textarea[id$="ev_descripcion"]').val());
+                    $("#mostrar_ev_precio").html($('input[id$="ev_precio"]').val() + "€");
+                    $("#mostrar_ev_direccion").html($('input[id$="direccionOculta"]').val());
+
+                    $("#mostrar_diaunico").html($('input[id$="diaunico"]').val());
+                    $("#mostrar_ev_fecha_desde").html($('input[id$="ev_fecha_desde"]').val());
+                    $("#mostrar_ev_fecha_hasta").html($('input[id$="ev_fecha_hasta"]').val());
+                    $("#mostrar_ev_lista_fechas").html($('input[id$="ev_lista_fechas"]').val());
+                });
+
+                //Initialize tooltips
+                $('.nav-tabs > li a[title]').tooltip();
+
+                //Wizard
+                $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+
+                    var $target = $(e.target);
+
+                    if ($target.parent().hasClass('disabled')) {
+                        return false;
+                    }
+                });
+
+                $(".next-step").click(function (e) {
+
+                    var $active = $('.wizard .nav-tabs li.active');
+                    $active.next().removeClass('disabled');
+                    nextTab($active);
+
+                });
+                $(".prev-step").click(function (e) {
+
+                    var $active = $('.wizard .nav-tabs li.active');
+                    prevTab($active);
+
+                });
+
+                $(document).on('click', '#close-preview', function () {
+
+                    // Hover befor close the preview
+                    $('.image-preview').hover(
+                            function () {
+                                //$('.image-preview').popover('show');
+                            },
+                            function () {
+                                //$('.image-preview').popover('hide');
+                            }
+                    );
+                });
+
+                $(function () {
+                    // Create the close button
+                    var closebtn = $('<button/>', {
+                        type: "button",
+                        text: 'x',
+                        id: 'close-preview',
+                        style: 'font-size: initial;'
+                    });
+                    closebtn.attr("class", "close pull-right");
+                    // Set the popover default content
+                    $('.image-preview').popover({
+                        trigger: 'manual',
+                        html: true,
+                        title: "<strong>Preview</strong>" + $(closebtn)[0].outerHTML,
+                        content: "There's no image",
+                        placement: 'bottom'
+                    });
+                    // loading
+                    $('.image-preview-input').click(function () {
+                        $('.image-preview-div').html('<p class="text-center"><i class="fa fa-circle-o-notch fa-spin"></i></p>');
+                    });
+                    // Clear event
+                    $('.image-preview-clear').click(function () {
+                        //$('.image-preview').attr("data-content","").popover('hide');
+                        $(".image-preview-div").html("");
+                        $('.image-preview-filename').val("");
+                        $('.image-preview-clear').hide();
+                        $('.image-preview-input input:file').val("");
+                        $(".image-preview-input-title").text("Subir archivo");
+                    });
+                    // Create the preview image
+                    $(".image-preview-input input:file").change(function () {
+                        var img = $('<img/>', {
+                            id: 'dynamic',
+                            width: 250,
+                            height: 200
+                        });
+                        var file = this.files[0];
+                        var reader = new FileReader();
+                        // Set preview image into the popover data-content
+                        reader.onload = function (e) {
+                            $(".image-preview-input-title").text("Cambiar");
+                            $(".image-preview-clear").show();
+                            $(".image-preview-filename").val(file.name);
+                            img.attr('src', e.target.result);
+                            //$(".image-preview").attr("data-content",$(img)[0].outerHTML).popover("show");
+                            $('.image-preview-div').html((img)[0].outerHTML);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                });
+
+            });
+
+            function nextTab(elem) {
+                $(elem).next().find('a[data-toggle="tab"]').click();
+            }
+            function prevTab(elem) {
+                $(elem).prev().find('a[data-toggle="tab"]').click();
+            }
+
+
+            //according menu
+
+            $(document).ready(function ()
+            {
+                //Add Inactive Class To All Accordion Headers
+                $('.accordion-header').toggleClass('inactive-header');
+
+                //Set The Accordion Content Width
+                var contentwidth = $('.accordion-header').width();
+                $('.accordion-content').css({});
+
+                //Open The First Accordion Section When Page Loads
+                $('.accordion-header').first().toggleClass('active-header').toggleClass('inactive-header');
+                $('.accordion-content').first().slideDown().toggleClass('open-content');
+
+                // The Accordion Effect
+                $('.accordion-header').click(function () {
+                    if ($(this).is('.inactive-header')) {
+                        $('.active-header').toggleClass('active-header').toggleClass('inactive-header').next().slideToggle().toggleClass('open-content');
+                        $(this).toggleClass('active-header').toggleClass('inactive-header');
+                        $(this).next().slideToggle().toggleClass('open-content');
+                    } else {
+                        $(this).toggleClass('active-header').toggleClass('inactive-header');
+                        $(this).next().slideToggle().toggleClass('open-content');
+                    }
+                });
+
+
+            });
+
+
+        </script>
+    </ui:define>
+</ui:composition>

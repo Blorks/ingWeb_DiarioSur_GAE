@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ul id="login-dp" class="dropdown-menu pull-right">
+        <li>
+            <div class="row">
+                <li class="list-group list-group-logout">
+                    <a href="#{diarioSurBean.irPerfil()}" class="">Mi perfil 
+                        <img src="#{diarioSurBean.usuarioFoto}" width="18px" class="pull-right no-hover" />
+                    </a>
+                </li>
+                <li class="list-group list-group-logout">
+                    <a href="#" class="">Eventos favoritos
+                        <span class="pull-right glyphicon glyphicon-star"></span>
+                    </a>
+                </li>
+                <li class="list-group list-group-logout">
+                    <a href="#{diarioSurBean.irMisEvento()}" class="">Mis eventos 
+                        <span class="pull-right glyphicon glyphicon-heart-empty"></span>
+                    </a>
+                </li>
+                <c:if test="#{diarioSurBean.esPeriodista()}">
+                    <li class="nav-divider"></li>
+                    <li class="list-group list-group-logout">
+                        <a href="#{diarioSurBean.irTodosLosEventos()}" class="">Todo los eventos 
+                            <span class="pull-right glyphicon glyphicon-list-alt"></span>
+                        </a>
+                    </li>
+                    <li class="list-group list-group-logout">
+                        <a href="#{diarioSurBean.irValidarEvento()}" class="">Validar eventos 
+                            <span class="pull-right glyphicon glyphicon-flash"></span>
+                        </a>
+                    </li>
+                </c:if>
+                <li class="nav-divider"></li>
+                <li class="list-group list-group-logout">
+                    <f:view>
+                        <h:form>
+                            <h:commandButton class="btn btn-link" value="Logout" action="#{diarioSurBean.logout()}"/>
+                        </h:form>
+                    </f:view>
+
+                </li>
+            </div>
+        </li>
+    </ul>
+</html>

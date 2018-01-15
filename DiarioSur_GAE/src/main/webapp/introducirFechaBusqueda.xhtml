@@ -1,0 +1,128 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="plantilla.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <ui:define name="script-individual">
+        <script src="resources/js/starrr.js"></script>
+    </ui:define>
+    <ui:define name="contenido">
+
+        <!--    
+                                        Contenido
+        -->
+
+        <div class="container">
+            <div class="container-fluid">
+                <div class="row">
+                    <!--    
+                                                    Publicidad
+                    -->
+                    <div class="col-md-12">
+                        <img src="resources/images/banner_Diario_Sur.jpg" width="100%"/>
+                    </div>
+                </div>
+                <!--    
+                                                Submenu Filtrado
+                -->
+                <ui:include src="/resources/template/filtrado.xhtml" />
+
+
+                <div class="row" style="background-color: #FFF">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <!--    
+                                                            Contenido col 8 para eventos
+                            -->
+                            <div class="col-md-8">
+                                <div class="container-fluid">
+                                    <div class="row transparent">
+                                        <div class="panel panel-default panel-horizontal" style="margin-top: 40px;">
+                                            <div class="panel-heading">
+                                                <h3 class="panel-title">Fecha a filtrar</h3>
+                                            </div>
+                                            <div class="panel-body">
+                                                <f:view>
+                                                    <h:form class="form-inline">
+                                                        <div class="tab-content" style="margin: 25px;">
+                                                            <div class="row mar_ned">
+                                                                <div class="col-md-4 col-xs-3">
+                                                                    <p align="right"><stong>Fecha: </stong></p>
+                                                                </div>
+                                                                <div class="col-md-4">
+                                                                    <div class="row">
+                                                                        <h:form>
+                                                                            <h5><h:outputText value="Listado de fechas únicas"/></h5>
+                                                                            <h:dataTable value="#{diarioSurBean.mostrarTodasLasFechasUnicas()}" var="item">
+                                                                                <h:column>
+                                                                                    <f:facet name="header">
+                                                                                        <h:outputText value="Dia"/>
+                                                                                    </f:facet>
+                                                                                    <h:outputText value="#{diarioSurBean.mostrarFormatoDia(item.dia)}"/>
+                                                                                </h:column>
+                                                                                <h:column>
+                                                                                    <h:commandButton  class="btn btn-default" value="Filtrar" action="#{diarioSurBean.irEventosFiltradosFecha(item)}"/><br/>
+                                                                                </h:column>
+                                                                            </h:dataTable>
+
+                                                                            <h5><h:outputText value="Listado de rangos de fechas"/></h5>
+                                                                            <h:dataTable value="#{diarioSurBean.mostrarTodasLasFechasRango()}" var="item">
+                                                                                <h:column>
+                                                                                    <f:facet name="header">
+                                                                                        <h:outputText value="Desde"/>
+                                                                                    </f:facet>
+                                                                                    <h:outputText value="#{diarioSurBean.mostrarFormatoDia(item.desde)}"/>
+                                                                                </h:column>
+                                                                                <h:column>
+                                                                                    <f:facet name="header">
+                                                                                        <h:outputText value=""/>
+                                                                                    </f:facet>
+                                                                                    <h:outputText value="-"/>
+                                                                                </h:column>
+                                                                                <h:column>
+                                                                                    <f:facet name="header">
+                                                                                        <h:outputText value="Hasta"/>
+                                                                                    </f:facet>
+                                                                                    <h:outputText value="#{diarioSurBean.mostrarFormatoDia(item.hasta)}"/>
+                                                                                </h:column>
+                                                                                <h:column>
+                                                                                    <h:commandButton  class="btn btn-default" value="Filtrar" action="#{diarioSurBean.irEventosFiltradosFecha(item)}"/><br/>
+                                                                                </h:column>
+                                                                            </h:dataTable>
+                                                                            <h:commandButton  class="btn btn-default" value="Volver" action="#{diarioSurBean.volver()}"/><br/>
+                                                                        </h:form>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </h:form>
+                                                </f:view>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <!--    
+                                                            Contenido col 4 para sidebar
+                            -->
+                            <div class="col-md-4">
+                                <div class="container-fluid">
+                                    <ui:insert name="ult-noticias" >
+                                        <ui:include src="/resources/template/ultNoticias.xhtml" />
+                                    </ui:insert>  
+                                </div>
+                            </div> 
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.container -->
+
+    </ui:define>
+
+</ui:composition>

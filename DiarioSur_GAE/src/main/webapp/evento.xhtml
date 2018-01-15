@@ -1,0 +1,171 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="plantilla.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <ui:define name="contenido">
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?key=AIzaSyAb7jwWqPc7TD6J69V6dZS_9lucF5CxkF8"></script>
+        <div class="container">
+            <div class="row white-evento">
+                <!-- HEADER -->
+                <div class="evento-header">
+                    <img id="banner_tag" style="width:100%" src="/ingWeb_DiarioSur_REST_JSF/faces/resources/images/bannerNoFoto.jpg" />
+                    <div class="triangulo">
+                        <h:inputText id="latitudOculta" class="hidden" value="#{diarioSurBean.evento.latitud}"/>
+                        <h:inputText id="longitudOculta" class="hidden" value="#{diarioSurBean.evento.longitud}"/>
+                        <h:inputText id="direccionOculta" class="hidden" value="#{diarioSurBean.evento.direccionfisica}"/>
+                    </div>
+                    <div class="profile">
+                        <img class="photo-author img-circle" src="#{diarioSurBean.evento.usuarioId.fileevId.url}" width="50" />
+                        <span class="name-author">por #{diarioSurBean.evento.usuarioId.nombre} #{diarioSurBean.evento.usuarioId.apellidos}</span>
+                    </div>
+                    <h5 class="evento-sub-title">
+                        <ui:repeat value="#{diarioSurBean.encontrarTagsDeEvento()}" var="tag"  varStatus="estado">  
+                            #{tag.nombre.toUpperCase()}
+                            #{", "}
+                        </ui:repeat>
+                    </h5>
+                    <h2 class="evento-title">#{diarioSurBean.evento.titulo}</h2>
+                </div>
+
+                <!-- INFO -->
+                <div class="row row-evento">
+                    <c:if test="#{diarioSurBean.esPeriodista()}">
+                        <f:view>
+                            <h:form>
+                                <ui:repeat value="#{diarioSurBean.encontrarTagsDeEvento()}" var="tag"  varStatus="estado">
+                                    <div class="col-md-2">
+                                        <p>
+                                            #{tag.nombre.toUpperCase()}
+                                            <h:commandButton class="alert-dismissible close btn btn-link" style="float: none;" value="&times;" action="#{diarioSurBean.eliminarTagEvento(tag)}"/>
+                                        </p>
+                                    </div>
+                                </ui:repeat>
+                            </h:form>
+                        </f:view>
+                    </c:if>
+                    <div class="col-md-12">
+                        <h4 style="line-height: 25px;">#{diarioSurBean.evento.subtitulo}</h4>
+                    </div>
+                </div>
+                <div class="row row-eq-height row-evento" style="padding-right:15px">
+                    <div class="col-md-8 text">
+                        <p>#{diarioSurBean.evento.descripcion}</p>
+                        <div class="mapa">
+
+
+                            <script type="text/javascript">
+                                $(document).ready(function () {
+                                    var tag = "#{diarioSurBean.encontrarTagsDeEvento().isEmpty()? '':diarioSurBean.encontrarTagsDeEvento().get(0).getNombre()}";
+                                    
+                                    var latitud = $('input[id$="latitudOculta"]').val();
+                                    var longitud = $('input[id$="longitudOculta"]').val();
+                                    var direccionFisica = $('input[id$="direccionOculta"]').val();
+                                    console.log(latitud);
+                                    console.log(longitud);
+                                    var mapDiv = document.getElementById('map');
+                                    var latlng = new google.maps.LatLng(latitud, longitud);
+                                    var options = {
+                                        center: latlng,
+                                        zoom: 8,
+                                        mapTypeControl: false,
+                                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                                                // mas opciones en https://developers.google.com/maps/documentation/javascript/reference?hl=es#MapOptions
+                                    };
+                                    var map = new google.maps.Map(mapDiv, options);
+                                    marca(latitud, longitud, direccionFisica.toString(), direccionFisica.toString());
+
+
+
+                                    function marca(lat, long, tit, cont) {
+                                        var marker = new google.maps.Marker({
+                                            position: new google.maps.LatLng(lat, long),
+                                            map: map,
+                                            title: tit
+                                        });
+                                        // evento de clicar encima de la marca
+                                        google.maps.event.addListener(marker, 'click', function () {
+                                            var infowindow = new google.maps.InfoWindow({
+                                                content: cont
+                                            });
+                                            infowindow.open(map, marker);
+                                        });
+                                    }
+
+
+                                    function showPosition(position) {
+                                        map.setCenter(new google.maps.LatLng(position.coords.latitude, position.coords.longitude));
+                                        marca(position.coords.latitude, position.coords.longitude, 'posicion actual', 'contenido actualizado');
+                                    }
+
+                                    /*<![CDATA[*/
+                                    /*
+                                     * Le he añadido ajax para las llamada y asi con poco esfuerzo tenemos implementado en el proyecto otra
+                                     * tecnologia que seguro que lo puntua positivamente
+                                     * 
+                                     * PARA LA MEMORIA:
+                                     * Me he dado de cabezasos porque al ser un jsf (Xhtml) los & del link para las llamada a las api peta con un error de parsing noseqe..
+                                     * luego tmb peta en el < (menor que) del for ya que lo capta como una etiqueta, tmb da el mismo error de parsing
+                                     * 
+                                     * La solucion fue añadirle el CDATA del principio para que no parse este trozo del contenido..
+                                     * tamaños -> https://stackoverflow.com/questions/1803310/how-to-get-static-image-url-from-flickr-url
+                                     */
+                                    $.ajax({
+                                        url: "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=0d8792b0c196edc5ad03a8b89c0bd340&tags=" + tag + "&per_page=1&format=json&nojsoncallback=1&extras=url_m"
+                                    }).done(function (objJson) {
+                                        mostrarFotos(objJson);
+                                    });
+
+
+                                    function mostrarFotos(flickr) {
+                                        console.log(flickr);
+                                        for (var i = 0; i < flickr.photos.photo.length; i++) {
+                                            var foto = flickr.photos.photo[i];
+                                            var url = "http://www.flickr.com/photos/" + foto.owner + "/" + foto.id;
+                                            $("#banner_tag").attr("src",foto.url_m);
+                                        }
+                                    }
+                                    /*]]>*/
+                                });
+                            </script>
+                            <div id="map" style="height: 300px;"></div>
+                        </div>
+
+
+                    </div>
+
+
+                    <!--    
+                                                    Contenido col 4 para sidebar
+                    -->
+                    <div class="col-md-4">
+                        <div class="container-fluid">
+
+                            <div class="row side">
+                                <small>
+                                    <div class="statistics">
+                                        <!--
+                                        <span class="label label-default">Visitas 2550</span>
+                                        <span class="label label-default">Comentarios 15</span>
+                                        <span class="label label-default">Compartido 50 veces</span>
+                                        <span class="label label-default">Me gusta 20</span>
+                                        -->
+                                    </div>
+                                </small>
+                            </div>
+
+                            <ui:insert name="ult-noticias" >
+                                <ui:include src="/resources/template/ultNoticias.xhtml" />
+                            </ui:insert>  
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>

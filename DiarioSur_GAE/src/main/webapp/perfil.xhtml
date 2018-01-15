@@ -1,0 +1,126 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" 
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                template="plantilla.xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <ui:define name="contenido">
+        <hr class="" />
+        <div class="container target">
+            <div class="row">
+                <div class="col-md-3 col-md-offset-1" style="width: 150px">
+                    <a href="#" class="">
+                        <img title="profile image" class="img-circle img-responsive" width="120" src="#{diarioSurBean.usuarioFoto}" />
+                    </a>
+                </div>
+            </div>
+            <br/>
+
+            <div class="row">
+                <div class="col-md-3">
+                    <!--left col-->
+                    <ul class="list-group">
+                        <li class="list-group-item text-muted" contenteditable="false">Perfil</li>
+                        <li class="list-group-item text-right"><span class="pull-left"><strong class="">Nombre</strong></span> #{diarioSurBean.usuario.nombre}</li>
+                        <li class="list-group-item text-right"><span class="pull-left"><strong class="">Apellidos</strong></span> #{diarioSurBean.usuario.apellidos}</li>
+                        <li class="list-group-item text-right"><span class="pull-left"><strong class="">Email</strong></span> #{diarioSurBean.usuario.email}</li>
+                        <li class="list-group-item text-right"><span class="pull-left"><strong class="">Rol: </strong></span> #{diarioSurBean.usuario.rol}</li>
+                    </ul>
+                    <!--
+                        <ul class="list-group">
+                            <li class="list-group-item text-muted">Actividad <i class="fa fa-dashboard fa-1x"></i>
+
+                            </li>
+                            <li class="list-group-item text-right"><span class="pull-left"><strong class="">Shares</strong></span> 125</li>
+                            <li class="list-group-item text-right"><span class="pull-left"><strong class="">Likes</strong></span> 13</li>
+                            <li class="list-group-item text-right"><span class="pull-left"><strong class="">Posts</strong></span> 37</li>
+                            <li class="list-group-item text-right"><span class="pull-left"><strong class="">Seguidores</strong></span> 78</li>
+                        </ul>
+                        <div class="panel panel-default">
+                            <div class="panel-heading">Redes sociales</div>
+                            <div class="panel-body text-center">    
+                                <i class="fa fa-facebook fa-2x"></i> 
+                                <i class="fa fa-github fa-2x"></i> 
+                                <i class="fa fa-twitter fa-2x"></i> 
+                                <i class="fa fa-pinterest fa-2x"></i> 
+                                <i class="fa fa-google-plus fa-2x"></i>
+                            </div>
+                        </div>
+                    -->
+                </div>
+                <!--/col-3-->
+
+                <div class="col-md-9" style="" contenteditable="false">
+
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Mis preferencias</div>
+                        <div class="panel-body">
+                            <p>Priorizar eventos que contengan:</p>
+                            <f:view>
+                                <h:form>
+                                    <h:inputTextarea class="form-control" id="listtag" value="#{diarioSurBean.tagsUsuario}" required="true"/>
+                                    <br />
+                                    <h:commandButton class="btn btn-warning" value="Añadir tags" action="#{diarioSurBean.adjuntarTagsUsuario()}" />
+                                </h:form>
+                            </f:view>
+                            <br />
+                            <div class="well well-lg" style="margin: 10px;">
+                                Ejemplo:<br />
+                                coche, accidente, carretera, etc..                                         
+                            </div>
+
+                            <f:view>
+                                <h:form>
+                                    <ui:repeat value="#{diarioSurBean.encontrarTagsDeUsuario()}" var="tag"  varStatus="estado">
+                                        <div class="col-md-3">
+                                            <p>
+                                                #{tag.nombre}
+                                                <h:commandButton class="alert-dismissible close btn btn-link" style="float: none;" value="&times;" action="#{diarioSurBean.eliminarTagDeUsuario(tag)}"/>
+                                            </p>
+                                        </div>
+                                    </ui:repeat>
+                                </h:form>
+                            </f:view>
+
+                        </div>
+                    </div>
+
+
+
+
+
+
+                    <div class="panel panel-default target">
+                        <div class="panel-heading" contenteditable="false">Tus eventos</div>
+                        <div class="panel-body">
+                            <div class="row">
+
+                                <f:view>
+                                    <h:form>
+                                        <ui:repeat value="#{diarioSurBean.filtrarEventosDeUsuario()}" var="ev"  varStatus="estado">  
+                                            <div class="col-md-4">
+                                                <div class="thumbnail">
+                                                    <img alt="300x200" src="http://lorempixel.com/600/200/people"/>
+                                                    <div class="caption">
+                                                        <p><h:commandButton class="btn btn-link title" value="#{ev.titulo}" action="#{diarioSurBean.verEvento(ev)}"/></p>
+                                                        <p>#{ev.titulo}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </ui:repeat>
+
+                                    </h:form>	
+                                </f:view>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ui:define>
+</ui:composition>
