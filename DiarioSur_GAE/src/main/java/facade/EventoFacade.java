@@ -7,7 +7,6 @@ import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
@@ -26,7 +25,7 @@ public class EventoFacade implements Serializable{
 	
 	public EventoFacade(){}
 	
-	public String ultimoIdInsertado(){
+	private String ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
@@ -43,13 +42,13 @@ public class EventoFacade implements Serializable{
 		return id;
 	}
 	
-	public String incrementarID(String id) {
+	private String incrementarID(String id) {
 		int num = Integer.parseInt(id);
 		num++;
 		return String.valueOf(num);
 	}
 	
-	public List<Evento> crearEntidades(List<Entity> listaEntidades) {
+	private List<Evento> crearEntidades(List<Entity> listaEntidades) {
 		List<Evento> lista = new ArrayList<>();
 		
 		for(Entity e: listaEntidades) {
@@ -106,6 +105,8 @@ public class EventoFacade implements Serializable{
 		return lista;
 	}
 
+	
+	
 	
 	
 	//Métodos Públicos
@@ -180,7 +181,7 @@ public class EventoFacade implements Serializable{
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("usuarioID", FilterOperator.EQUAL, userID);
+		FilterPredicate filtro = new FilterPredicate("usuarioId", FilterOperator.EQUAL, userID);
 		q.setFilter(filtro);
 
 		List<Entity> listaEntidades = datastore.prepare(q).asList(null);

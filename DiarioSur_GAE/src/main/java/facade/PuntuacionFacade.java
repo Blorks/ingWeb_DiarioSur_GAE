@@ -27,7 +27,7 @@ private static final long serialVersionUID = 1L;
 	
 	public PuntuacionFacade(){}
 	
-	public String ultimoIdInsertado(){
+	private String ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Puntuacion").addSort("ID", Query.SortDirection.DESCENDING);
@@ -44,13 +44,13 @@ private static final long serialVersionUID = 1L;
 		return id;
 	}
 	
-	public String incrementarID(String id) {
+	private String incrementarID(String id) {
 		int num = Integer.parseInt(id);
 		num++;
 		return String.valueOf(num);
 	}
 	
-	public List<Puntuacion> crearEntidades(List<Entity> listaEntidades) {
+	private List<Puntuacion> crearEntidades(List<Entity> listaEntidades) {
 		List<Puntuacion> lista = new ArrayList<>();
 		
 		for(Entity e: listaEntidades) {
@@ -74,6 +74,12 @@ private static final long serialVersionUID = 1L;
 		return lista;
 	}
 
+	
+	
+	
+	
+	
+	//Métodos Públicos
 	public void crearPuntuacion(Puntuacion pt) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Puntuacion");

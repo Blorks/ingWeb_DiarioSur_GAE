@@ -2,8 +2,8 @@ package entity;
 
 public class Tagusuario {
 	private Integer id;
-    private Tag tagId;
-    private Usuario usuarioId;
+    private int tagId;
+    private int usuarioId;
 
     public Tagusuario() {
     }
@@ -20,19 +20,19 @@ public class Tagusuario {
         this.id = id;
     }
 
-    public Tag getTagId() {
+    public int getTagId() {
         return tagId;
     }
 
-    public void setTagId(Tag tagId) {
+    public void setTagId(int tagId) {
         this.tagId = tagId;
     }
 
-    public Usuario getUsuarioId() {
+    public int getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(Usuario usuarioId) {
+    public void setUsuarioId(int usuarioId) {
         this.usuarioId = usuarioId;
     }
 

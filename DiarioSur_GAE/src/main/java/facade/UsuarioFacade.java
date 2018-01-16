@@ -7,14 +7,12 @@ import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
-import entity.Evento;
 import entity.Usuario;
 
 public class UsuarioFacade implements Serializable{
@@ -96,6 +94,11 @@ public class UsuarioFacade implements Serializable{
 		return lista;
 	}
 	
+	
+	
+	
+	
+	//Métodos Públicos
 	public void crearUsuario(Usuario user) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Usuario");

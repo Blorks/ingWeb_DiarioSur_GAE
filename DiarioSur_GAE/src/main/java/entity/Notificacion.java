@@ -4,7 +4,7 @@ public class Notificacion {
 	private Integer id;
     private String descripcion;
     private Integer leida;
-    private Usuario usuarioId;
+    private int usuarioId;
 
     public Notificacion() {
     }
@@ -37,11 +37,11 @@ public class Notificacion {
         this.leida = leida;
     }
 
-    public Usuario getUsuarioId() {
+    public int getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(Usuario usuarioId) {
+    public void setUsuarioId(int usuarioId) {
         this.usuarioId = usuarioId;
     }
 
