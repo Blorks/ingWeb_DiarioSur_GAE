@@ -1,8 +1,10 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Tag {
+public class Tag implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Integer id;
     private String nombre;
     private List<Tagevento> tageventoList;

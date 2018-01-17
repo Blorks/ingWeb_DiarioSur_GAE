@@ -163,7 +163,7 @@ public class DiarioSurBean implements Serializable {
     }
     
     public int ultimoIDEventoIncrementado() {
-        return Integer.parseInt(ef.ultimoIdInsertado()) + 1;
+        return 1;//Integer.parseInt(ef.ultimoIdInsertado()) + 1;
     }
     
     /*
@@ -248,7 +248,7 @@ public class DiarioSurBean implements Serializable {
 
            logIn();
            if (!usuarioFoto.isEmpty()) {
-               adjuntarFotoDePerfil(usuarioFoto);
+//               adjuntarFotoDePerfil(usuarioFoto);
            }
        }
    }
@@ -260,9 +260,9 @@ public class DiarioSurBean implements Serializable {
        if (!usuarios.isEmpty()) {
            usuario = usuarios.get(0);
 			///////////////////////////////////////////////////////////////////////// problema..
-           if (usuario.getFileevId() != null) {
-               usuarioFoto = usuario.getFileevId().getUrl();
-           }
+//           if (usuario.getFileevId() != null) {
+//               usuarioFoto = usuario.getFileevId().getUrl();
+//           }
            return true;
        } else {
            return false;
@@ -386,8 +386,8 @@ public class DiarioSurBean implements Serializable {
    	   * TagusuarioFacade (Alvaro)
    	   */
    	  
-   	public List<Tag> encontrarTagsDeUsuario() {
-   		for(Tagusuario tu : tuf.encontrarTagusuarioPorUsuario(usuario.getId().toString()))
-   			
-   	}
+//   	public List<Tag> encontrarTagsDeUsuario() {
+//   		for(Tagusuario tu : tuf.encontrarTagusuarioPorUsuario(usuario.getId().toString()))
+//   			
+//   	}
 }

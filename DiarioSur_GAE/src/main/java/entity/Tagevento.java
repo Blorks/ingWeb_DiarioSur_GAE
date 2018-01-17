@@ -1,6 +1,9 @@
 package entity;
 
-public class Tagevento {
+import java.io.Serializable;
+
+public class Tagevento implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Integer id;
     private int eventoId;
     private int tagId;

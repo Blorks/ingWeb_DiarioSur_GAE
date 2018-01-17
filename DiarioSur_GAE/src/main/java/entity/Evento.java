@@ -1,8 +1,10 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Evento {
+public class Evento implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private String titulo;
     private String subtitulo;
     private String descripcion;

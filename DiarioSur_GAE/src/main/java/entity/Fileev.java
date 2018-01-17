@@ -1,8 +1,10 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Fileev {
+public class Fileev implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Integer id;
     private String nombre;
     private String url;

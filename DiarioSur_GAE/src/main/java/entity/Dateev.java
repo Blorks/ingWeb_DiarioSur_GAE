@@ -1,9 +1,11 @@
 package entity;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-public class Dateev {
+public class Dateev implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Integer id;
     private Integer esunico;
     private Date dia;

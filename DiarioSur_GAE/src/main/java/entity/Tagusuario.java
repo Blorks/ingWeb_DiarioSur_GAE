@@ -1,6 +1,9 @@
 package entity;
 
-public class Tagusuario {
+import java.io.Serializable;
+
+public class Tagusuario implements Serializable{
+	private static final long serialVersionUID = 1L;
 	private Integer id;
     private int tagId;
     private int usuarioId;
