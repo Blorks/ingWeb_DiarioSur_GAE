@@ -13,6 +13,9 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
+import entity.Calendario;
+import entity.Tagevento;
+import entity.Puntuacion;
 import entity.Evento;
 
 public class EventoFacade implements Serializable{
@@ -83,14 +86,17 @@ public class EventoFacade implements Serializable{
 			
 			
 			//No se como recoger los list
-//			val = e.getProperty("calendarioList");
-//			ev.setCalendarioList(-.-);
-//			
-//			val = e.getProperty("tagEventoList");
-//			ev.setTageventoList(-.-);
-//			
-//			val = e.getProperty("archivosList");
-//			ev.setArchivosList(-.-);
+			val = e.getProperty("calendarioList");
+			List<Calendario> listaCal = (List<Calendario>) val;
+			ev.setCalendarioList(listaCal);
+			
+			val = e.getProperty("tagEventoList");
+			List<Tagevento> listaTagEv = (List<Tagevento>) val;
+			ev.setTageventoList(listaTagEv);
+			
+			val = e.getProperty("archivosList");
+			List<Puntuacion> listaPunt = (List<Puntuacion>) val;
+			ev.setPuntuacionList(listaPunt);
 			
 			val = e.getProperty("dateevID");
 			ev.setDateevId(Integer.parseInt(val.toString()));
@@ -129,7 +135,7 @@ public class EventoFacade implements Serializable{
 		entidad.setProperty("estaRevisado", ev.getEstarevisado());
 		entidad.setProperty("calendarioList", ev.getCalendarioList());
 		entidad.setProperty("tagEventoList", ev.getTageventoList());
-		entidad.setProperty("archivosList", ev.getArchivosList());
+		entidad.setProperty("puntuacionList", ev.getPuntuacionList());
 		entidad.setProperty("dateevID", ev.getDateevId());
 		entidad.setProperty("usuarioID", ev.getUsuarioId());
 		
