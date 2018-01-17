@@ -222,11 +222,22 @@ public class DiarioSurBean implements Serializable {
 
 	public List<Evento> mostrarTodosLosEventosRevisados() {
 		List<Evento> le = new ArrayList<>();
-		Evento e = new Evento();
+		Evento e = new Evento(),e2 = new Evento(),e3 = new Evento();
 		e.setId(1);
-		e.setTitulo("asd");
-		e.setDescripcion("asd");
+		e.setTitulo("asd1");
+		e.setDescripcion("asda1");
 		le.add(e);
+		
+		e2.setId(2);
+		e2.setTitulo("asd2");
+		e2.setDescripcion("asda2");
+		le.add(e2);
+		
+		e3.setId(3);
+		e3.setTitulo("asd3");
+		e3.setDescripcion("asda3");
+		le.add(e3);
+		
 		return le;// ef.encontrarEventosRevisados();
 	}
 
