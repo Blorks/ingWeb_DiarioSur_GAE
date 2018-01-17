@@ -23,10 +23,6 @@ public class DiarioSurBean implements Serializable {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	EventoFacade ef = new EventoFacade();
-	PuntuacionFacade pf = new PuntuacionFacade();
-	DateevFacade def = new DateevFacade();
-	TagFacade tf = new TagFacade();
 	TagusuarioFacade tuf = new TagusuarioFacade();
 	TageventoFacade tef = new TageventoFacade();
 
@@ -205,6 +201,7 @@ public class DiarioSurBean implements Serializable {
 	 * Methods
 	 */
 	public List<Evento> mostrarTodosLosEventos() {
+		EventoFacade ef = new EventoFacade();
 		List<Evento> eventos = ef.encontrarTodosLosEventos();
 		return eventos;
 	}
@@ -217,6 +214,7 @@ public class DiarioSurBean implements Serializable {
 	 * EventoFacade
 	 */
 	private Evento encontrarEventoID(String id) {
+		EventoFacade ef = new EventoFacade();
 		return ef.encontrarEventoPorID(id).get(0);
 	}
 
@@ -231,18 +229,22 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public List<Evento> filtrarEventosDeUsuario() {
+		EventoFacade ef = new EventoFacade();
 		return ef.encontrarEventoPorUsuario(usuario.getId().toString());
 	}
 
 	public List<Evento> mostrarEventosFiltradosPorPrecio() {
+		EventoFacade ef = new EventoFacade();
 		return ef.encontrarEventoPorPrecioMaximo(precioMax);
 	}
 
 	public List<Evento> mostrarTodosLosEventosNoRevisados() {
+		EventoFacade ef = new EventoFacade();
 		return ef.encontrarEventosNoRevisados();
 	}
 
 	public List<Evento> mostrarEventosFiltradosPorFecha() {
+		EventoFacade ef = new EventoFacade();
 		return ef.encontrarEventosPorFecha(fecha.getId().toString());
 	}
 
@@ -251,14 +253,17 @@ public class DiarioSurBean implements Serializable {
 	 */
 
 	public List<Dateev> encontrarFechaPorID(String id) {
+		DateevFacade def = new DateevFacade();
 		return def.encontrarFechaPorID(id);
 	}
 
 	public List<Dateev> mostrarTodasLasFechasUnicas() {
+		DateevFacade def = new DateevFacade();
 		return def.encontrarFechaPorUnica();
 	}
 
 	public List<Dateev> mostrarTodasLasFechasRango() {
+		DateevFacade def = new DateevFacade();
 		return def.encontrarFechaPorRango();
 	}
 
@@ -388,22 +393,27 @@ public class DiarioSurBean implements Serializable {
 	// return "todoloseventos.xhtml";
 	// }
 	public List<Evento> mostrarEventosOrdenadosAlfabeticamente() {
+		EventoFacade ef = new EventoFacade();
 		return ef.ordenarEventosAlfabeticamente();
 	}
 
 	public List<Evento> mostrarEventosOrdenadosAlfabeticamenteDESC() {
+		EventoFacade ef = new EventoFacade();
 		return ef.ordenarEventosAlfabeticamenteDESC();
 	}
 
 	public List<Evento> mostrarEventosOrdenadosPorPrecio() {
+		EventoFacade ef = new EventoFacade();
 		return ef.ordenarEventosPorPrecio();
 	}
 
 	public List<Evento> mostrarEventosOrdenadosPorPrecioDESC() {
+		EventoFacade ef = new EventoFacade();
 		return ef.ordenarEventosPorPrecioDESC();
 	}
 
 	// public void actualizarPuntuacion(String punto, String evId) {
+	//PuntuacionFacade pf = new PuntuacionFacade();
 	// Evento ev = ef.encontrarEventoPorID(evId).get(0);
 	//
 	// List<Puntuacion> puntuaciones =
@@ -422,6 +432,7 @@ public class DiarioSurBean implements Serializable {
 	// }
 	// }
 	public double mostrarPuntuacionMedia(Evento ev) {
+		//PuntuacionFacade pf = new PuntuacionFacade();
 		// List<Puntuacion> puntuaciones =
 		// pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
 		// double puntuacionTotal = 0;
@@ -449,6 +460,7 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public List<Tag> encontrarTagPorNombre(String nombre) { // mejor private?
+		TagFacade tf = new TagFacade();
 		return tf.encontrarTagPorNombre(nombre);
 	}
 
@@ -603,4 +615,42 @@ public class DiarioSurBean implements Serializable {
 
 		return "index.xhtml";
 	}
+	
+	public void eliminarEventoPorID(String id) {
+		//TERMINAR; FALTA HACER DELETE EN CASCADA
+		EventoFacade ef = new EventoFacade();
+		ef.eliminarEventoPorID(id);
+	}
+	
+	public List<Fileev> encontrarArchivoPorURL(String url) {
+		FileevFacade fef = new FileevFacade();
+		return fef.encontrarArchivoPorID(url);
+	}
+	
+	public List<Fileev> encontrarArchivoPorID(String id) {
+		FileevFacade fef = new FileevFacade();
+		return fef.encontrarArchivoPorID(id);
+	}
+	
+	public List<Notificacion> mostrarNotificacionesDeUsuario() {
+		NotificacionFacade nf = new NotificacionFacade();
+		return nf.encontrarTodasLasNotificacionesDeUsuario(usuario.getId().toString());
+	}
+	
+	public List<Notificacion> encontrarNotificacionPorId(String id){
+		NotificacionFacade nf = new NotificacionFacade();
+		return nf.encontrarNotificacionPorId(id);
+	}
+	
+	public List<Puntuacion> encontrarTodasLasPuntuaciones(){
+		PuntuacionFacade pf = new PuntuacionFacade();
+		return pf.encontrarTodasLasPuntuaciones();
+	}
+	
+	public List<Puntuacion> encontrarPuntuacionesDeUsuario(String idUser) {
+		PuntuacionFacade pf = new PuntuacionFacade();
+		return pf.encontrarPuntuacionesDeUsuario(usuario.getId().toString());
+	}
+	
+	
 }
