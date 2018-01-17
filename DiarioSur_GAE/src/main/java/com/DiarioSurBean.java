@@ -25,6 +25,9 @@ public class DiarioSurBean implements Serializable {
 	EventoFacade ef = new EventoFacade();
 	PuntuacionFacade pf = new PuntuacionFacade();
 	DateevFacade def = new DateevFacade();
+	TagFacade tf = new TagFacade();
+	TagusuarioFacade tuf = new TagusuarioFacade();
+	TageventoFacade tef = new TageventoFacade();
 	
 	private Usuario usuario = new Usuario();
     private double usuarioLatitud = 0.0;
@@ -370,4 +373,21 @@ public class DiarioSurBean implements Serializable {
 		return puntuacionTotal / puntuaciones.size();
 	
    	  }
+   	  
+   	  /*
+   	   * TagFacade (Alvaro)
+   	   */
+   	  
+   	  public List<Tag> encontrarTagPorNombre(String nombre){ //mejor private?
+   		  return tf.encontrarTagPorNombre(nombre);
+   	  }
+   	  
+   	  /*
+   	   * TagusuarioFacade (Alvaro)
+   	   */
+   	  
+   	public List<Tag> encontrarTagsDeUsuario() {
+   		for(Tagusuario tu : tuf.encontrarTagusuarioPorUsuario(usuario.getId().toString()))
+   			
+   	}
 }
