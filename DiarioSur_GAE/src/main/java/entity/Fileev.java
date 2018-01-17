@@ -1,6 +1,5 @@
 package entity;
 
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -10,7 +9,6 @@ public class Fileev implements Serializable{
     private String nombre;
     private String url;
     private String tipo;
-    private int usuarioId;
     private List<Puntuacion> archivosList;
 
     public Fileev() {
@@ -84,12 +82,4 @@ public class Fileev implements Serializable{
     public String toString() {
         return "entity.Fileev[ id=" + id + " ]";
     }
-
-	public int getUsuarioId() {
-		return usuarioId;
-	}
-
-	public void setUsuarioId(int usuarioId) {
-		this.usuarioId = usuarioId;
-	}
 }

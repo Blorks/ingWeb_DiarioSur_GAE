@@ -334,7 +334,7 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public boolean isLogin() {
-		return (usuario.getEmail() == null || usuario.getEmail().equals(""));
+		return false;// (usuario.getEmail() == null || usuario.getEmail().equals(""));
 	}
 
 	public String isLoginIncl() {

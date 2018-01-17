@@ -1,7 +1,5 @@
 package facade;
 
-
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,10 +13,6 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
-import entity.Calendario;
-import entity.Evento;
-import entity.Notificacion;
-import entity.Tagusuario;
 import entity.Usuario;
 
 public class UsuarioFacade implements Serializable{
@@ -26,7 +20,6 @@ public class UsuarioFacade implements Serializable{
 	
 	private DatastoreService datastore;
 	private Entity entidad;
-	private int edit = 0;
 	Key key;
 	Transaction conexion;
 	
@@ -80,23 +73,20 @@ public class UsuarioFacade implements Serializable{
 			val = e.getProperty("rol");
 			user.setRol(val.toString());
 			
-			val = e.getProperty("fotoPerfil");
-			user.setFileevId(Integer.parseInt(val.toString()));
-			
 			
 			//No se como recoger los list
-		
-			val = e.getProperty("tagUsuarioList");
-			List<Tagusuario> listaTagusuario = (List<Tagusuario>) val;
-			user.setTagusuarioList(listaTagusuario);
+//			val = e.getProperty("calendarioList");
+//			user.setCalendarioList(-.-);
+//			
+//			val = e.getProperty("tagUsuarioList");
+//			user.setTagusuarioList(-.-);
+//			
+//			val = e.getProperty("notificacionList");
+//			user.setNotificacionList(-.-);
+//			
+//			val = e.getProperty("eventoList");
+//			user.setEventoList(-.-);
 			
-			val = e.getProperty("notificacionList");
-			List<Notificacion> listaNotificacion = (List<Notificacion>) val;
-			user.setNotificacionList(listaNotificacion);
-			
-			val = e.getProperty("eventoList");
-			List<Evento> listaEvento = (List<Evento>) val;
-			user.setEventoList(listaEvento);			
 			
 			lista.add(user);
 		}
@@ -113,15 +103,9 @@ public class UsuarioFacade implements Serializable{
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Usuario");
 		key = entidad.getKey();
-		String ultimoID = ultimoIdInsertado();
 		
-		if(edit == 1) {
-			ultimoID = user.getId().toString();
-		}else if(user.getId() == null){
-			ultimoID = "1";
-		}else {
-			ultimoID = incrementarID(ultimoID);
-		}
+		String ultimoID = ultimoIdInsertado();
+		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
 		entidad.setProperty("nombre", user.getNombre());
@@ -129,7 +113,6 @@ public class UsuarioFacade implements Serializable{
 		entidad.setProperty("email", user.getEmail());
 		entidad.setProperty("hashPassword", user.getHashpassword());
 		entidad.setProperty("rol", user.getRol());
-		entidad.setProperty("fotoPerfil", user.getFileevId());
 		entidad.setProperty("calendarioList", user.getCalendarioList());
 		entidad.setProperty("tagUsuarioList", user.getTagusuarioList());
 		entidad.setProperty("notificacionList", user.getNotificacionList());
@@ -140,12 +123,6 @@ public class UsuarioFacade implements Serializable{
 		datastore.put(conexion, entidad);
 		conexion.commit();
 	}
-
-	public void editarUsuario(Usuario user) {
-		edit = 1;
-		crearUsuario(user);
-	}
-	
 	
 	public List<Usuario> encontrarUsuarioPorID(String id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service

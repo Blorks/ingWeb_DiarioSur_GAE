@@ -1,6 +1,5 @@
 package entity;
 
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,7 +11,6 @@ public class Usuario implements Serializable{
     private String email;
     private String hashpassword;
     private String rol;
-    private Integer fileevId;
     private List<Calendario> calendarioList;
     private List<Tagusuario> tagusuarioList;
     private List<Notificacion> notificacionList;
@@ -129,12 +127,4 @@ public class Usuario implements Serializable{
     public String toString() {
         return "entity.Usuario[ id=" + id + " ]";
     }
-
-	public Integer getFileevId() {
-		return fileevId;
-	}
-
-	public void setFileevId(Integer fileevId) {
-		this.fileevId = fileevId;
-	}
 }

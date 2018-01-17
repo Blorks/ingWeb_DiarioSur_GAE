@@ -1,6 +1,5 @@
 package entity;
 
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -17,7 +16,7 @@ public class Evento implements Serializable{
     private Integer estarevisado;
     private List<Calendario> calendarioList;
     private List<Tagevento> tageventoList;
-    private List<Puntuacion> puntuacionList;
+    private List<Puntuacion> archivosList;
     private int dateevId;
     private int usuarioId;
 
@@ -116,12 +115,12 @@ public class Evento implements Serializable{
         this.tageventoList = tageventoList;
     }
 
-    public List<Puntuacion> getPuntuacionList() {
-        return puntuacionList;
+    public List<Puntuacion> getArchivosList() {
+        return archivosList;
     }
 
-    public void setPuntuacionList(List<Puntuacion> archivosList) {
-        this.puntuacionList = archivosList;
+    public void setArchivosList(List<Puntuacion> archivosList) {
+        this.archivosList = archivosList;
     }
 
     public int getDateevId() {
