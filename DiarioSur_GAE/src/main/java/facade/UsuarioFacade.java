@@ -73,6 +73,9 @@ public class UsuarioFacade implements Serializable{
 			val = e.getProperty("rol");
 			user.setRol(val.toString());
 			
+			val = e.getProperty("fileevId");
+			user.setFileev(Integer.parseInt(val.toString()));
+			
 			
 			//No se como recoger los list
 //			val = e.getProperty("calendarioList");
@@ -94,7 +97,19 @@ public class UsuarioFacade implements Serializable{
 		return lista;
 	}
 	
-	
+	private List<Usuario> encontrarUsuarios() {
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		List<Usuario> lista = new ArrayList<>();
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Usuario").addSort("ID", Query.SortDirection.ASCENDING);
+
+		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
+		lista = crearEntidades(listaEntidades);
+		
+		return lista;
+	}
 	
 	
 	
@@ -102,10 +117,16 @@ public class UsuarioFacade implements Serializable{
 	public void crearUsuario(Usuario user) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Usuario");
-		key = entidad.getKey();
 		
-		String ultimoID = ultimoIdInsertado();
-		ultimoID = incrementarID(ultimoID);
+		List<Usuario> isUser = encontrarUsuarios();
+		String ultimoID;
+		
+		if(isUser.isEmpty()) {
+			ultimoID = "1";
+		}else {
+			ultimoID = ultimoIdInsertado();
+			ultimoID = incrementarID(ultimoID);
+		}
 		
 		entidad.setProperty("ID", ultimoID);
 		entidad.setProperty("nombre", user.getNombre());
@@ -113,6 +134,7 @@ public class UsuarioFacade implements Serializable{
 		entidad.setProperty("email", user.getEmail());
 		entidad.setProperty("hashPassword", user.getHashpassword());
 		entidad.setProperty("rol", user.getRol());
+		entidad.setProperty("fileevId", user.getFileev());
 		entidad.setProperty("calendarioList", user.getCalendarioList());
 		entidad.setProperty("tagUsuarioList", user.getTagusuarioList());
 		entidad.setProperty("notificacionList", user.getNotificacionList());

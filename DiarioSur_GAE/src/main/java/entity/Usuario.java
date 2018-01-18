@@ -11,6 +11,7 @@ public class Usuario implements Serializable{
     private String email;
     private String hashpassword;
     private String rol;
+    private Integer fileev;
     private List<Calendario> calendarioList;
     private List<Tagusuario> tagusuarioList;
     private List<Notificacion> notificacionList;
@@ -127,4 +128,12 @@ public class Usuario implements Serializable{
     public String toString() {
         return "entity.Usuario[ id=" + id + " ]";
     }
+
+	public Integer getFileev() {
+		return fileev;
+	}
+
+	public void setFileev(Integer fileev) {
+		this.fileev = fileev;
+	}
 }

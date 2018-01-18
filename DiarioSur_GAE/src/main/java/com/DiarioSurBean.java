@@ -273,79 +273,92 @@ public class DiarioSurBean implements Serializable {
 		return def.encontrarFechaPorRango();
 	}
 
-	/*
-	 * UsuarioFacade
-	 */
-	public void rrssLogin() {
-		try {
-			FacesContext facesContext = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = facesContext.getExternalContext();
-			Map params = externalContext.getRequestParameterMap();
+	   /*
+	    * UsuarioFacade
+	    */
+	   public void rrssLogin() {
+	       try {
+	           FacesContext facesContext = FacesContext.getCurrentInstance();
+	           ExternalContext externalContext = facesContext.getExternalContext();
+	           Map params = externalContext.getRequestParameterMap();
 
-			if (params.size() > 0) {
-				usuario = new Usuario();
-				usuario.setRol("");
+	           if (params.size() > 0) {
+	               usuario = new Usuario();
+	               usuario.setRol("");
 
-				usuarioFoto = params.get("picture").toString();
+	               usuarioFoto = params.get("picture").toString();
 
-				usuario.setEmail(params.get("email").toString());
+	               usuario.setEmail(params.get("email").toString());
 
-				if (!logIn()) {
-					usuario.setNombre(params.get("first_name").toString());
-					usuario.setApellidos(params.get("last_name").toString());
-					usuario.setEmail(params.get("email").toString());
-					usuario.setRol("Usuario");
-					nuevoUsuario(usuario);
-				}
-			}
-		} catch (Exception e) {
-			System.out.println("Error en RRSS: " + e.getMessage());
-		}
-	}
+	               if (!logIn()) {
+	                   usuario.setNombre(params.get("first_name").toString());
+	                   usuario.setApellidos(params.get("last_name").toString());
+	                   usuario.setEmail(params.get("email").toString());
+	                   usuario.setRol("Usuario");
+	                   nuevoUsuario(usuario);
+	               }
+	           }
+	       } catch (Exception e) {
+	           System.out.println("Error en RRSS: " + e.getMessage());
+	       }
+	   }
+	   
+	   //METODOS REFERENTES A LOS FileEv
+	   public void adjuntarFotoDePerfil(String url) {
+	       UsuarioFacade cliente2 = new UsuarioFacade();
 
-	public void nuevoUsuario(Usuario us) {
-		UsuarioFacade uf = new UsuarioFacade();
-		List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
+	       Fileev file = new Fileev();
+	       file.setUrl(url);
+	       file.setUsuarioId(usuario.getId());
 
-		if (usuarios.isEmpty()) {
-			uf.crearUsuario(us);
+	       usuario.setFileev(file.getId()); //Al no existir el archivo file, la BD lo crea automaticamente
+	       cliente2.editarUsuario(usuario);
+	   }
+	   
+	   public void nuevoUsuario(Usuario us) {
+	       UsuarioFacade uf = new UsuarioFacade();
+	       List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
 
-			logIn();
-			if (!usuarioFoto.isEmpty()) {
-				// adjuntarFotoDePerfil(usuarioFoto);
-			}
-		}
-	}
+	       if (usuarios.isEmpty()) {
+	           uf.crearUsuario(us);
 
-	public boolean logIn() {
-		UsuarioFacade uf = new UsuarioFacade();
-		List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
+	           logIn();
+	           if (!usuarioFoto.isEmpty()) {
+	               adjuntarFotoDePerfil(usuarioFoto);
+	           }
+	       }
+	   }
+	   
+	   public boolean logIn() {
+	       UsuarioFacade uf = new UsuarioFacade();
+	       FileevFacade ff = new FileevFacade();
+	       List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
 
-		if (!usuarios.isEmpty()) {
-			usuario = usuarios.get(0);
-			///////////////////////////////////////////////////////////////////////// problema..
-			// if (usuario.getFileevId() != null) {
-			// usuarioFoto = usuario.getFileevId().getUrl();
-			// }
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	public boolean isLogin() {
-		return false;// (usuario.getEmail() == null || usuario.getEmail().equals(""));
-	}
-
-	public String isLoginIncl() {
-		return isLogin() ? "login.xhtml" : "logout.xhtml";
-	}
-
-	public String logout() {
-		usuario = new Usuario();
-		usuario.setEmail("");
-		return "index";
-	}
+	       if (!usuarios.isEmpty()) {
+	           usuario = usuarios.get(0);
+	           if (usuario.getFileev() != null) {
+	        	   List<Fileev> lista = ff.encontrarArchivoPorID(usuario.getFileev().toString());
+	               usuarioFoto = lista.get(0).getUrl();
+	           }
+	           return true;
+	       } else {
+	           return false;
+	       }
+	   }
+	   
+	   public boolean isLogin() {
+	       return (usuario.getEmail() == null || usuario.getEmail().equals(""));
+	   }
+	   
+	   public String isLoginIncl() {
+	       return isLogin() ? "login.xhtml" : "logout.xhtml";
+	   }
+	   
+	   public String logout() {
+	       usuario = new Usuario();
+	       usuario.setEmail("");
+	       return "index";
+	   }
 
 	// public String borrarEvento(Evento ev) {
 	// clienteEventos cliente = new clienteEventos();
