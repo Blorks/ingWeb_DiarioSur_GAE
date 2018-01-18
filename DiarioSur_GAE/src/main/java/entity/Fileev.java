@@ -9,6 +9,8 @@ public class Fileev implements Serializable{
     private String nombre;
     private String url;
     private String tipo;
+    private Integer usuarioId;
+    
     private List<Puntuacion> archivosList;
 
     public Fileev() {
@@ -82,4 +84,12 @@ public class Fileev implements Serializable{
     public String toString() {
         return "entity.Fileev[ id=" + id + " ]";
     }
+
+	public Integer getUsuarioId() {
+		return usuarioId;
+	}
+
+	public void setUsuarioId(Integer usuarioId) {
+		this.usuarioId = usuarioId;
+	}
 }
