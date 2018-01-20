@@ -342,7 +342,7 @@ public class DiarioSurBean implements Serializable {
 	       if (!usuarios.isEmpty()) {
 	           usuario = usuarios.get(0);
 	           if (usuario.getFileev() != null) {
-	        	   List<Fileev> lista = ff.encontrarArchivoPorID(usuario.getFileev().toString());
+	        	   List<Fileev> lista = ff.encontrarArchivoPorID(usuario.getFileev());
 	               usuarioFoto = lista.get(0).getUrl();
 	           }
 	           return true;
@@ -646,6 +646,7 @@ public class DiarioSurBean implements Serializable {
 		ef.eliminarEventoPorID(id);
 	}
 	
+	/*
 	public List<Fileev> encontrarArchivoPorURL(String url) {
 		FileevFacade fef = new FileevFacade();
 		return fef.encontrarArchivoPorID(url);
@@ -655,6 +656,7 @@ public class DiarioSurBean implements Serializable {
 		FileevFacade fef = new FileevFacade();
 		return fef.encontrarArchivoPorID(id);
 	}
+	*/
 	
 	public List<Notificacion> mostrarNotificacionesDeUsuario() {
 		NotificacionFacade nf = new NotificacionFacade();

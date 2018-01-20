@@ -7,15 +7,13 @@ import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
-import entity.Evento;
-import entity.Notificacion;
-import entity.Tagusuario;
 import entity.Usuario;
 
 public class UsuarioFacade implements Serializable{
@@ -23,7 +21,6 @@ public class UsuarioFacade implements Serializable{
 	
 	private DatastoreService datastore;
 	private Entity entidad;
-	private int edit = 0;
 	Transaction conexion;
 	
 	public UsuarioFacade(){}
@@ -35,14 +32,13 @@ public class UsuarioFacade implements Serializable{
 		Query q = new Query("Usuario").addSort("ID", Query.SortDirection.DESCENDING);
 		Integer id;
 		
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-				
-		if(listaEntidades.isEmpty()) {
-			id = 0;
-		}else {
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			id = Integer.parseInt(listaEntidades.get(0).getProperty("ID").toString());
+		}catch (Exception e) {
+			id = 0;
 		}
-				
+		
 		return id;
 	}
 	
@@ -50,6 +46,7 @@ public class UsuarioFacade implements Serializable{
 		return id++;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private List<Usuario> crearEntidades(List<Entity> listaEntidades) {
 		List<Usuario> lista = new ArrayList<>();
 		
@@ -77,19 +74,17 @@ public class UsuarioFacade implements Serializable{
 			val = e.getProperty("fileevId");
 			user.setFileev(Integer.parseInt(val.toString()));
 			
-			
 			val = e.getProperty("tagUsuarioList");
-			List<Tagusuario> listaTagusuario = (List<Tagusuario>) val;
+			List<Integer> listaTagusuario = (List<Integer>) val;
 			user.setTagusuarioList(listaTagusuario);
 			
 			val = e.getProperty("notificacionList");
-			List<Notificacion> listaNotificacion = (List<Notificacion>) val;
+			List<Integer> listaNotificacion = (List<Integer>) val;
 			user.setNotificacionList(listaNotificacion);
 			
 			val = e.getProperty("eventoList");
-			List<Evento> listaEvento = (List<Evento>) val;
+			List<Integer> listaEvento = (List<Integer>) val;
 			user.setEventoList(listaEvento);
-			
 			
 			lista.add(user);
 		}
@@ -106,13 +101,8 @@ public class UsuarioFacade implements Serializable{
 
 		Integer ultimoID;
 		
-		if(edit == 0) {
-				ultimoID = ultimoIdInsertado();
-				ultimoID = incrementarID(ultimoID);
-		}else {
-			ultimoID = user.getId();
-		}
-		
+		ultimoID = ultimoIdInsertado();
+		ultimoID = incrementarID(ultimoID);
 
 		entidad.setProperty("ID", ultimoID);
 		entidad.setProperty("nombre", user.getNombre());
@@ -121,7 +111,6 @@ public class UsuarioFacade implements Serializable{
 		entidad.setProperty("hashPassword", user.getHashpassword());
 		entidad.setProperty("rol", user.getRol());
 		entidad.setProperty("fileevId", user.getFileev());
-		entidad.setProperty("calendarioList", user.getCalendarioList());
 		entidad.setProperty("tagUsuarioList", user.getTagusuarioList());
 		entidad.setProperty("notificacionList", user.getNotificacionList());
 		entidad.setProperty("eventoListt", user.getEventoList());
@@ -130,13 +119,41 @@ public class UsuarioFacade implements Serializable{
 		
 		datastore.put(conexion, entidad);
 		conexion.commit();
-		
-		edit = 0;
 	}
 	
 	public void editarUsuario(Usuario user) {
-		edit = 1;
-		crearUsuario(user);
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		entidad = new Entity("Usuario");
+		List<Entity> listaEntidades = new ArrayList<>();
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Usuario").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, user.getId());
+		q.setFilter(filtro);
+
+		try {
+			 listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			 entidad = listaEntidades.get(0);
+			 
+			 entidad.setProperty("ID", user.getId());
+			 entidad.setProperty("nombre", user.getNombre());
+			 entidad.setProperty("apellidos", user.getApellidos());
+			 entidad.setProperty("email", user.getEmail());
+			 entidad.setProperty("hashPassword", user.getHashpassword());
+			 entidad.setProperty("rol", user.getRol());
+			 entidad.setProperty("fileevId", user.getFileev());
+			 entidad.setProperty("tagUsuarioList", user.getTagusuarioList());
+			 entidad.setProperty("notificacionList", user.getNotificacionList());
+			 entidad.setProperty("eventoListt", user.getEventoList());
+				
+			 datastore.put(conexion, entidad);
+
+		}catch (Exception e) {
+			System.out.println("Usuario" + user.getNombre() + " " + user.getApellidos() + " no encontrado.");
+		}
+		
+		conexion.commit();
 	}
 	
 	public List<Usuario> encontrarUsuarioPorID(String id) {
@@ -150,8 +167,15 @@ public class UsuarioFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			conexion.commit();
+			return lista;
+		}
+		
+		conexion.commit();
 		
 		return lista;
 	}
@@ -165,9 +189,16 @@ public class UsuarioFacade implements Serializable{
 		Query q = new Query("Usuario").addSort("ID", Query.SortDirection.ASCENDING);
 		FilterPredicate filtro = new FilterPredicate("email", FilterOperator.EQUAL, email);
 		q.setFilter(filtro);
-
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
+		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			conexion.commit();
+			return lista;
+		}
+		
+		conexion.commit();
 		
 		return lista;
 	}
@@ -182,10 +213,15 @@ public class UsuarioFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			Key key = listaEntidades.get(0).getKey();
+			
+			datastore.delete(conexion, key);
+		}catch (Exception e) {
+			System.out.println("Usuario " + id + " no encontrado.");
+		}
 		
-		Key key = listaEntidades.get(0).getKey();
-		datastore.delete(conexion, key);
 		conexion.commit();
 	}
 	

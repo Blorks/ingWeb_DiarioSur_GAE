@@ -1,7 +1,6 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Fileev implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -10,8 +9,6 @@ public class Fileev implements Serializable{
     private String url;
     private String tipo;
     private Integer usuarioId;
-    
-    private List<Puntuacion> archivosList;
 
     public Fileev() {
     }
@@ -50,14 +47,6 @@ public class Fileev implements Serializable{
 
     public void setTipo(String tipo) {
         this.tipo = tipo;
-    }
-
-    public List<Puntuacion> getArchivosList() {
-        return archivosList;
-    }
-
-    public void setArchivosList(List<Puntuacion> archivosList) {
-        this.archivosList = archivosList;
     }
 
     @Override

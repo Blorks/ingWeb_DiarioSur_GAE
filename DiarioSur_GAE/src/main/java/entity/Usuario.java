@@ -12,10 +12,9 @@ public class Usuario implements Serializable{
     private String hashpassword;
     private String rol;
     private Integer fileev;
-    private List<Calendario> calendarioList;
-    private List<Tagusuario> tagusuarioList;
-    private List<Notificacion> notificacionList;
-    private List<Evento> eventoList;
+    private List<Integer> tagusuarioList;
+    private List<Integer> notificacionList;
+    private List<Integer> eventoList;
 
     public Usuario() {
     }
@@ -72,35 +71,27 @@ public class Usuario implements Serializable{
         this.rol = rol;
     }
 
-    public List<Calendario> getCalendarioList() {
-        return calendarioList;
-    }
-
-    public void setCalendarioList(List<Calendario> calendarioList) {
-        this.calendarioList = calendarioList;
-    }
-
-    public List<Tagusuario> getTagusuarioList() {
+    public List<Integer> getTagusuarioList() {
         return tagusuarioList;
     }
 
-    public void setTagusuarioList(List<Tagusuario> tagusuarioList) {
+    public void setTagusuarioList(List<Integer> tagusuarioList) {
         this.tagusuarioList = tagusuarioList;
     }
 
-    public List<Notificacion> getNotificacionList() {
+    public List<Integer> getNotificacionList() {
         return notificacionList;
     }
 
-    public void setNotificacionList(List<Notificacion> notificacionList) {
+    public void setNotificacionList(List<Integer> notificacionList) {
         this.notificacionList = notificacionList;
     }
 
-    public List<Evento> getEventoList() {
+    public List<Integer> getEventoList() {
         return eventoList;
     }
 
-    public void setEventoList(List<Evento> eventoList) {
+    public void setEventoList(List<Integer> eventoList) {
         this.eventoList = eventoList;
     }
 
