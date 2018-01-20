@@ -56,18 +56,17 @@ public class DiarioSurBean implements Serializable {
 	private String puntuacion = "";
 
 	private List<Evento> eventosConFiltros = new ArrayList<>();
-	
-//	
-//	@PostConstruct
-//	public void init() {
-//		UsuarioFacade uf = new UsuarioFacade();
-//		
-//		List<Usuario> lista = uf.encontrarUsuarioPorEmail("blorkszb@gmail.com");
-//		
-//		System.out.println(lista.size());
-//	}
-//	
-	
+
+	//
+	// @PostConstruct
+	// public void init() {
+	// UsuarioFacade uf = new UsuarioFacade();
+	//
+	// List<Usuario> lista = uf.encontrarUsuarioPorEmail("blorkszb@gmail.com");
+	//
+	// System.out.println(lista.size());
+	// }
+	//
 
 	/*
 	 * Go to
@@ -278,7 +277,7 @@ public class DiarioSurBean implements Serializable {
 			UsuarioFacade usuarioFacade = new UsuarioFacade();
 
 			// Adjunto el usuario creador
-			
+
 			List<Usuario> listaUsuario = usuarioFacade.encontrarUsuarioPorEmail(usuario.getEmail());
 			evento.setUsuarioId(listaUsuario.get(0).getId());
 
@@ -299,13 +298,15 @@ public class DiarioSurBean implements Serializable {
 			adjuntarTagsEvento();
 
 			fecha.setEventoId(eventoFacade.ultimoIdInsertado());
-			//clienteFecha.edit_XML(fecha, fecha.getId().toString());
+			// clienteFecha.edit_XML(fecha, fecha.getId().toString());
 
 			// Creo notificacion para usuario
 			if (esPeriodista()) {
-			//	crearNotificacion("Has creado el evento con exito!", usuario);
+				// crearNotificacion("Has creado el evento con exito!",
+				// usuario);
 			} else {
-			//	crearNotificacion("Tu evento est� a la espera de ser validado", usuario);
+				// crearNotificacion("Tu evento est� a la espera de ser
+				// validado", usuario);
 			}
 
 			// reset variables
@@ -315,7 +316,7 @@ public class DiarioSurBean implements Serializable {
 
 			return "index";
 		} else {
-			//editarEvento();
+			// editarEvento();
 			edit = 0;
 
 			return "todoloseventos.xhtml";
@@ -448,7 +449,7 @@ public class DiarioSurBean implements Serializable {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			
+
 			fecha.setDesde(null);
 			fecha.setHasta(null);
 			fecha.setListadias(null);
@@ -464,7 +465,7 @@ public class DiarioSurBean implements Serializable {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			
+
 			fecha.setDia(null);
 			fecha.setListadias(null);
 
@@ -486,27 +487,21 @@ public class DiarioSurBean implements Serializable {
 	 * UsuarioFacade
 	 */
 	public void rrssLogin() {
-		
-			UsuarioFacade userFacade = new UsuarioFacade();
-			FacesContext facesContext = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = facesContext.getExternalContext();
-			Map params = externalContext.getRequestParameterMap();
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = facesContext.getExternalContext();
+		Map params = externalContext.getRequestParameterMap();
 
-			if (params.size() > 0) {
-				usuario = new Usuario();
+		if (params.size() > 4) {
+			usuarioFoto = params.get("picture").toString();
+
+			if (!logIn()) {
+				usuario.setNombre(params.get("first_name").toString());
+				usuario.setApellidos(params.get("last_name").toString());
 				usuario.setEmail(params.get("email").toString());
-				usuario.setRol("");
-				usuarioFoto = params.get("picture").toString();
-
-				if (!logIn()) {
-					usuario.setNombre(params.get("first_name").toString());
-					usuario.setApellidos(params.get("last_name").toString());
-					usuario.setEmail(params.get("email").toString());
-					usuario.setRol("Usuario");
-					nuevoUsuario(usuario);
-				}
+				usuario.setRol("Usuario");
+				nuevoUsuario(usuario);
 			}
-		
+		}
 	}
 
 	// METODOS REFERENTES A LOS FileEv
@@ -517,15 +512,15 @@ public class DiarioSurBean implements Serializable {
 		file.setUrl(url);
 		file.setUsuarioId(usuario.getId());
 
-		usuario.setFileev(file.getId()); // Al no existir el archivo file, la BD lo crea automaticamente
-		
+		usuario.setFileev(file.getId()); // Al no existir el archivo file, la BD
+											// lo crea automaticamente
+
 		cliente2.editarUsuario(usuario);
 	}
 
 	public void nuevoUsuario(Usuario us) {
 		UsuarioFacade uf = new UsuarioFacade();
 		List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
-
 		if (usuarios.isEmpty()) {
 			uf.crearUsuario(us);
 
@@ -549,6 +544,7 @@ public class DiarioSurBean implements Serializable {
 			}
 			return true;
 		} else {
+			usuario.setEmail("");
 			return false;
 		}
 	}
@@ -594,7 +590,8 @@ public class DiarioSurBean implements Serializable {
 	// r = clienteFecha.encontrarFechaPorID_XML(Response.class,
 	// ev.getDateevId().getId().toString());
 	// if (r.getStatus() == 200) {
-	// GenericType<List<Dateev>> genericType2 = new GenericType<List<Dateev>>() {
+	// GenericType<List<Dateev>> genericType2 = new GenericType<List<Dateev>>()
+	// {
 	// };
 	// List<Dateev> listaFecha = r.readEntity(genericType2);
 	//
@@ -604,7 +601,8 @@ public class DiarioSurBean implements Serializable {
 	// r = cliente.encontrarEventosPorFecha_XML(Response.class,
 	// listaFecha.get(0).getId().toString());
 	// if (r.getStatus() == 200) {
-	// GenericType<List<Evento>> genericType3 = new GenericType<List<Evento>>() {
+	// GenericType<List<Evento>> genericType3 = new GenericType<List<Evento>>()
+	// {
 	// };
 	// List<Evento> listaEvento = r.readEntity(genericType3);
 	//
@@ -643,7 +641,8 @@ public class DiarioSurBean implements Serializable {
 	// Evento ev = ef.encontrarEventoPorID(evId).get(0);
 	//
 	// List<Puntuacion> puntuaciones =
-	// pf.encontrarPuntuacionesDeEventoYUsuario(usuario.getId().toString(), evId);
+	// pf.encontrarPuntuacionesDeEventoYUsuario(usuario.getId().toString(),
+	// evId);
 	//
 	// Puntuacion pt = new Puntuacion();
 	// if (puntuaciones.isEmpty()) {
@@ -674,7 +673,7 @@ public class DiarioSurBean implements Serializable {
 	/*
 	 * TagFacade
 	 */
-	
+
 	private Tag crearTag(String strTag) {
 		TagFacade tagFacade = new TagFacade();
 		Tag tag = new Tag();
@@ -693,7 +692,7 @@ public class DiarioSurBean implements Serializable {
 		}
 		return tag;
 	}
-	
+
 	public void mostrarTagsDeUsuario() {
 		List<Tag> listaTags = encontrarTagsDeUsuario();
 		String lista = "";
@@ -784,7 +783,10 @@ public class DiarioSurBean implements Serializable {
 			////////////////////////////////////////////////////////////////////////////////////////////// id!!!
 			////////////////////////////////////////////////////////////////////////////////////////////// (
 			////////////////////////////////////////////////////////////////////////////////////////////// getTagId())
-			// el comentario esta asi de raro porqe el shift + crt + f de eclipse lo pone
+			// el comentario esta asi de raro porqe el shift + crt + f de
+			////////////////////////////////////////////////////////////////////////////////////////////// eclipse
+			////////////////////////////////////////////////////////////////////////////////////////////// lo
+			////////////////////////////////////////////////////////////////////////////////////////////// pone
 			////////////////////////////////////////////////////////////////////////////////////////////// asi..xD
 			List<Tag> lista2 = null;// tf.encontrarTagPorNombre(lista.get(i).getTagId().getNombre());
 			tagsEventoTemp.add(lista2.get(0));
@@ -806,29 +808,26 @@ public class DiarioSurBean implements Serializable {
 	/*
 	 * TagusuarioFacade
 	 */
-	
-	
-	
+
 	/*
 	 * TageventoFacade
 	 */
-	
-    public void adjuntarTagsEvento() {
-        TageventoFacade tagEventoFacade = new TageventoFacade();
-        String[] partes = tagsEvento.trim().toLowerCase().split(",");
-        Tag tagCreado;
-        Tagevento tagEv = new Tagevento();
 
-        for (int i = 0; i < partes.length; i++) {
-            tagCreado = crearTag(partes[i]);
+	public void adjuntarTagsEvento() {
+		TageventoFacade tagEventoFacade = new TageventoFacade();
+		String[] partes = tagsEvento.trim().toLowerCase().split(",");
+		Tag tagCreado;
+		Tagevento tagEv = new Tagevento();
 
-            tagEv.setEventoId(evento.getId());
-            tagEv.setTagId(tagCreado.getId());
+		for (int i = 0; i < partes.length; i++) {
+			tagCreado = crearTag(partes[i]);
 
-            tagEventoFacade.crearTagevento(tagEv);
-        }
-    }
-	
+			tagEv.setEventoId(evento.getId());
+			tagEv.setTagId(tagCreado.getId());
+
+			tagEventoFacade.crearTagevento(tagEv);
+		}
+	}
 
 	// public List<Tag> encontrarTagsDeUsuario() {
 	// for(Tagusuario tu :
@@ -893,11 +892,11 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	/*
-	 * public List<Fileev> encontrarArchivoPorURL(String url) { FileevFacade fef =
-	 * new FileevFacade(); return fef.encontrarArchivoPorID(url); }
+	 * public List<Fileev> encontrarArchivoPorURL(String url) { FileevFacade fef
+	 * = new FileevFacade(); return fef.encontrarArchivoPorID(url); }
 	 * 
-	 * public List<Fileev> encontrarArchivoPorID(String id) { FileevFacade fef = new
-	 * FileevFacade(); return fef.encontrarArchivoPorID(id); }
+	 * public List<Fileev> encontrarArchivoPorID(String id) { FileevFacade fef =
+	 * new FileevFacade(); return fef.encontrarArchivoPorID(id); }
 	 */
 
 	public List<Notificacion> mostrarNotificacionesDeUsuario() {
