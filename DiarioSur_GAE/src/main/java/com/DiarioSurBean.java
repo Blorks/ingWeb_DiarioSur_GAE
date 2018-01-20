@@ -926,4 +926,37 @@ public class DiarioSurBean implements Serializable {
 		return s;
 	}
 
+	public void editarEvento() {
+		EventoFacade ef = new EventoFacade();
+		DateevFacade def = new DateevFacade();
+		TagFacade tf = new TagFacade();
+		List<Tag> listaTags = encontrarTagsDeEvento();
+		
+		//Edicion de la Fecha
+		Integer idFechaTemp = evento.getDateevId();
+		
+		evento.setDateevId(null);
+		ef.editarEvento(evento);
+		
+		def.eliminarDateevPorID(idFechaTemp);
+		
+		adjuntarFecha();
+		
+		//Edicion del Evento
+		ef.editarEvento(evento);
+		
+		//Edicion de Tags
+		List<Tag> listaTemp;
+		for(int i = 0; i < listaTags.size(); i++)
+		{
+			listaTemp = tf.encontrarTagPorNombre(listaTags.get(i).getNombre());
+			if(!listaTemp.isEmpty())
+				eliminarTagEvento(listaTemp.get(0));
+		}
+		
+		adjuntarTagsEvento();
+		
+		//creo notificacion
+		crearNotificacion("Has editado el evento con exito!", usuario);
+	}
 }
