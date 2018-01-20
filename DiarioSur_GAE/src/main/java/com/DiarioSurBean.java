@@ -56,18 +56,17 @@ public class DiarioSurBean implements Serializable {
 	private String puntuacion = "";
 
 	private List<Evento> eventosConFiltros = new ArrayList<>();
-	
-//	
-//	@PostConstruct
-//	public void init() {
-//		UsuarioFacade uf = new UsuarioFacade();
-//		
-//		List<Usuario> lista = uf.encontrarUsuarioPorEmail("blorkszb@gmail.com");
-//		
-//		System.out.println(lista.size());
-//	}
-//	
-	
+
+	//
+	// @PostConstruct
+	// public void init() {
+	// UsuarioFacade uf = new UsuarioFacade();
+	//
+	// List<Usuario> lista = uf.encontrarUsuarioPorEmail("blorkszb@gmail.com");
+	//
+	// System.out.println(lista.size());
+	// }
+	//
 
 	/*
 	 * Go to
@@ -275,7 +274,7 @@ public class DiarioSurBean implements Serializable {
 			NotificacionFacade notificacionFacade = new NotificacionFacade();
 
 			// Adjunto el usuario creador
-			
+
 			List<Usuario> listaUsuario = usuarioFacade.encontrarUsuarioPorEmail(usuario.getEmail());
 			evento.setUsuarioId(listaUsuario.get(0).getId());
 
@@ -312,7 +311,7 @@ public class DiarioSurBean implements Serializable {
 
 			return "index";
 		} else {
-			//editarEvento();
+			// editarEvento();
 			edit = 0;
 
 			return "todoloseventos.xhtml";
@@ -325,7 +324,7 @@ public class DiarioSurBean implements Serializable {
 
 	public List<Dateev> encontrarFechaPorID(String id) {
 		DateevFacade def = new DateevFacade();
-		return def.encontrarFechaPorID(id);
+		return def.encontrarFechaPorID(Integer.parseInt(id));
 	}
 
 	public List<Dateev> mostrarTodasLasFechasUnicas() {
@@ -445,7 +444,7 @@ public class DiarioSurBean implements Serializable {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			
+
 			fecha.setDesde(null);
 			fecha.setHasta(null);
 			fecha.setListadias(null);
@@ -461,7 +460,7 @@ public class DiarioSurBean implements Serializable {
 			} catch (ParseException e) {
 				e.printStackTrace();
 			}
-			
+
 			fecha.setDia(null);
 			fecha.setListadias(null);
 
@@ -483,27 +482,27 @@ public class DiarioSurBean implements Serializable {
 	 * UsuarioFacade
 	 */
 	public void rrssLogin() {
-		
-			UsuarioFacade userFacade = new UsuarioFacade();
-			FacesContext facesContext = FacesContext.getCurrentInstance();
-			ExternalContext externalContext = facesContext.getExternalContext();
-			Map params = externalContext.getRequestParameterMap();
 
-			if (params.size() > 0) {
-				usuario = new Usuario();
+		UsuarioFacade userFacade = new UsuarioFacade();
+		FacesContext facesContext = FacesContext.getCurrentInstance();
+		ExternalContext externalContext = facesContext.getExternalContext();
+		Map params = externalContext.getRequestParameterMap();
+
+		if (params.size() > 0) {
+			usuario = new Usuario();
+			usuario.setEmail(params.get("email").toString());
+			usuario.setRol("");
+			usuarioFoto = params.get("picture").toString();
+
+			if (!logIn()) {
+				usuario.setNombre(params.get("first_name").toString());
+				usuario.setApellidos(params.get("last_name").toString());
 				usuario.setEmail(params.get("email").toString());
-				usuario.setRol("");
-				usuarioFoto = params.get("picture").toString();
-
-				if (!logIn()) {
-					usuario.setNombre(params.get("first_name").toString());
-					usuario.setApellidos(params.get("last_name").toString());
-					usuario.setEmail(params.get("email").toString());
-					usuario.setRol("Usuario");
-					nuevoUsuario(usuario);
-				}
+				usuario.setRol("Usuario");
+				nuevoUsuario(usuario);
 			}
-		
+		}
+
 	}
 
 	// METODOS REFERENTES A LOS FileEv
@@ -515,7 +514,7 @@ public class DiarioSurBean implements Serializable {
 		file.setUsuarioId(usuario.getId());
 
 		usuario.setFileev(file.getId()); // Al no existir el archivo file, la BD lo crea automaticamente
-		
+
 		cliente2.editarUsuario(usuario);
 	}
 
@@ -635,43 +634,10 @@ public class DiarioSurBean implements Serializable {
 		return ef.ordenarEventosPorPrecioDESC();
 	}
 
-	// public void actualizarPuntuacion(String punto, String evId) {
-	// PuntuacionFacade pf = new PuntuacionFacade();
-	// Evento ev = ef.encontrarEventoPorID(evId).get(0);
-	//
-	// List<Puntuacion> puntuaciones =
-	// pf.encontrarPuntuacionesDeEventoYUsuario(usuario.getId().toString(), evId);
-	//
-	// Puntuacion pt = new Puntuacion();
-	// if (puntuaciones.isEmpty()) {
-	// pt.setPuntuacion(Double.parseDouble(punto));
-	// pt.setEventoId(ev.getId());
-	// pt.setUsuarioId(usuario.getId());
-	// pf.crearPuntuacion(pt);
-	// } else {
-	// pt = puntuaciones.get(0);
-	// pt.setPuntuacion(Double.parseDouble(punto));
-	// // pf.
-	// }
-	// }
-	public double mostrarPuntuacionMedia(Evento ev) {
-		// PuntuacionFacade pf = new PuntuacionFacade();
-		// List<Puntuacion> puntuaciones =
-		// pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
-		// double puntuacionTotal = 0;
-		//
-		// for (int i = 0; i < puntuaciones.size(); i++) {
-		// puntuacionTotal += puntuaciones.get(i).getPuntuacion();
-		// }
-
-		return 5;// puntuacionTotal / puntuaciones.size();
-
-	}
-
 	/*
 	 * TagFacade
 	 */
-	
+
 	private Tag crearTag(String strTag) {
 		TagFacade tagFacade = new TagFacade();
 		Tag tag = new Tag();
@@ -690,7 +656,7 @@ public class DiarioSurBean implements Serializable {
 		}
 		return tag;
 	}
-	
+
 	public void mostrarTagsDeUsuario() {
 		List<Tag> listaTags = encontrarTagsDeUsuario();
 		String lista = "";
@@ -803,29 +769,26 @@ public class DiarioSurBean implements Serializable {
 	/*
 	 * TagusuarioFacade
 	 */
-	
-	
-	
+
 	/*
 	 * TageventoFacade
 	 */
-	
-    public void adjuntarTagsEvento() {
-        TageventoFacade tagEventoFacade = new TageventoFacade();
-        String[] partes = tagsEvento.trim().toLowerCase().split(",");
-        Tag tagCreado;
-        Tagevento tagEv = new Tagevento();
 
-        for (int i = 0; i < partes.length; i++) {
-            tagCreado = crearTag(partes[i]);
+	public void adjuntarTagsEvento() {
+		TageventoFacade tagEventoFacade = new TageventoFacade();
+		String[] partes = tagsEvento.trim().toLowerCase().split(",");
+		Tag tagCreado;
+		Tagevento tagEv = new Tagevento();
 
-            tagEv.setEventoId(evento.getId());
-            tagEv.setTagId(tagCreado.getId());
+		for (int i = 0; i < partes.length; i++) {
+			tagCreado = crearTag(partes[i]);
 
-            tagEventoFacade.crearTagevento(tagEv);
-        }
-    }
-	
+			tagEv.setEventoId(evento.getId());
+			tagEv.setTagId(tagCreado.getId());
+
+			tagEventoFacade.crearTagevento(tagEv);
+		}
+	}
 
 	// public List<Tag> encontrarTagsDeUsuario() {
 	// for(Tagusuario tu :
@@ -931,32 +894,68 @@ public class DiarioSurBean implements Serializable {
 		DateevFacade def = new DateevFacade();
 		TagFacade tf = new TagFacade();
 		List<Tag> listaTags = encontrarTagsDeEvento();
-		
-		//Edicion de la Fecha
+
+		// Edicion de la Fecha
 		Integer idFechaTemp = evento.getDateevId();
-		
+
 		evento.setDateevId(null);
 		ef.editarEvento(evento);
-		
+
 		def.eliminarDateevPorID(idFechaTemp);
-		
+
 		adjuntarFecha();
-		
-		//Edicion del Evento
+
+		// Edicion del Evento
 		ef.editarEvento(evento);
-		
-		//Edicion de Tags
+
+		// Edicion de Tags
 		List<Tag> listaTemp;
-		for(int i = 0; i < listaTags.size(); i++)
-		{
+		for (int i = 0; i < listaTags.size(); i++) {
 			listaTemp = tf.encontrarTagPorNombre(listaTags.get(i).getNombre());
-			if(!listaTemp.isEmpty())
-				eliminarTagEvento(listaTemp.get(0));
+			 if(!listaTemp.isEmpty())
+			 eliminarTagEvento(listaTemp.get(0));
 		}
-		
+
 		adjuntarTagsEvento();
-		
-		//creo notificacion
-		crearNotificacion("Has editado el evento con exito!", usuario);
+
+		// creo notificacion
+		 crearNotificacion("Has editado el evento con exito!", usuario);
 	}
+
+	public void actualizarPuntuacion(String punto, String evId) {
+		PuntuacionFacade pf = new PuntuacionFacade();
+
+		List<Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEventoYUsuario(usuario.getId().toString(), evId);
+		Puntuacion pt = new Puntuacion();
+
+		if (puntuaciones.isEmpty()) {
+			pt.setPuntuacion(Double.parseDouble(punto));
+			pt.setEventoId(Integer.parseInt(evId));
+			pt.setUsuarioId(usuario.getId());
+			pf.crearPuntuacion(pt);
+
+		} else {
+			pt = puntuaciones.get(0);
+			pt.setPuntuacion(Double.parseDouble(punto));
+			pf.editarPuntuacion(pt);
+
+		}
+	}
+
+	public double mostrarPuntuacionMedia(Evento ev) {
+		PuntuacionFacade pf = new PuntuacionFacade();
+
+		List<Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
+		double puntuacionTotal = 0;
+
+		for (int i = 0; i < puntuaciones.size(); i++) {
+			puntuacionTotal = puntuacionTotal + puntuaciones.get(i).getPuntuacion();
+		}
+
+		puntuacionTotal = puntuacionTotal / puntuaciones.size();
+
+		return puntuacionTotal;
+
+	}
+
 }
