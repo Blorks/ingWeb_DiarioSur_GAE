@@ -156,7 +156,7 @@ public class UsuarioFacade implements Serializable{
 			 datastore.put(conexion, entidad);
 
 		}catch (Exception e) {
-			System.out.println("Usuario" + user.getNombre() + " " + user.getApellidos() + " no encontrado.");
+			System.out.println("Usuario " + user.getNombre() + " " + user.getApellidos() + " no encontrado. UsuarioFacade.editarUsuario");
 		}
 		
 		conexion.commit();
@@ -174,15 +174,16 @@ public class UsuarioFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
-			lista = crearEntidades(listaEntidades);
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+
+			if(!listaEntidades.isEmpty()){
+				lista = crearEntidades(listaEntidades.subList(0, 1));				
+			}
 		}catch (Exception e) {
-			System.out.println("Usuario " + id + " no encontrado");
+			System.out.println("Usuario " + id + " no encontrado. UsuarioFacade.encontrarUsuarioPorID");
 		}finally {
 			conexion.commit();
 		}
-		
-		conexion.commit();
 		
 		return lista;
 	}
@@ -198,14 +199,17 @@ public class UsuarioFacade implements Serializable{
 		q.setFilter(filtro);
 		
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
-			lista = crearEntidades(listaEntidades);
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+
+			if(!listaEntidades.isEmpty()){
+				lista = crearEntidades(listaEntidades.subList(0, 1));				
+			}
+
 		}catch (Exception e) {
-			System.out.println("Usuario " + email + " no encontrado");
+			System.out.println("Usuario " + email + " no encontrado. (UsuarioFacade.encontrarUsuarioPorEmail())");
 		}finally {
 			conexion.commit();
 		}
-
 		return lista;
 	}
 	
@@ -225,7 +229,7 @@ public class UsuarioFacade implements Serializable{
 			
 			datastore.delete(conexion, key);
 		}catch (Exception e) {
-			System.out.println("Usuario " + id + " no encontrado.");
+			System.out.println("Usuario " + id + " no encontrado. (UsuarioFacade.eliminarUsuarioPorID");
 		}
 		
 		conexion.commit();
