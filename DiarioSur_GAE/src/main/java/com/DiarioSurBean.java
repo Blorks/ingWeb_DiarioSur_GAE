@@ -486,18 +486,17 @@ public class DiarioSurBean implements Serializable {
 	 * UsuarioFacade
 	 */
 	public void rrssLogin() {
-		try {
+		
+			UsuarioFacade userFacade = new UsuarioFacade();
 			FacesContext facesContext = FacesContext.getCurrentInstance();
 			ExternalContext externalContext = facesContext.getExternalContext();
 			Map params = externalContext.getRequestParameterMap();
 
 			if (params.size() > 0) {
 				usuario = new Usuario();
-				usuario.setRol("");
-
-				usuarioFoto = params.get("picture").toString();
-
 				usuario.setEmail(params.get("email").toString());
+				usuario.setRol("");
+				usuarioFoto = params.get("picture").toString();
 
 				if (!logIn()) {
 					usuario.setNombre(params.get("first_name").toString());
@@ -507,9 +506,7 @@ public class DiarioSurBean implements Serializable {
 					nuevoUsuario(usuario);
 				}
 			}
-		} catch (Exception e) {
-			System.out.println("Error en RRSS: " + e.getMessage());
-		}
+		
 	}
 
 	// METODOS REFERENTES A LOS FileEv
@@ -534,7 +531,7 @@ public class DiarioSurBean implements Serializable {
 
 			logIn();
 			if (!usuarioFoto.isEmpty()) {
-				//adjuntarFotoDePerfil(usuarioFoto);
+				adjuntarFotoDePerfil(usuarioFoto);
 			}
 		}
 	}
@@ -546,7 +543,7 @@ public class DiarioSurBean implements Serializable {
 
 		if (!usuarios.isEmpty()) {
 			usuario = usuarios.get(0);
-			if (usuario.getFileev() != null) {
+			if (usuario.getFileev() != -1) {
 				List<Fileev> lista = ff.encontrarArchivoPorID(usuario.getFileev());
 				usuarioFoto = lista.get(0).getUrl();
 			}

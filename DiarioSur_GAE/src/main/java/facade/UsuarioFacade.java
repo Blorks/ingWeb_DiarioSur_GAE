@@ -114,7 +114,7 @@ public class UsuarioFacade implements Serializable{
 		entidad.setProperty("nombre", user.getNombre());
 		entidad.setProperty("apellidos", user.getApellidos());
 		entidad.setProperty("email", user.getEmail());
-		entidad.setProperty("hashpassword", user.getHashpassword() != null ? user.getHashpassword() : hash);
+		entidad.setProperty("hashpassword", "vacio");
 		entidad.setProperty("rol", user.getRol());
 		entidad.setProperty("fileevId", user.getFileev() != null ? user.getFileev() : new Integer(-1));
 		entidad.setProperty("tagUsuarioList", user.getTagusuarioList() != null ? user.getTagusuarioList() : listaNumero);

@@ -130,11 +130,11 @@ public class FileevFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			System.out.println("Fileev " + id + " no encontrado");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
-		
-		conexion.commit();
+
 		return lista;
 	}
 	
