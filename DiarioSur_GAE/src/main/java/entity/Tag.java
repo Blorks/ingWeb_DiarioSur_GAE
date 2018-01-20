@@ -7,8 +7,8 @@ public class Tag implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer id;
     private String nombre;
-    private List<Tagevento> tageventoList;
-    private List<Tagusuario> tagusuarioList;
+    private List<Integer> tageventoList;
+    private List<Integer> tagusuarioList;
 
     public Tag() {
     }
@@ -33,19 +33,19 @@ public class Tag implements Serializable{
         this.nombre = nombre;
     }
 
-    public List<Tagevento> getTageventoList() {
+    public List<Integer> getTageventoList() {
         return tageventoList;
     }
 
-    public void setTageventoList(List<Tagevento> tageventoList) {
+    public void setTageventoList(List<Integer> tageventoList) {
         this.tageventoList = tageventoList;
     }
 
-    public List<Tagusuario> getTagusuarioList() {
+    public List<Integer> getTagusuarioList() {
         return tagusuarioList;
     }
 
-    public void setTagusuarioList(List<Tagusuario> tagusuarioList) {
+    public void setTagusuarioList(List<Integer> tagusuarioList) {
         this.tagusuarioList = tagusuarioList;
     }
 

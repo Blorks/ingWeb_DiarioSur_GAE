@@ -16,8 +16,8 @@ public class Evento implements Serializable{
     private Integer estarevisado;
     private List<Integer> tageventoList;
     private List<Integer> puntuacionList;
-    private int dateevId;
-    private int usuarioId;
+    private Integer dateevId;
+    private Integer usuarioId;
 
     public Evento() {
     }
@@ -107,19 +107,19 @@ public class Evento implements Serializable{
         this.tageventoList = tageventoList;
     }
 
-    public int getDateevId() {
+    public Integer getDateevId() {
         return dateevId;
     }
 
-    public void setDateevId(int dateevId) {
+    public void setDateevId(Integer dateevId) {
         this.dateevId = dateevId;
     }
 
-    public int getUsuarioId() {
+    public Integer getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(int usuarioId) {
+    public void setUsuarioId(Integer usuarioId) {
         this.usuarioId = usuarioId;
     }
 

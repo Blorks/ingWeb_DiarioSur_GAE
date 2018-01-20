@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
@@ -25,29 +26,27 @@ public class TagFacade implements Serializable{
 	
 	public TagFacade(){}
 	
-	private String ultimoIdInsertado(){
+	public Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Tag").addSort("ID", Query.SortDirection.DESCENDING);
-		String id;
+		Integer id;
 		
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-				
-		if(listaEntidades.isEmpty()) {
-			id = "0";
-		}else {
-			id = listaEntidades.get(0).getProperty("ID").toString();
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			id = Integer.parseInt(listaEntidades.get(0).getProperty("ID").toString());
+		}catch (Exception e) {
+			id = 0;
 		}
-				
+		
 		return id;
 	}
 	
-	private String incrementarID(String id) {
-		int num = Integer.parseInt(id);
-		num++;
-		return String.valueOf(num);
+	private Integer incrementarID(Integer id) {
+		return id++;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private List<Tag> crearEntidades(List<Entity> listaEntidades) {
 		List<Tag> lista = new ArrayList<>();
 		
@@ -59,15 +58,14 @@ public class TagFacade implements Serializable{
 			
 			val = e.getProperty("nombre");
 			tag.setNombre(val.toString());
-			
 
+			val = e.getProperty("tagUsuarioList");
+			List<Integer> listaTagusuario = (List<Integer>) val;
+			tag.setTagusuarioList(listaTagusuario);
 			
-			//No se como recoger los list
-//			val = e.getProperty("tagUsuarioList");
-//			tag.setTagusuarioList(-.-);
-//			
-//			val = e.getProperty("tagEventoList");
-//			tag.setTageventoList(-.-);
+			val = e.getProperty("tagEventoList");
+			List<Integer> listaTagevento = (List<Integer>) val;
+			tag.setTageventoList(listaTagevento);
 
 			lista.add(tag);
 		}
@@ -83,7 +81,7 @@ public class TagFacade implements Serializable{
 		entidad = new Entity("Tag");
 		key = entidad.getKey();
 		
-		String ultimoID = ultimoIdInsertado();
+		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
@@ -107,8 +105,13 @@ public class TagFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("nombre", FilterOperator.EQUAL, nombre);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			conexion.commit();
+			return lista;
+		}
 		
 		return lista;
 	}

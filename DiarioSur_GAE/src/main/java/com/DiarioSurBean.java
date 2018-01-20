@@ -1,5 +1,6 @@
 package com;
 
+import javax.annotation.PostConstruct;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
@@ -54,7 +55,19 @@ public class DiarioSurBean implements Serializable {
 	private String puntuacion_evId = "";
 	private String puntuacion = "";
 
-	private List<Evento> eventosConFiltros;
+	private List<Evento> eventosConFiltros = new ArrayList<>();
+	
+//	
+//	@PostConstruct
+//	public void init() {
+//		UsuarioFacade uf = new UsuarioFacade();
+//		
+//		List<Usuario> lista = uf.encontrarUsuarioPorEmail("blorkszb@gmail.com");
+//		
+//		System.out.println(lista.size());
+//	}
+//	
+	
 
 	/*
 	 * Go to
@@ -262,9 +275,12 @@ public class DiarioSurBean implements Serializable {
 		if (edit == 0) {
 			EventoFacade eventoFacade = new EventoFacade();
 			DateevFacade dateevFacade = new DateevFacade();
+			UsuarioFacade usuarioFacade = new UsuarioFacade();
 
 			// Adjunto el usuario creador
-			evento.setUsuarioId(usuario.getId());
+			
+			List<Usuario> listaUsuario = usuarioFacade.encontrarUsuarioPorEmail(usuario.getEmail());
+			evento.setUsuarioId(listaUsuario.get(0).getId());
 
 			// Adjunto la fecha del evento
 			adjuntarFecha();
@@ -280,7 +296,7 @@ public class DiarioSurBean implements Serializable {
 			evento.setId(eventoFacade.ultimoIdInsertado());
 
 			// Adjunto tags al evento
-			//adjuntarTagsEvento();
+			adjuntarTagsEvento();
 
 			fecha.setEventoId(eventoFacade.ultimoIdInsertado());
 			//clienteFecha.edit_XML(fecha, fecha.getId().toString());
@@ -505,6 +521,7 @@ public class DiarioSurBean implements Serializable {
 		file.setUsuarioId(usuario.getId());
 
 		usuario.setFileev(file.getId()); // Al no existir el archivo file, la BD lo crea automaticamente
+		
 		cliente2.editarUsuario(usuario);
 	}
 
@@ -517,7 +534,7 @@ public class DiarioSurBean implements Serializable {
 
 			logIn();
 			if (!usuarioFoto.isEmpty()) {
-				adjuntarFotoDePerfil(usuarioFoto);
+				//adjuntarFotoDePerfil(usuarioFoto);
 			}
 		}
 	}
@@ -658,8 +675,28 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	/*
-	 * TagFacade (Alvaro)
+	 * TagFacade
 	 */
+	
+	private Tag crearTag(String strTag) {
+		TagFacade tagFacade = new TagFacade();
+		Tag tag = new Tag();
+		String tagSinEspacio = strTag.trim();
+
+		List<Tag> lista = tagFacade.encontrarTagPorNombre(tagSinEspacio);
+
+		if (lista.isEmpty()) {
+			tag.setNombre(tagSinEspacio);
+			tagFacade.crearTag(tag);
+
+			lista = tagFacade.encontrarTagPorNombre(tagSinEspacio);
+			tag = lista.get(0);
+		} else {
+			tag = lista.get(0);
+		}
+		return tag;
+	}
+	
 	public void mostrarTagsDeUsuario() {
 		List<Tag> listaTags = encontrarTagsDeUsuario();
 		String lista = "";
@@ -729,7 +766,7 @@ public class DiarioSurBean implements Serializable {
 
 		List<Tag> tagsEventoTemp = new ArrayList<>();
 
-		List<Tagevento> lista = tef.encontrarTageventoPorEvento(evento.getId().toString());
+		List<Tagevento> lista = tef.encontrarTageventoPorEvento(evento.getId());
 
 		for (int i = 0; i < lista.size(); i++) {
 			////////////////////////////////////////////////////////////////////////////////////////////// Otro
@@ -770,8 +807,31 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	/*
-	 * TagusuarioFacade (Alvaro)
+	 * TagusuarioFacade
 	 */
+	
+	
+	
+	/*
+	 * TageventoFacade
+	 */
+	
+    public void adjuntarTagsEvento() {
+        TageventoFacade tagEventoFacade = new TageventoFacade();
+        String[] partes = tagsEvento.trim().toLowerCase().split(",");
+        Tag tagCreado;
+        Tagevento tagEv = new Tagevento();
+
+        for (int i = 0; i < partes.length; i++) {
+            tagCreado = crearTag(partes[i]);
+
+            tagEv.setEventoId(evento.getId());
+            tagEv.setTagId(tagCreado.getId());
+
+            tagEventoFacade.crearTagevento(tagEv);
+        }
+    }
+	
 
 	// public List<Tag> encontrarTagsDeUsuario() {
 	// for(Tagusuario tu :

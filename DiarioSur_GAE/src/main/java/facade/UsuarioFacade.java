@@ -43,7 +43,8 @@ public class UsuarioFacade implements Serializable{
 	}
 	
 	private Integer incrementarID(Integer id) {
-		return id++;
+		id = id + 1;
+		return id;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -54,7 +55,8 @@ public class UsuarioFacade implements Serializable{
 			Usuario user = new Usuario();
 			
 			Object val = e.getProperty("ID");
-			user.setId(Integer.parseInt(val.toString()));
+			Long temp = Long.parseLong(val.toString());
+			user.setId(Integer.parseInt(temp.toString()));
 			
 			val = e.getProperty("nombre");
 			user.setNombre(val.toString());
@@ -66,13 +68,14 @@ public class UsuarioFacade implements Serializable{
 			user.setEmail(val.toString());
 			
 			val = e.getProperty("hashpassword");
-			user.setHashpassword(val.toString());
+			user.setHashpassword(val.toString());;
 			
 			val = e.getProperty("rol");
 			user.setRol(val.toString());
 			
 			val = e.getProperty("fileevId");
-			user.setFileev(Integer.parseInt(val.toString()));
+			temp = Long.parseLong(val.toString());
+			user.setFileev(Integer.parseInt(temp.toString()));
 			
 			val = e.getProperty("tagUsuarioList");
 			List<Integer> listaTagusuario = (List<Integer>) val;
@@ -98,6 +101,9 @@ public class UsuarioFacade implements Serializable{
 	public void crearUsuario(Usuario user) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Usuario");
+		List<Integer> listaNumero = new ArrayList<>();
+		listaNumero.add(-1);
+		String hash = "";
 
 		Integer ultimoID;
 		
@@ -108,12 +114,12 @@ public class UsuarioFacade implements Serializable{
 		entidad.setProperty("nombre", user.getNombre());
 		entidad.setProperty("apellidos", user.getApellidos());
 		entidad.setProperty("email", user.getEmail());
-		entidad.setProperty("hashPassword", user.getHashpassword());
+		entidad.setProperty("hashpassword", user.getHashpassword() != null ? user.getHashpassword() : hash);
 		entidad.setProperty("rol", user.getRol());
-		entidad.setProperty("fileevId", user.getFileev());
-		entidad.setProperty("tagUsuarioList", user.getTagusuarioList());
-		entidad.setProperty("notificacionList", user.getNotificacionList());
-		entidad.setProperty("eventoListt", user.getEventoList());
+		entidad.setProperty("fileevId", user.getFileev() != null ? user.getFileev() : new Integer(-1));
+		entidad.setProperty("tagUsuarioList", user.getTagusuarioList() != null ? user.getTagusuarioList() : listaNumero);
+		entidad.setProperty("notificacionList", user.getNotificacionList() != null ? user.getTagusuarioList() : listaNumero);
+		entidad.setProperty("eventoListt", user.getEventoList() != null ? user.getTagusuarioList() : listaNumero);
 		
 		conexion = datastore.beginTransaction();
 		
@@ -171,8 +177,9 @@ public class UsuarioFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			System.out.println("Usuario " + id + " no encontrado");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
 		
 		conexion.commit();
@@ -194,12 +201,11 @@ public class UsuarioFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			System.out.println("Usuario " + email + " no encontrado");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
-		
-		conexion.commit();
-		
+
 		return lista;
 	}
 	
