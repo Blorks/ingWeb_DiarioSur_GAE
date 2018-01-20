@@ -122,7 +122,7 @@ public class TageventoFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("eventoId", FilterOperator.EQUAL, idE);
 		FilterPredicate filtro2 = new FilterPredicate("tagId", FilterOperator.EQUAL, idT);
 		Filter filtro3 = CompositeFilterOperator.and(filtro, filtro2);
-		
+
 		q.setFilter(filtro3);
 
 		List<Entity> listaEntidades = datastore.prepare(q).asList(null);

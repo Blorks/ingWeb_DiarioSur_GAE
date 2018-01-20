@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
@@ -65,11 +66,9 @@ public class FileevFacade implements Serializable{
 			
 			val = e.getProperty("tipo");
 			fe.setTipo(val.toString());
-
-			//No se como recoger los list
-//			val = e.getProperty("archivosList");
-//			fe.setArchivosList(-.-);
-
+			
+			val = e.getProperty("usuarioId");
+			fe.setUsuarioId(Integer.parseInt(val.toString()));
 				
 			lista.add(fe);
 		}
@@ -93,7 +92,7 @@ public class FileevFacade implements Serializable{
 		entidad.setProperty("nombre", fe.getNombre());
 		entidad.setProperty("url", fe.getUrl());
 		entidad.setProperty("tipo", fe.getTipo());
-		entidad.setProperty("puntuacionList", fe.getArchivosList());
+		entidad.setProperty("usuasrioId", fe.getUsuarioId());
 		
 		conexion = datastore.beginTransaction();
 		
@@ -117,20 +116,25 @@ public class FileevFacade implements Serializable{
 		return lista;
 	}
 	
-	public List<Fileev> encontrarArchivoPorID(String id) {
+	public List<Fileev> encontrarArchivoPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Fileev> lista = new ArrayList<>();
-		int idTemp = Integer.parseInt(id);
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Fileev").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			conexion.commit();
+			return lista;
+		}
 		
+		conexion.commit();
 		return lista;
 	}
 	

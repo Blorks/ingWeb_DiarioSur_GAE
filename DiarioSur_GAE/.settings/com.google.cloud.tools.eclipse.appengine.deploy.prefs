@@ -5,4 +5,4 @@ project.bucket=
 project.id=diariosur-b4
 project.previousVersion.stop=true
 project.promote=true
-project.version=1
+project.version=2
