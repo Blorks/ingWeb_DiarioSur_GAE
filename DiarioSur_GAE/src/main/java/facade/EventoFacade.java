@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
@@ -25,29 +26,27 @@ public class EventoFacade implements Serializable{
 	
 	public EventoFacade(){}
 	
-	private String ultimoIdInsertado(){
+	private Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
-		String id;
+		Integer id;
 		
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-				
-		if(listaEntidades.isEmpty()) {
-			id = "0";
-		}else {
-			id = listaEntidades.get(0).getProperty("ID").toString();
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			id = Integer.parseInt(listaEntidades.get(0).getProperty("ID").toString());
+		}catch (Exception e) {
+			id = 0;
 		}
-				
+		
 		return id;
 	}
 	
-	private String incrementarID(String id) {
-		int num = Integer.parseInt(id);
-		num++;
-		return String.valueOf(num);
+	private Integer incrementarID(Integer id) {
+		return id++;
 	}
 	
+	@SuppressWarnings("unchecked")
 	private List<Evento> crearEntidades(List<Entity> listaEntidades) {
 		List<Evento> lista = new ArrayList<>();
 		
@@ -81,24 +80,20 @@ public class EventoFacade implements Serializable{
 			val = e.getProperty("estaRevisado");
 			ev.setEstarevisado(Integer.parseInt(val.toString()));
 			
+			val = e.getProperty("tagEventoList");
+			List<Integer> listaTagevento = (List<Integer>) val;
+			ev.setTageventoList(listaTagevento);
 			
-			//No se como recoger los list
-//			val = e.getProperty("calendarioList");
-//			ev.setCalendarioList(-.-);
-//			
-//			val = e.getProperty("tagEventoList");
-//			ev.setTageventoList(-.-);
-//			
-//			val = e.getProperty("archivosList");
-//			ev.setArchivosList(-.-);
+			val = e.getProperty("puntuacionList");
+			List<Integer> listaPuntuacion = (List<Integer>) val;
+			ev.setPuntuacionList(listaPuntuacion);
 			
 			val = e.getProperty("dateevID");
 			ev.setDateevId(Integer.parseInt(val.toString()));
 			
 			val = e.getProperty("usuarioID");
 			ev.setUsuarioId(Integer.parseInt(val.toString()));
-			
-			
+
 			lista.add(ev);
 		}
 		
@@ -115,7 +110,7 @@ public class EventoFacade implements Serializable{
 		entidad = new Entity("Evento");
 		key = entidad.getKey();
 		
-		String ultimoID = ultimoIdInsertado();
+		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
@@ -127,9 +122,8 @@ public class EventoFacade implements Serializable{
 		entidad.setProperty("latitud", ev.getLatitud());
 		entidad.setProperty("longitud", ev.getLongitud());
 		entidad.setProperty("estaRevisado", ev.getEstarevisado());
-		entidad.setProperty("calendarioList", ev.getCalendarioList());
 		entidad.setProperty("tagEventoList", ev.getTageventoList());
-		entidad.setProperty("archivosList", ev.getArchivosList());
+		entidad.setProperty("puntuacionList", ev.getPuntuacionList());
 		entidad.setProperty("dateevID", ev.getDateevId());
 		entidad.setProperty("usuarioID", ev.getUsuarioId());
 		
@@ -166,9 +160,16 @@ public class EventoFacade implements Serializable{
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.ASCENDING);
 		FilterPredicate filtro = new FilterPredicate("estaRevisado", FilterOperator.EQUAL, condicion);
 		q.setFilter(filtro);
-
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
+		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			conexion.commit();
+			return lista;
+		}
+		
+		conexion.commit();
 		
 		return lista;
 	}

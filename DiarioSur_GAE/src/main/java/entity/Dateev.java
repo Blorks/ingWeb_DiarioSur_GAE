@@ -15,8 +15,6 @@ public class Dateev implements Serializable{
     private Integer variosdias;
     private String listadias;
     private int eventoId;
-    private Integer eventoId2;
-    private List<Evento> eventoList;
 
     public Dateev() {
     }
@@ -102,21 +100,6 @@ public class Dateev implements Serializable{
         this.eventoId = eventoId;
     }
 
-    public Integer getEventoId2() {
-        return eventoId2;
-    }
-
-    public void setEventoId2(Integer eventoId2) {
-        this.eventoId2 = eventoId2;
-    }
-
-    public List<Evento> getEventoList() {
-        return eventoList;
-    }
-
-    public void setEventoList(List<Evento> eventoList) {
-        this.eventoList = eventoList;
-    }
 
     @Override
     public int hashCode() {

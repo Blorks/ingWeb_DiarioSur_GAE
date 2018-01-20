@@ -14,9 +14,8 @@ public class Evento implements Serializable{
     private Double latitud;
     private Double longitud;
     private Integer estarevisado;
-    private List<Calendario> calendarioList;
-    private List<Tagevento> tageventoList;
-    private List<Puntuacion> archivosList;
+    private List<Integer> tageventoList;
+    private List<Integer> puntuacionList;
     private int dateevId;
     private int usuarioId;
 
@@ -99,28 +98,13 @@ public class Evento implements Serializable{
         this.estarevisado = estarevisado;
     }
 
-    public List<Calendario> getCalendarioList() {
-        return calendarioList;
-    }
 
-    public void setCalendarioList(List<Calendario> calendarioList) {
-        this.calendarioList = calendarioList;
-    }
-
-    public List<Tagevento> getTageventoList() {
+    public List<Integer> getTageventoList() {
         return tageventoList;
     }
 
-    public void setTageventoList(List<Tagevento> tageventoList) {
+    public void setTageventoList(List<Integer> tageventoList) {
         this.tageventoList = tageventoList;
-    }
-
-    public List<Puntuacion> getArchivosList() {
-        return archivosList;
-    }
-
-    public void setArchivosList(List<Puntuacion> archivosList) {
-        this.archivosList = archivosList;
     }
 
     public int getDateevId() {
@@ -163,4 +147,12 @@ public class Evento implements Serializable{
     public String toString() {
         return "entity.Evento[ id=" + id + " ]";
     }
+
+	public List<Integer> getPuntuacionList() {
+		return puntuacionList;
+	}
+
+	public void setPuntuacionList(List<Integer> puntuacionList) {
+		this.puntuacionList = puntuacionList;
+	}
 }

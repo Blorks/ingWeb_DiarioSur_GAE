@@ -5,11 +5,16 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import com.google.apphosting.api.ApiProxy.LogRecord.Level;
+
 import java.io.Serializable;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import facade.*;
 import entity.*;
@@ -206,37 +211,21 @@ public class DiarioSurBean implements Serializable {
 		return eventos;
 	}
 
-	public int ultimoIDEventoIncrementado() {
-		return 1;// Integer.parseInt(ef.ultimoIdInsertado()) + 1;
-	}
-
 	/*
-	 * EventoFacade
+	 * Evento
 	 */
 	private Evento encontrarEventoID(String id) {
 		EventoFacade ef = new EventoFacade();
 		return ef.encontrarEventoPorID(id).get(0);
 	}
 
-	public List<Evento> mostrarTodosLosEventosRevisados() {
+	public List<Evento> mostrarTodosLosEventosRevisados(){
 		List<Evento> le = new ArrayList<>();
-		Evento e = new Evento(),e2 = new Evento(),e3 = new Evento();
-		e.setId(1);
-		e.setTitulo("asd1");
-		e.setDescripcion("asda1");
-		le.add(e);
+		EventoFacade ef = new EventoFacade();
 		
-		e2.setId(2);
-		e2.setTitulo("asd2");
-		e2.setDescripcion("asda2");
-		le.add(e2);
+		le = ef.encontrarEventosRevisados();
 		
-		e3.setId(3);
-		e3.setTitulo("asd3");
-		e3.setDescripcion("asda3");
-		le.add(e3);
-		
-		return le;// ef.encontrarEventosRevisados();
+		return le;
 	}
 
 	public List<Evento> filtrarEventosDeUsuario() {
@@ -259,8 +248,60 @@ public class DiarioSurBean implements Serializable {
 		return ef.encontrarEventosPorFecha(fecha.getId().toString());
 	}
 
+	public String nuevoEvento() {
+        if (edit == 0) {
+            EventoFacade eventoFacade = new EventoFacade();
+            DateevFacade dateevFacade = new DateevFacade();
+
+            //Adjunto el usuario creador
+            evento.setUsuarioId(usuario.getId());
+
+            //Adjunto la fecha del evento
+            adjuntarFecha();
+
+            //Adjunto si está revisado o no
+            if (esPeriodista()) {
+                evento.setEstarevisado(1);
+            } else {
+                evento.setEstarevisado(0);
+            }
+
+            cliente.create_XML(evento);
+            evento.setId(actualizarIDEvento());
+
+            //Adjunto tags al evento
+            adjuntarTagsEvento();
+
+            fecha.setEventoId(actualizarIDEvento());
+            clienteFecha.edit_XML(fecha, fecha.getId().toString());
+
+            //Creo notificacion para usuario
+            if(esPeriodista()){
+                crearNotificacion("Has creado el evento con exito!", usuario);
+            }else{
+                crearNotificacion("Tu evento está a la espera de ser validado", usuario);
+            }
+            
+
+            // reset variables
+            evento = null;
+            evento = new Evento();
+            tagsEvento = "";
+
+            return "index";
+        } else {
+            editarEvento();
+            edit = 0;
+
+            return "todoloseventos.xhtml";
+        }
+    }
+	
+	
+	
+	
 	/*
-	 * DateevFacade (alvaro)
+	 * DateevFacade
 	 */
 
 	public List<Dateev> encontrarFechaPorID(String id) {
@@ -277,6 +318,149 @@ public class DiarioSurBean implements Serializable {
 		DateevFacade def = new DateevFacade();
 		return def.encontrarFechaPorRango();
 	}
+	
+    private int actualizarIDFecha() {
+        int id = 0;
+        DateevFacade dateevFacade = new DateevFacade();
+
+        return dateevFacade.ultimoIdInsertado();
+    }
+	
+	
+	private void crearFechaUnica() {
+        boolean encontrado = false;
+        Date fechaTemp;
+        Date fechaTemp2 = fecha.getDia();
+        int test; //comentario
+
+        DateevFacade dateevFacade = new DateevFacade();
+        
+        List<Dateev> lista = dateevFacade.encontrarTodasLasFechas();
+
+
+        for (int i = 0; i < lista.size(); i++) {
+        	fechaTemp = lista.get(i).getDia();
+
+        	if (fechaTemp != null) {
+        		test = fechaTemp.compareTo(fechaTemp2);
+
+        		if (test == 0) {
+        			encontrado = true;
+        			fecha.setId(lista.get(i).getId());
+        		}
+        	}
+
+        }
+
+        if (encontrado == false) {
+        	dateevFacade.crearFecha(fecha);
+        	fecha.setId(actualizarIDFecha());
+        }
+    }
+
+    private void crearFechaRango() {
+        boolean encontrado = false;
+        Date fechaTemp;
+        Date fechaTemp2 = fecha.getDesde();
+        Date fechaTemp21 = fecha.getHasta();
+        int test, test2;
+
+        DateevFacade dateevFacade = new DateevFacade();
+
+        List<Dateev> lista = dateevFacade.encontrarTodasLasFechas();
+
+        for (int i = 0; i < lista.size(); i++) {
+        	fechaTemp = lista.get(i).getDesde();
+
+        	if (fechaTemp != null) {
+        		test = fechaTemp.compareTo(fechaTemp2);
+
+        		fechaTemp = lista.get(i).getHasta();
+        		test2 = fechaTemp.compareTo(fechaTemp21);
+
+        		if (test == 0 && test2 == 0) {
+        			encontrado = true;
+        			fecha.setId(lista.get(i).getId());
+        		}
+        	}
+        }
+
+        if (encontrado == false) {
+        	cliente.create_XML(fecha);
+        	fecha.setId(actualizarIDFecha());
+        }
+        
+    }
+
+    private void crearFechaListaDias() {
+        boolean encontrado = false;
+        String fechas;
+
+        clienteDateev cliente = new clienteDateev();
+        Response r = cliente.findAll_XML(Response.class);
+        if (r.getStatus() == 200) {
+            GenericType<List<Dateev>> genericType = new GenericType<List<Dateev>>() {
+            };
+            List<Dateev> lista = r.readEntity(genericType);
+
+            for (int i = 0; i < lista.size(); i++) {
+                if (lista.get(i).getListadias() != null) {
+                    fechas = lista.get(i).getListadias();
+
+                    encontrado = fechas.equals(fecha.getListadias());
+                    if (encontrado == true) {
+                        fecha.setId(lista.get(i).getId());
+                    }
+                }
+
+            }
+
+            if (encontrado == false) {
+                cliente.create_XML(fecha);
+                fecha.setId(actualizarIDFecha());
+            }
+        }
+    }
+	
+	public void adjuntarFecha() {
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+
+        if (fecha.getEsunico() == 1) {
+
+            fecha.setDia(formato.parse(listaDias));
+          
+            fecha.setDesde(null);
+            fecha.setHasta(null);
+            fecha.setListadias(null);
+
+            crearFechaUnica();
+
+        } else if (fecha.getTodoslosdias() == 1) {
+            arFecha = listaDias.trim().split(",");
+
+            try {
+                fecha.setDesde(formato.parse(arFecha[0]));
+                fecha.setHasta(formato.parse(arFecha[1]));
+            } catch (ParseException ex) {
+                Logger.getLogger(DiarioSurBean.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            fecha.setDia(null);
+            fecha.setListadias(null);
+
+            crearFechaRango();
+
+        } else {
+            fecha.setDia(null);
+            fecha.setDesde(null);
+            fecha.setHasta(null);
+            fecha.setListadias(listaDias);
+
+            crearFechaListaDias();
+        }
+
+        evento.setDateevId(fecha);
+    }
 
 	   /*
 	    * UsuarioFacade
