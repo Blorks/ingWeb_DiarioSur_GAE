@@ -53,6 +53,8 @@ public class DiarioSurBean implements Serializable {
 
 	private String puntuacion_evId = "";
 	private String puntuacion = "";
+	
+	private List<Evento> eventosConFiltros;
 
 	/*
 	 * Go to
@@ -201,6 +203,14 @@ public class DiarioSurBean implements Serializable {
 		this.usuarioLongitud = usuarioLongitud;
 	}
 
+	public List<Evento> getEventosConFiltros() {
+		return eventosConFiltros;
+	}
+
+	public void setEventosConFiltros(List<Evento> eventosConFiltros) {
+		this.eventosConFiltros = eventosConFiltros;
+	}
+	
 	// probablemente falten get&set escondidos por el managebean..
 	/*
 	 * Methods
@@ -259,7 +269,7 @@ public class DiarioSurBean implements Serializable {
             //Adjunto la fecha del evento
             adjuntarFecha();
 
-            //Adjunto si está revisado o no
+            //Adjunto si estï¿½ revisado o no
             if (esPeriodista()) {
                 evento.setEstarevisado(1);
             } else {
@@ -279,7 +289,7 @@ public class DiarioSurBean implements Serializable {
             if(esPeriodista()){
                 crearNotificacion("Has creado el evento con exito!", usuario);
             }else{
-                crearNotificacion("Tu evento está a la espera de ser validado", usuario);
+                crearNotificacion("Tu evento estï¿½ a la espera de ser validado", usuario);
             }
             
 
@@ -790,7 +800,7 @@ public class DiarioSurBean implements Serializable {
 		// } else {
 		// arFecha = ev.getDateevId().getListadias().trim().split(",");
 
-		return "01/01/2001";// arFecha[0] + " y varias fechas más.";
+		return "01/01/2001";// arFecha[0] + " y varias fechas mï¿½s.";
 
 	}
 
@@ -864,10 +874,11 @@ public class DiarioSurBean implements Serializable {
 	
 	public String mostrarMapaMarcas() {
 		String s = "";
-		List<Evento> eventos = new ArrayList<>();
-		for (Evento m : eventos) {
-			s += "evento" + m.getId() + ": { titulo: 'Motocicleta-" + m.getId() + "', latitud: " + m.getLatitud() + ",  longitud: " + m.getLongitud() + "},";
+		for (Evento e : eventosConFiltros) {
+			s += "evento" + e.getId() + ": { divClass: 'evento" + e.getId() + "', titulo: '" + e.getTitulo() + "', latitud: " + e.getLatitud() + ",  longitud: " + e.getLongitud() + "},";
 		}
 		return s;
 	}
+
+	
 }
