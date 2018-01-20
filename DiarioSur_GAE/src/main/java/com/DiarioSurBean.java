@@ -676,5 +676,12 @@ public class DiarioSurBean implements Serializable {
 		return pf.encontrarPuntuacionesDeUsuario(usuario.getId().toString());
 	}
 	
-	
+	public String mostrarMapaMarcas() {
+		String s = "";
+		List<Evento> eventos = new ArrayList<>();
+		for (Evento m : eventos) {
+			s += "evento" + m.getId() + ": { titulo: 'Motocicleta-" + m.getId() + "', latitud: " + m.getLatitud() + ",  longitud: " + m.getLongitud() + "},";
+		}
+		return s;
+	}
 }
