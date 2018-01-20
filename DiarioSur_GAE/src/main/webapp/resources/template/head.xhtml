@@ -36,7 +36,7 @@
             facebook: '2034071323504737'
         }, {
             scope: 'email',
-            redirect_uri: 'https://diariosur-b4.appspot.com/'
+            redirect_uri: 'http://localhost:8080/faces/index.xhtml'	//'https://diariosur-b4.appspot.com/'
         });
         function rrss_login(rrss) {
             hello(rrss).login();
@@ -45,9 +45,9 @@
                     $.ajax({
                         type: 'get',
                         data: resp,
-                        url: "https://diariosur-b4.appspot.com/"
+                        url: "http://localhost:8080/faces/index.xhtml"	//"https://diariosur-b4.appspot.com/"
                     }).done(function () {
-                        window.location.href = "https://diariosur-b4.appspot.com/";
+                        window.location.href = "http://localhost:8080/faces/index.xhtml";	//"https://diariosur-b4.appspot.com/";
                     });
                 });
             });
