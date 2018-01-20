@@ -14,7 +14,6 @@ import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
-import entity.Dateev;
 import entity.Evento;
 
 public class EventoFacade implements Serializable{
@@ -26,7 +25,7 @@ public class EventoFacade implements Serializable{
 	
 	public EventoFacade(){}
 	
-	public Integer ultimoIdInsertado(){
+	private Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
@@ -43,7 +42,8 @@ public class EventoFacade implements Serializable{
 	}
 	
 	private Integer incrementarID(Integer id) {
-		return id++;
+		id = id + 1;
+		return id;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -177,12 +177,17 @@ public class EventoFacade implements Serializable{
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.ASCENDING);
 		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
 		q.setFilter(filtro);
-
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 		
-		Key key = listaEntidades.get(0).getKey();
-		datastore.delete(conexion, key);
-		conexion.commit();
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			Key key = listaEntidades.get(0).getKey();
+			datastore.delete(conexion, key);
+			
+		}catch (Exception e) {
+			System.out.println("Fecha " + id + " no encontrada");
+		}finally {
+			conexion.commit();
+		}
 	}
 	
 	
