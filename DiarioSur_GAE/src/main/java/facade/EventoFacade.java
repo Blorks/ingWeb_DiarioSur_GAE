@@ -26,7 +26,7 @@ public class EventoFacade implements Serializable{
 	
 	public EventoFacade(){}
 	
-	private Integer ultimoIdInsertado(){
+	public Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);

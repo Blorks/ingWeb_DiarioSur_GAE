@@ -53,7 +53,7 @@ public class DiarioSurBean implements Serializable {
 
 	private String puntuacion_evId = "";
 	private String puntuacion = "";
-	
+
 	private List<Evento> eventosConFiltros;
 
 	/*
@@ -210,7 +210,7 @@ public class DiarioSurBean implements Serializable {
 	public void setEventosConFiltros(List<Evento> eventosConFiltros) {
 		this.eventosConFiltros = eventosConFiltros;
 	}
-	
+
 	// probablemente falten get&set escondidos por el managebean..
 	/*
 	 * Methods
@@ -229,12 +229,12 @@ public class DiarioSurBean implements Serializable {
 		return ef.encontrarEventoPorID(id).get(0);
 	}
 
-	public List<Evento> mostrarTodosLosEventosRevisados(){
+	public List<Evento> mostrarTodosLosEventosRevisados() {
 		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
-		
+
 		le = ef.encontrarEventosRevisados();
-		
+
 		return le;
 	}
 
@@ -259,57 +259,53 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public String nuevoEvento() {
-        if (edit == 0) {
-            EventoFacade eventoFacade = new EventoFacade();
-            DateevFacade dateevFacade = new DateevFacade();
+		if (edit == 0) {
+			EventoFacade eventoFacade = new EventoFacade();
+			DateevFacade dateevFacade = new DateevFacade();
 
-            //Adjunto el usuario creador
-            evento.setUsuarioId(usuario.getId());
+			// Adjunto el usuario creador
+			evento.setUsuarioId(usuario.getId());
 
-            //Adjunto la fecha del evento
-            adjuntarFecha();
+			// Adjunto la fecha del evento
+			adjuntarFecha();
 
-            //Adjunto si est� revisado o no
-            if (esPeriodista()) {
-                evento.setEstarevisado(1);
-            } else {
-                evento.setEstarevisado(0);
-            }
+			// Adjunto si est� revisado o no
+			if (esPeriodista()) {
+				evento.setEstarevisado(1);
+			} else {
+				evento.setEstarevisado(0);
+			}
 
-            cliente.create_XML(evento);
-            evento.setId(actualizarIDEvento());
+			eventoFacade.crearEvento(evento);
+			evento.setId(eventoFacade.ultimoIdInsertado());
 
-            //Adjunto tags al evento
-            adjuntarTagsEvento();
+			// Adjunto tags al evento
+			//adjuntarTagsEvento();
 
-            fecha.setEventoId(actualizarIDEvento());
-            clienteFecha.edit_XML(fecha, fecha.getId().toString());
+			fecha.setEventoId(eventoFacade.ultimoIdInsertado());
+			//clienteFecha.edit_XML(fecha, fecha.getId().toString());
 
-            //Creo notificacion para usuario
-            if(esPeriodista()){
-                crearNotificacion("Has creado el evento con exito!", usuario);
-            }else{
-                crearNotificacion("Tu evento est� a la espera de ser validado", usuario);
-            }
-            
+			// Creo notificacion para usuario
+			if (esPeriodista()) {
+			//	crearNotificacion("Has creado el evento con exito!", usuario);
+			} else {
+			//	crearNotificacion("Tu evento est� a la espera de ser validado", usuario);
+			}
 
-            // reset variables
-            evento = null;
-            evento = new Evento();
-            tagsEvento = "";
+			// reset variables
+			evento = null;
+			evento = new Evento();
+			tagsEvento = "";
 
-            return "index";
-        } else {
-            editarEvento();
-            edit = 0;
+			return "index";
+		} else {
+			//editarEvento();
+			edit = 0;
 
-            return "todoloseventos.xhtml";
-        }
-    }
-	
-	
-	
-	
+			return "todoloseventos.xhtml";
+		}
+	}
+
 	/*
 	 * DateevFacade
 	 */
@@ -328,236 +324,234 @@ public class DiarioSurBean implements Serializable {
 		DateevFacade def = new DateevFacade();
 		return def.encontrarFechaPorRango();
 	}
-	
-    private int actualizarIDFecha() {
-        int id = 0;
-        DateevFacade dateevFacade = new DateevFacade();
 
-        return dateevFacade.ultimoIdInsertado();
-    }
-	
-	
+	private int actualizarIDFecha() {
+		DateevFacade dateevFacade = new DateevFacade();
+
+		return dateevFacade.ultimoIdInsertado();
+	}
+
 	private void crearFechaUnica() {
-        boolean encontrado = false;
-        Date fechaTemp;
-        Date fechaTemp2 = fecha.getDia();
-        int test; //comentario
+		boolean encontrado = false;
+		Date fechaTemp;
+		Date fechaTemp2 = fecha.getDia();
+		int test; // comentario
 
-        DateevFacade dateevFacade = new DateevFacade();
-        
-        List<Dateev> lista = dateevFacade.encontrarTodasLasFechas();
+		DateevFacade dateevFacade = new DateevFacade();
 
+		List<Dateev> lista = dateevFacade.encontrarTodasLasFechas();
 
-        for (int i = 0; i < lista.size(); i++) {
-        	fechaTemp = lista.get(i).getDia();
+		for (int i = 0; i < lista.size(); i++) {
+			fechaTemp = lista.get(i).getDia();
 
-        	if (fechaTemp != null) {
-        		test = fechaTemp.compareTo(fechaTemp2);
+			if (fechaTemp != null) {
+				test = fechaTemp.compareTo(fechaTemp2);
 
-        		if (test == 0) {
-        			encontrado = true;
-        			fecha.setId(lista.get(i).getId());
-        		}
-        	}
+				if (test == 0) {
+					encontrado = true;
+					fecha.setId(lista.get(i).getId());
+				}
+			}
 
-        }
+		}
 
-        if (encontrado == false) {
-        	dateevFacade.crearFecha(fecha);
-        	fecha.setId(actualizarIDFecha());
-        }
-    }
+		if (encontrado == false) {
+			dateevFacade.crearFecha(fecha);
+			fecha.setId(actualizarIDFecha());
+		}
+	}
 
-    private void crearFechaRango() {
-        boolean encontrado = false;
-        Date fechaTemp;
-        Date fechaTemp2 = fecha.getDesde();
-        Date fechaTemp21 = fecha.getHasta();
-        int test, test2;
+	private void crearFechaRango() {
+		boolean encontrado = false;
+		Date fechaTemp;
+		Date fechaTemp2 = fecha.getDesde();
+		Date fechaTemp21 = fecha.getHasta();
+		int test, test2;
 
-        DateevFacade dateevFacade = new DateevFacade();
+		DateevFacade dateevFacade = new DateevFacade();
 
-        List<Dateev> lista = dateevFacade.encontrarTodasLasFechas();
+		List<Dateev> lista = dateevFacade.encontrarTodasLasFechas();
 
-        for (int i = 0; i < lista.size(); i++) {
-        	fechaTemp = lista.get(i).getDesde();
+		for (int i = 0; i < lista.size(); i++) {
+			fechaTemp = lista.get(i).getDesde();
 
-        	if (fechaTemp != null) {
-        		test = fechaTemp.compareTo(fechaTemp2);
+			if (fechaTemp != null) {
+				test = fechaTemp.compareTo(fechaTemp2);
 
-        		fechaTemp = lista.get(i).getHasta();
-        		test2 = fechaTemp.compareTo(fechaTemp21);
+				fechaTemp = lista.get(i).getHasta();
+				test2 = fechaTemp.compareTo(fechaTemp21);
 
-        		if (test == 0 && test2 == 0) {
-        			encontrado = true;
-        			fecha.setId(lista.get(i).getId());
-        		}
-        	}
-        }
+				if (test == 0 && test2 == 0) {
+					encontrado = true;
+					fecha.setId(lista.get(i).getId());
+				}
+			}
+		}
 
-        if (encontrado == false) {
-        	cliente.create_XML(fecha);
-        	fecha.setId(actualizarIDFecha());
-        }
-        
-    }
+		if (encontrado == false) {
+			dateevFacade.crearFecha(fecha);
+			fecha.setId(actualizarIDFecha());
+		}
 
-    private void crearFechaListaDias() {
-        boolean encontrado = false;
-        String fechas;
+	}
 
-        clienteDateev cliente = new clienteDateev();
-        Response r = cliente.findAll_XML(Response.class);
-        if (r.getStatus() == 200) {
-            GenericType<List<Dateev>> genericType = new GenericType<List<Dateev>>() {
-            };
-            List<Dateev> lista = r.readEntity(genericType);
+	private void crearFechaListaDias() {
+		boolean encontrado = false;
+		String fechas;
 
-            for (int i = 0; i < lista.size(); i++) {
-                if (lista.get(i).getListadias() != null) {
-                    fechas = lista.get(i).getListadias();
+		DateevFacade dateevFacade = new DateevFacade();
 
-                    encontrado = fechas.equals(fecha.getListadias());
-                    if (encontrado == true) {
-                        fecha.setId(lista.get(i).getId());
-                    }
-                }
+		List<Dateev> lista = dateevFacade.encontrarTodasLasFechas();
 
-            }
+		for (int i = 0; i < lista.size(); i++) {
+			if (lista.get(i).getListadias() != null) {
+				fechas = lista.get(i).getListadias();
 
-            if (encontrado == false) {
-                cliente.create_XML(fecha);
-                fecha.setId(actualizarIDFecha());
-            }
-        }
-    }
-	
+				encontrado = fechas.equals(fecha.getListadias());
+				if (encontrado == true) {
+					fecha.setId(lista.get(i).getId());
+				}
+			}
+
+		}
+
+		if (encontrado == false) {
+			dateevFacade.crearFecha(fecha);
+			fecha.setId(actualizarIDFecha());
+		}
+
+	}
+
 	public void adjuntarFecha() {
-        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
 
-        if (fecha.getEsunico() == 1) {
+		if (fecha.getEsunico() == 1) {
 
-            fecha.setDia(formato.parse(listaDias));
-          
-            fecha.setDesde(null);
-            fecha.setHasta(null);
-            fecha.setListadias(null);
+			try {
+				fecha.setDia(formato.parse(listaDias));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			fecha.setDesde(null);
+			fecha.setHasta(null);
+			fecha.setListadias(null);
 
-            crearFechaUnica();
+			crearFechaUnica();
 
-        } else if (fecha.getTodoslosdias() == 1) {
-            arFecha = listaDias.trim().split(",");
+		} else if (fecha.getTodoslosdias() == 1) {
+			arFecha = listaDias.trim().split(",");
 
-            try {
-                fecha.setDesde(formato.parse(arFecha[0]));
-                fecha.setHasta(formato.parse(arFecha[1]));
-            } catch (ParseException ex) {
-                Logger.getLogger(DiarioSurBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
+			try {
+				fecha.setDesde(formato.parse(arFecha[0]));
+				fecha.setHasta(formato.parse(arFecha[1]));
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			fecha.setDia(null);
+			fecha.setListadias(null);
 
-            fecha.setDia(null);
-            fecha.setListadias(null);
+			crearFechaRango();
 
-            crearFechaRango();
+		} else {
+			fecha.setDia(null);
+			fecha.setDesde(null);
+			fecha.setHasta(null);
+			fecha.setListadias(listaDias);
 
-        } else {
-            fecha.setDia(null);
-            fecha.setDesde(null);
-            fecha.setHasta(null);
-            fecha.setListadias(listaDias);
+			crearFechaListaDias();
+		}
 
-            crearFechaListaDias();
-        }
+		evento.setDateevId(actualizarIDFecha());
+	}
 
-        evento.setDateevId(fecha);
-    }
+	/*
+	 * UsuarioFacade
+	 */
+	public void rrssLogin() {
+		try {
+			FacesContext facesContext = FacesContext.getCurrentInstance();
+			ExternalContext externalContext = facesContext.getExternalContext();
+			Map params = externalContext.getRequestParameterMap();
 
-	   /*
-	    * UsuarioFacade
-	    */
-	   public void rrssLogin() {
-	       try {
-	           FacesContext facesContext = FacesContext.getCurrentInstance();
-	           ExternalContext externalContext = facesContext.getExternalContext();
-	           Map params = externalContext.getRequestParameterMap();
+			if (params.size() > 0) {
+				usuario = new Usuario();
+				usuario.setRol("");
 
-	           if (params.size() > 0) {
-	               usuario = new Usuario();
-	               usuario.setRol("");
+				usuarioFoto = params.get("picture").toString();
 
-	               usuarioFoto = params.get("picture").toString();
+				usuario.setEmail(params.get("email").toString());
 
-	               usuario.setEmail(params.get("email").toString());
+				if (!logIn()) {
+					usuario.setNombre(params.get("first_name").toString());
+					usuario.setApellidos(params.get("last_name").toString());
+					usuario.setEmail(params.get("email").toString());
+					usuario.setRol("Usuario");
+					nuevoUsuario(usuario);
+				}
+			}
+		} catch (Exception e) {
+			System.out.println("Error en RRSS: " + e.getMessage());
+		}
+	}
 
-	               if (!logIn()) {
-	                   usuario.setNombre(params.get("first_name").toString());
-	                   usuario.setApellidos(params.get("last_name").toString());
-	                   usuario.setEmail(params.get("email").toString());
-	                   usuario.setRol("Usuario");
-	                   nuevoUsuario(usuario);
-	               }
-	           }
-	       } catch (Exception e) {
-	           System.out.println("Error en RRSS: " + e.getMessage());
-	       }
-	   }
-	   
-	   //METODOS REFERENTES A LOS FileEv
-	   public void adjuntarFotoDePerfil(String url) {
-	       UsuarioFacade cliente2 = new UsuarioFacade();
+	// METODOS REFERENTES A LOS FileEv
+	public void adjuntarFotoDePerfil(String url) {
+		UsuarioFacade cliente2 = new UsuarioFacade();
 
-	       Fileev file = new Fileev();
-	       file.setUrl(url);
-	       file.setUsuarioId(usuario.getId());
+		Fileev file = new Fileev();
+		file.setUrl(url);
+		file.setUsuarioId(usuario.getId());
 
-	       usuario.setFileev(file.getId()); //Al no existir el archivo file, la BD lo crea automaticamente
-	       cliente2.editarUsuario(usuario);
-	   }
-	   
-	   public void nuevoUsuario(Usuario us) {
-	       UsuarioFacade uf = new UsuarioFacade();
-	       List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
+		usuario.setFileev(file.getId()); // Al no existir el archivo file, la BD lo crea automaticamente
+		cliente2.editarUsuario(usuario);
+	}
 
-	       if (usuarios.isEmpty()) {
-	           uf.crearUsuario(us);
+	public void nuevoUsuario(Usuario us) {
+		UsuarioFacade uf = new UsuarioFacade();
+		List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
 
-	           logIn();
-	           if (!usuarioFoto.isEmpty()) {
-	               adjuntarFotoDePerfil(usuarioFoto);
-	           }
-	       }
-	   }
-	   
-	   public boolean logIn() {
-	       UsuarioFacade uf = new UsuarioFacade();
-	       FileevFacade ff = new FileevFacade();
-	       List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
+		if (usuarios.isEmpty()) {
+			uf.crearUsuario(us);
 
-	       if (!usuarios.isEmpty()) {
-	           usuario = usuarios.get(0);
-	           if (usuario.getFileev() != null) {
-	        	   List<Fileev> lista = ff.encontrarArchivoPorID(usuario.getFileev());
-	               usuarioFoto = lista.get(0).getUrl();
-	           }
-	           return true;
-	       } else {
-	           return false;
-	       }
-	   }
-	   
-	   public boolean isLogin() {
-	       return (usuario.getEmail() == null || usuario.getEmail().equals(""));
-	   }
-	   
-	   public String isLoginIncl() {
-	       return isLogin() ? "login.xhtml" : "logout.xhtml";
-	   }
-	   
-	   public String logout() {
-	       usuario = new Usuario();
-	       usuario.setEmail("");
-	       return "index";
-	   }
+			logIn();
+			if (!usuarioFoto.isEmpty()) {
+				adjuntarFotoDePerfil(usuarioFoto);
+			}
+		}
+	}
+
+	public boolean logIn() {
+		UsuarioFacade uf = new UsuarioFacade();
+		FileevFacade ff = new FileevFacade();
+		List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
+
+		if (!usuarios.isEmpty()) {
+			usuario = usuarios.get(0);
+			if (usuario.getFileev() != null) {
+				List<Fileev> lista = ff.encontrarArchivoPorID(usuario.getFileev());
+				usuarioFoto = lista.get(0).getUrl();
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public boolean isLogin() {
+		return (usuario.getEmail() == null || usuario.getEmail().equals(""));
+	}
+
+	public String isLoginIncl() {
+		return isLogin() ? "login.xhtml" : "logout.xhtml";
+	}
+
+	public String logout() {
+		usuario = new Usuario();
+		usuario.setEmail("");
+		return "index";
+	}
 
 	// public String borrarEvento(Evento ev) {
 	// clienteEventos cliente = new clienteEventos();
@@ -631,7 +625,7 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	// public void actualizarPuntuacion(String punto, String evId) {
-	//PuntuacionFacade pf = new PuntuacionFacade();
+	// PuntuacionFacade pf = new PuntuacionFacade();
 	// Evento ev = ef.encontrarEventoPorID(evId).get(0);
 	//
 	// List<Puntuacion> puntuaciones =
@@ -650,7 +644,7 @@ public class DiarioSurBean implements Serializable {
 	// }
 	// }
 	public double mostrarPuntuacionMedia(Evento ev) {
-		//PuntuacionFacade pf = new PuntuacionFacade();
+		// PuntuacionFacade pf = new PuntuacionFacade();
 		// List<Puntuacion> puntuaciones =
 		// pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
 		// double puntuacionTotal = 0;
@@ -809,7 +803,8 @@ public class DiarioSurBean implements Serializable {
 	 */
 	public List<Notificacion> mostrarNotificacionesNoLeidas() {
 		NotificacionFacade nf = new NotificacionFacade();
-		//return nf.encontrarNotificacionesNoLeidasDeUsuario(usuario.getId().toString());
+		// return
+		// nf.encontrarNotificacionesNoLeidasDeUsuario(usuario.getId().toString());
 		Notificacion n = new Notificacion();
 		n.setDescripcion("asd");
 		n.setId(1);
@@ -833,52 +828,48 @@ public class DiarioSurBean implements Serializable {
 
 		return "index.xhtml";
 	}
-	
+
 	public void eliminarEventoPorID(String id) {
-		//TERMINAR; FALTA HACER DELETE EN CASCADA
+		// TERMINAR; FALTA HACER DELETE EN CASCADA
 		EventoFacade ef = new EventoFacade();
 		ef.eliminarEventoPorID(id);
 	}
-	
+
 	/*
-	public List<Fileev> encontrarArchivoPorURL(String url) {
-		FileevFacade fef = new FileevFacade();
-		return fef.encontrarArchivoPorID(url);
-	}
-	
-	public List<Fileev> encontrarArchivoPorID(String id) {
-		FileevFacade fef = new FileevFacade();
-		return fef.encontrarArchivoPorID(id);
-	}
-	*/
-	
+	 * public List<Fileev> encontrarArchivoPorURL(String url) { FileevFacade fef =
+	 * new FileevFacade(); return fef.encontrarArchivoPorID(url); }
+	 * 
+	 * public List<Fileev> encontrarArchivoPorID(String id) { FileevFacade fef = new
+	 * FileevFacade(); return fef.encontrarArchivoPorID(id); }
+	 */
+
 	public List<Notificacion> mostrarNotificacionesDeUsuario() {
 		NotificacionFacade nf = new NotificacionFacade();
 		return nf.encontrarTodasLasNotificacionesDeUsuario(usuario.getId().toString());
 	}
-	
-	public List<Notificacion> encontrarNotificacionPorId(String id){
+
+	public List<Notificacion> encontrarNotificacionPorId(String id) {
 		NotificacionFacade nf = new NotificacionFacade();
 		return nf.encontrarNotificacionPorId(id);
 	}
-	
-	public List<Puntuacion> encontrarTodasLasPuntuaciones(){
+
+	public List<Puntuacion> encontrarTodasLasPuntuaciones() {
 		PuntuacionFacade pf = new PuntuacionFacade();
 		return pf.encontrarTodasLasPuntuaciones();
 	}
-	
+
 	public List<Puntuacion> encontrarPuntuacionesDeUsuario(String idUser) {
 		PuntuacionFacade pf = new PuntuacionFacade();
 		return pf.encontrarPuntuacionesDeUsuario(usuario.getId().toString());
 	}
-	
+
 	public String mostrarMapaMarcas() {
 		String s = "";
 		for (Evento e : eventosConFiltros) {
-			s += "evento" + e.getId() + ": { divClass: 'evento" + e.getId() + "', titulo: '" + e.getTitulo() + "', latitud: " + e.getLatitud() + ",  longitud: " + e.getLongitud() + "},";
+			s += "evento" + e.getId() + ": { divClass: 'evento" + e.getId() + "', titulo: '" + e.getTitulo()
+					+ "', latitud: " + e.getLatitud() + ",  longitud: " + e.getLongitud() + "},";
 		}
 		return s;
 	}
 
-	
 }
