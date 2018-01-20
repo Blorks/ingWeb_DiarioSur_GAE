@@ -162,15 +162,14 @@ public class UsuarioFacade implements Serializable{
 		conexion.commit();
 	}
 	
-	public List<Usuario> encontrarUsuarioPorID(String id) {
+	public List<Usuario> encontrarUsuarioPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Usuario> lista = new ArrayList<>();
-		int idTemp = Integer.parseInt(id);
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Usuario").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
 		q.setFilter(filtro);
 
 		try {
@@ -209,14 +208,13 @@ public class UsuarioFacade implements Serializable{
 		return lista;
 	}
 	
-	public void eliminarUsuarioPorID(String id) {
+	public void eliminarUsuarioPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
-		int idTemp = Integer.parseInt(id);
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Usuario").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
 		q.setFilter(filtro);
 
 		try {

@@ -48,7 +48,7 @@ public class DiarioSurBean implements Serializable {
 
 	private String diaBusqueda;
 	private int distMaxima;
-	private String precioMax;
+	private Double precioMax;
 
 	private String usuarioFoto;
 
@@ -136,11 +136,11 @@ public class DiarioSurBean implements Serializable {
 		this.evento = evento;
 	}
 
-	public String getPrecioMax() {
+	public Double getPrecioMax() {
 		return precioMax;
 	}
 
-	public void setPrecioMax(String precioMax) {
+	public void setPrecioMax(Double precioMax) {
 		this.precioMax = precioMax;
 	}
 
@@ -237,10 +237,6 @@ public class DiarioSurBean implements Serializable {
 	/*
 	 * Evento
 	 */
-	private Evento encontrarEventoID(String id) {
-		EventoFacade ef = new EventoFacade();
-		return ef.encontrarEventoPorID(id).get(0);
-	}
 
 	public List<Evento> mostrarTodosLosEventosRevisados() {
 		List<Evento> le = new ArrayList<>();
@@ -253,7 +249,7 @@ public class DiarioSurBean implements Serializable {
 
 	public List<Evento> filtrarEventosDeUsuario() {
 		EventoFacade ef = new EventoFacade();
-		return ef.encontrarEventoPorUsuario(usuario.getId().toString());
+		return ef.encontrarEventoPorUsuario(usuario.getId());
 	}
 
 	public List<Evento> mostrarEventosFiltradosPorPrecio() {
@@ -268,7 +264,7 @@ public class DiarioSurBean implements Serializable {
 
 	public List<Evento> mostrarEventosFiltradosPorFecha() {
 		EventoFacade ef = new EventoFacade();
-		return ef.encontrarEventosPorFecha(fecha.getId().toString());
+		return ef.encontrarEventosPorFecha(fecha.getId());
 	}
 
 	public String nuevoEvento() {
@@ -276,6 +272,7 @@ public class DiarioSurBean implements Serializable {
 			EventoFacade eventoFacade = new EventoFacade();
 			DateevFacade dateevFacade = new DateevFacade();
 			UsuarioFacade usuarioFacade = new UsuarioFacade();
+			NotificacionFacade notificacionFacade = new NotificacionFacade();
 
 			// Adjunto el usuario creador
 			
@@ -299,13 +296,13 @@ public class DiarioSurBean implements Serializable {
 			adjuntarTagsEvento();
 
 			fecha.setEventoId(eventoFacade.ultimoIdInsertado());
-			//clienteFecha.edit_XML(fecha, fecha.getId().toString());
+			dateevFacade.editarFecha(fecha);
 
 			// Creo notificacion para usuario
 			if (esPeriodista()) {
-			//	crearNotificacion("Has creado el evento con exito!", usuario);
+				notificacionFacade.crearNotificacion("Has creado el evento con exito!", usuario.getId());
 			} else {
-			//	crearNotificacion("Tu evento est� a la espera de ser validado", usuario);
+				notificacionFacade.crearNotificacion("Tu evento esta a la espera de ser validado", usuario.getId());
 			}
 
 			// reset variables
@@ -886,7 +883,7 @@ public class DiarioSurBean implements Serializable {
 		return "index.xhtml";
 	}
 
-	public void eliminarEventoPorID(String id) {
+	public void eliminarEventoPorID(Integer id) {
 		// TERMINAR; FALTA HACER DELETE EN CASCADA
 		EventoFacade ef = new EventoFacade();
 		ef.eliminarEventoPorID(id);

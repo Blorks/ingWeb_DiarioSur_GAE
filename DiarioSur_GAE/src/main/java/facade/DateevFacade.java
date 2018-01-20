@@ -18,6 +18,7 @@ import com.google.appengine.api.datastore.Transaction;
 
 import entity.Dateev;
 import entity.Evento;
+import entity.Usuario;
 
 public class DateevFacade implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -143,6 +144,44 @@ public class DateevFacade implements Serializable {
 		conexion.commit();
 	}
 
+	public void editarFecha(Dateev dateev) {
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		entidad = new Entity("Dateev");
+		List<Entity> listaEntidades = new ArrayList<>();
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, dateev.getId());
+		q.setFilter(filtro);
+
+		try {
+			 listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			 entidad = listaEntidades.get(0);
+			 
+			entidad.setProperty("esUnico", dateev.getEsunico());
+			entidad.setProperty("dia", dateev.getDia());
+			entidad.setProperty("todoslosdias", dateev.getTodoslosdias());
+			entidad.setProperty("desde", dateev.getDesde());
+			entidad.setProperty("hasta", dateev.getHasta());
+			entidad.setProperty("variosDias", dateev.getVariosdias());
+			entidad.setProperty("listaDias", dateev.getListadias());
+			entidad.setProperty("eventoID", dateev.getEventoId());
+				
+			 datastore.put(conexion, entidad);
+
+		}catch (Exception e) {
+			System.out.println("Fecha" + dateev.getId() + " no encontrada.");
+		}
+		
+		conexion.commit();
+	}
+	
+	
+	
+	
+	
+	
 	public List<Dateev> encontrarFechaPorID(String id){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Dateev> lista = new ArrayList<>();
