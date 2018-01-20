@@ -20,8 +20,8 @@ public class EventoFacade implements Serializable{
 	
 	private DatastoreService datastore;
 	private Entity entidad;
-	Key key;
-	Transaction conexion;
+	private Key key;
+	private Transaction conexion;
 	
 	public EventoFacade(){}
 	
