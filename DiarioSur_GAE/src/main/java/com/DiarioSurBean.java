@@ -48,6 +48,8 @@ public class DiarioSurBean implements Serializable {
 
 	private String puntuacion_evId = "";
 	private String puntuacion = "";
+	
+	private List<Evento> eventosConFiltros;
 
 	/*
 	 * Go to
@@ -196,6 +198,14 @@ public class DiarioSurBean implements Serializable {
 		this.usuarioLongitud = usuarioLongitud;
 	}
 
+	public List<Evento> getEventosConFiltros() {
+		return eventosConFiltros;
+	}
+
+	public void setEventosConFiltros(List<Evento> eventosConFiltros) {
+		this.eventosConFiltros = eventosConFiltros;
+	}
+	
 	// probablemente falten get&set escondidos por el managebean..
 	/*
 	 * Methods
@@ -224,17 +234,25 @@ public class DiarioSurBean implements Serializable {
 		e.setId(1);
 		e.setTitulo("asd1");
 		e.setDescripcion("asda1");
+		e.setLatitud(36.120211);
+		e.setLongitud(-4.472895);
 		le.add(e);
 		
 		e2.setId(2);
 		e2.setTitulo("asd2");
 		e2.setDescripcion("asda2");
+		e2.setLatitud(36.320211);
+		e2.setLongitud(-4.672895);
 		le.add(e2);
 		
 		e3.setId(3);
 		e3.setTitulo("asd3");
 		e3.setDescripcion("asda3");
+		e3.setLatitud(36.520211);
+		e3.setLongitud(-4.872895);
 		le.add(e3);
+		
+		setEventosConFiltros(le);
 		
 		return le;// ef.encontrarEventosRevisados();
 	}
@@ -680,10 +698,11 @@ public class DiarioSurBean implements Serializable {
 	
 	public String mostrarMapaMarcas() {
 		String s = "";
-		List<Evento> eventos = new ArrayList<>();
-		for (Evento m : eventos) {
-			s += "evento" + m.getId() + ": { titulo: 'Motocicleta-" + m.getId() + "', latitud: " + m.getLatitud() + ",  longitud: " + m.getLongitud() + "},";
+		for (Evento e : eventosConFiltros) {
+			s += "evento" + e.getId() + ": { divClass: 'evento" + e.getId() + "', titulo: '" + e.getTitulo() + "', latitud: " + e.getLatitud() + ",  longitud: " + e.getLongitud() + "},";
 		}
 		return s;
 	}
+
+	
 }
