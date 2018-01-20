@@ -26,27 +26,26 @@ public class FileevFacade implements Serializable{
 	
 	public FileevFacade(){}
 	
-	private String ultimoIdInsertado(){
+	
+	private Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Fileev").addSort("ID", Query.SortDirection.DESCENDING);
-		String id;
+		Integer id;
 		
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-				
-		if(listaEntidades.isEmpty()) {
-			id = "0";
-		}else {
-			id = listaEntidades.get(0).getProperty("ID").toString();
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			id = Integer.parseInt(listaEntidades.get(0).getProperty("ID").toString());
+		}catch (Exception e) {
+			id = 0;
 		}
-				
+		
 		return id;
 	}
 	
-	private String incrementarID(String id) {
-		int num = Integer.parseInt(id);
-		num++;
-		return String.valueOf(num);
+	private Integer incrementarID(Integer id) {
+		id = id + 1;
+		return id;
 	}
 	
 	private List<Fileev> crearEntidades(List<Entity> listaEntidades) {
@@ -83,9 +82,8 @@ public class FileevFacade implements Serializable{
 	public void crearFileev(Fileev fe) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Fileev");
-		key = entidad.getKey();
 		
-		String ultimoID = ultimoIdInsertado();
+		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);

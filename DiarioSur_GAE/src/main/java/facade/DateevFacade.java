@@ -17,19 +17,17 @@ import com.google.appengine.api.datastore.Query.FilterPredicate;
 import com.google.appengine.api.datastore.Transaction;
 
 import entity.Dateev;
-import entity.Evento;
 
 public class DateevFacade implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
 	private DatastoreService datastore;
 	private Entity entidad;
-	Key key;
 	Transaction conexion;
 	
 	public DateevFacade(){}
 	
-	public Integer ultimoIdInsertado(){
+	private Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.DESCENDING);
@@ -46,7 +44,8 @@ public class DateevFacade implements Serializable {
 	}
 	
 	private Integer incrementarID(Integer id) {
-		return id++;
+		id = id + 1;
+		return id;
 	}
 	
 	private List<Dateev> crearEntidades(List<Entity> listaEntidades) {
@@ -143,21 +142,82 @@ public class DateevFacade implements Serializable {
 		conexion.commit();
 	}
 
-	public List<Dateev> encontrarFechaPorID(String id){
+	public void editarFecha(Dateev dateev) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
-		List<Dateev> lista = new ArrayList<>();
-		int idTemp = Integer.parseInt(id);
-		
+		entidad = new Entity("Dateev");
+		List<Entity> listaEntidades = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, dateev.getId());
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
-		lista = crearEntidades(listaEntidades);
+		try {
+			 listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			 entidad = listaEntidades.get(0);
+			 
+			entidad.setProperty("esUnico", dateev.getEsunico());
+			entidad.setProperty("dia", dateev.getDia());
+			entidad.setProperty("todoslosdias", dateev.getTodoslosdias());
+			entidad.setProperty("desde", dateev.getDesde());
+			entidad.setProperty("hasta", dateev.getHasta());
+			entidad.setProperty("variosDias", dateev.getVariosdias());
+			entidad.setProperty("listaDias", dateev.getListadias());
+			entidad.setProperty("eventoID", dateev.getEventoId());
+				
+			 datastore.put(conexion, entidad);
+
+		}catch (Exception e) {
+			System.out.println("Fecha" + dateev.getId() + " no encontrada.");
+		}finally {
+			conexion.commit();
+		}
+	}
+	
+	public void eliminarDateevPorID(Integer id) {
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
+		q.setFilter(filtro);
+
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			Key key = listaEntidades.get(0).getKey();
+			datastore.delete(conexion, key);
+			
+		}catch (Exception e) {
+			System.out.println("Fecha " + id + " no encontrada");
+		}finally {
+			conexion.commit();
+		}
+	}
+
+	
+	
+	
+	public List<Dateev> encontrarFechaPorID(Integer id){
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		List<Dateev> lista = new ArrayList<>();
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
+		q.setFilter(filtro);
+
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			System.out.println("Dateev " + id + " no encontrada");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
 	}
 
@@ -172,9 +232,15 @@ public class DateevFacade implements Serializable {
 		FilterPredicate filtro = new FilterPredicate("esUnico", FilterOperator.EQUAL, condicion);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
-		lista = crearEntidades(listaEntidades);
-		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			System.out.println("Dateev no encontradas");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
 	}
 	
@@ -189,9 +255,15 @@ public class DateevFacade implements Serializable {
 		FilterPredicate filtro = new FilterPredicate("todoslosdias", FilterOperator.EQUAL, condicion);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
-		lista = crearEntidades(listaEntidades);
-		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			System.out.println("Dateev no encontradas");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
 	}
 
@@ -207,12 +279,11 @@ public class DateevFacade implements Serializable {
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			System.out.println("Dateev no encontradas");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
-		
-		conexion.commit();
-		
+
 		return lista;
 	}
 }

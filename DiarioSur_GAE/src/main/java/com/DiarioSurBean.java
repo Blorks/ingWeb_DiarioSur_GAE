@@ -48,7 +48,7 @@ public class DiarioSurBean implements Serializable {
 
 	private String diaBusqueda;
 	private int distMaxima;
-	private String precioMax;
+	private Double precioMax;
 
 	private String usuarioFoto;
 
@@ -135,11 +135,11 @@ public class DiarioSurBean implements Serializable {
 		this.evento = evento;
 	}
 
-	public String getPrecioMax() {
+	public Double getPrecioMax() {
 		return precioMax;
 	}
 
-	public void setPrecioMax(String precioMax) {
+	public void setPrecioMax(Double precioMax) {
 		this.precioMax = precioMax;
 	}
 
@@ -236,10 +236,6 @@ public class DiarioSurBean implements Serializable {
 	/*
 	 * Evento
 	 */
-	private Evento encontrarEventoID(String id) {
-		EventoFacade ef = new EventoFacade();
-		return ef.encontrarEventoPorID(id).get(0);
-	}
 
 	public List<Evento> mostrarTodosLosEventosRevisados() {
 		List<Evento> le = new ArrayList<>();
@@ -252,7 +248,7 @@ public class DiarioSurBean implements Serializable {
 
 	public List<Evento> filtrarEventosDeUsuario() {
 		EventoFacade ef = new EventoFacade();
-		return ef.encontrarEventoPorUsuario(usuario.getId().toString());
+		return ef.encontrarEventoPorUsuario(usuario.getId());
 	}
 
 	public List<Evento> mostrarEventosFiltradosPorPrecio() {
@@ -267,7 +263,7 @@ public class DiarioSurBean implements Serializable {
 
 	public List<Evento> mostrarEventosFiltradosPorFecha() {
 		EventoFacade ef = new EventoFacade();
-		return ef.encontrarEventosPorFecha(fecha.getId().toString());
+		return ef.encontrarEventosPorFecha(fecha.getId());
 	}
 
 	public String nuevoEvento() {
@@ -275,6 +271,7 @@ public class DiarioSurBean implements Serializable {
 			EventoFacade eventoFacade = new EventoFacade();
 			DateevFacade dateevFacade = new DateevFacade();
 			UsuarioFacade usuarioFacade = new UsuarioFacade();
+			NotificacionFacade notificacionFacade = new NotificacionFacade();
 
 			// Adjunto el usuario creador
 
@@ -885,7 +882,7 @@ public class DiarioSurBean implements Serializable {
 		return "index.xhtml";
 	}
 
-	public void eliminarEventoPorID(String id) {
+	public void eliminarEventoPorID(Integer id) {
 		// TERMINAR; FALTA HACER DELETE EN CASCADA
 		EventoFacade ef = new EventoFacade();
 		ef.eliminarEventoPorID(id);
@@ -928,4 +925,37 @@ public class DiarioSurBean implements Serializable {
 		return s;
 	}
 
+	public void editarEvento() {
+		EventoFacade ef = new EventoFacade();
+		DateevFacade def = new DateevFacade();
+		TagFacade tf = new TagFacade();
+		List<Tag> listaTags = encontrarTagsDeEvento();
+		
+		//Edicion de la Fecha
+		Integer idFechaTemp = evento.getDateevId();
+		
+		evento.setDateevId(null);
+		ef.editarEvento(evento);
+		
+		def.eliminarDateevPorID(idFechaTemp);
+		
+		adjuntarFecha();
+		
+		//Edicion del Evento
+		ef.editarEvento(evento);
+		
+		//Edicion de Tags
+		List<Tag> listaTemp;
+		for(int i = 0; i < listaTags.size(); i++)
+		{
+			listaTemp = tf.encontrarTagPorNombre(listaTags.get(i).getNombre());
+			if(!listaTemp.isEmpty())
+				eliminarTagEvento(listaTemp.get(0));
+		}
+		
+		adjuntarTagsEvento();
+		
+		//creo notificacion
+		crearNotificacion("Has editado el evento con exito!", usuario);
+	}
 }
