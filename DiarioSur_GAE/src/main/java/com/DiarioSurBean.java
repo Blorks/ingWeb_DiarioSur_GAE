@@ -525,8 +525,7 @@ public class DiarioSurBean implements Serializable {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
 		Map params = externalContext.getRequestParameterMap();
-
-		if (params.size() > 4) {
+		if (params.get("first_name") != null) {
 			usuarioFoto = params.get("picture").toString();
 
 			if (!logIn()) {
