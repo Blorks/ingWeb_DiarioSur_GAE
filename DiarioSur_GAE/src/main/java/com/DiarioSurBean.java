@@ -126,11 +126,11 @@ public class DiarioSurBean implements Serializable {
 //	 
 //	 FileevFacade ff = new FileevFacade();
 //	 Fileev f = new Fileev();
-//	 f.setId(1);
+//	 f.setId(2);
 //	 f.setNombre("nombre");
 //	 f.setTipo("asd");
 //	 f.setUrl("http://images3.wikia.nocookie.net/__cb20121216194440/dragoncity/es/images/thumb/4/47/Caca_1.png/120px-Caca_1.png");
-//	 f.setUsuarioId(2);
+//	 f.setUsuarioId(1);
 //	 ff.crearFileev(f);
 	 }
 
@@ -696,12 +696,13 @@ public class DiarioSurBean implements Serializable {
 		EventoFacade ef = new EventoFacade();
 		DateevFacade def = new DateevFacade();
 		TagFacade tf = new TagFacade();
+		evento = ev;
 		List<Tag> listaTags = encontrarTagsDeEvento();
 
 		// Elimino tags de evento
 		List<Tag> listaTemp;
 		for (int i = 0; i < listaTags.size(); i++) {
-			listaTemp = tf.encontrarTagPorNombre(listaTags.get(0).getNombre());
+			listaTemp = tf.encontrarTagPorNombre(listaTags.get(i).getNombre());
 			if (!listaTemp.isEmpty())
 				eliminarTagEvento(listaTemp.get(0));
 		}
@@ -722,9 +723,21 @@ public class DiarioSurBean implements Serializable {
 	
 	public String eliminarTagEvento(Tag tagEvento){
 		TageventoFacade tef = new TageventoFacade();
+		TagFacade tf = new TagFacade();
+		List<Tagevento> lista = new ArrayList<>();
 
 		Tagevento tagEv = tef.encontrarTagEventoPorTagYEvento(tagEvento.getId(), evento.getId()).get(0);
-        tef.eliminarTagEventoPorID(tagEv.getId());          
+        tef.eliminarTagEventoPorID(tagEv.getId());
+        
+        lista = tef.encontrarTageventoPorEvento(tagEvento.getId());
+		if(lista.isEmpty()){
+			List<Tagusuario> lista2 = tuf.encontrarTagusuarioPorUsuario(tagEvento.getId());
+			if (lista2.isEmpty()) {
+				tf.eliminarTagPorID(tagEvento.getId());
+			}
+		}
+
+		crearNotificacion("Has eliminado el tag con exito!", usuario);
         
         return "evento";
     }
@@ -1103,21 +1116,19 @@ public class DiarioSurBean implements Serializable {
 		Tagusuario tagUs = new Tagusuario();
 
 		for (int i = 0; i < partes.length; i++) {
-			tagCreado = crearTag(partes[i]);
-			// List<Tagusuario> lista =
-			// tuf.encontrarTagUsuarioPorTagYUsuario(tagCreado.getId().toString(),
-			// usuario.getId().toString());
+			tagCreado = crearTag(partes[i].trim());
+			List<Tagusuario> lista = tuf.encontrarTagUsuarioPorTagYUsuario(tagCreado.getId(), usuario.getId());
 
-			// if(lista.isEmpty())
+			if(lista.isEmpty())
 			{
-				// tagUs.setUsuarioId(usuario); //seria usuario.getID()?
-				// tagUs.setTagId(tagCreado);
+				tagUs.setUsuarioId(usuario.getId());
+				tagUs.setTagId(tagCreado.getId());
 
 				tuf.crearTagusuario(tagUs);
 			}
 		}
 
-		crearNotificacion("Tus tags se han a�adido con exito!", usuario);
+		crearNotificacion("Tus tags se han actualizado con exito!", usuario);
 
 		irPerfil();
 	}
@@ -1127,18 +1138,16 @@ public class DiarioSurBean implements Serializable {
 		TagusuarioFacade tuf = new TagusuarioFacade();
 		TageventoFacade tef = new TageventoFacade();
 
-		// List<Tagusuario> lista =
-		// tuf.encontrarTagUsuarioPorTagYUsuario(tagUsuario.getId().toString(),
-		// usuario.getId().toString());
-		// tuf.eliminarTagusuario(lista.get(0).getId());
+		List<Tagusuario> lista = tuf.encontrarTagUsuarioPorTagYUsuario(tagUsuario.getId(), usuario.getId());
+		tuf.eliminarTagUsuarioPorID(lista.get(0).getId());
 
-		// lista = tuf.encontrarTagusuarioPorID(tagUsuario.getId().toString());
-		// if(lista.isEmpty()){
-		List<Tagevento> lista2 = tef.encontrarTageventoPorID(tagUsuario.getId());
-
-		if (lista2.isEmpty())
-			;// tf.eliminarTag(tagUsuario.getId());
-		// }
+		lista = tuf.encontrarTagusuarioPorUsuario(tagUsuario.getId());
+		if(lista.isEmpty()){
+			List<Tagevento> lista2 = tef.encontrarTageventoPorEvento(tagUsuario.getId());
+			if (lista2.isEmpty()) {
+				tf.eliminarTagPorID(tagUsuario.getId());
+			}
+		}
 
 		crearNotificacion("Has eliminado el tag con exito!", usuario);
 
