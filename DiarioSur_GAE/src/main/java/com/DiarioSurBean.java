@@ -362,7 +362,7 @@ public class DiarioSurBean implements Serializable {
 	 * DateevFacade
 	 */
 
-	// public List<Dateev> encontrarFechaPorID(String id) {
+	//public List<Dateev> encontrarFechaPorID(String id) {
 	// DateevFacade def = new DateevFacade();
 	// return def.encontrarFechaPorID(id);
 	// }
@@ -597,60 +597,34 @@ public class DiarioSurBean implements Serializable {
 		usuario.setEmail("");
 		return "index";
 	}
-
-	// public String borrarEvento(Evento ev) {
-	// clienteEventos cliente = new clienteEventos();
-	// clienteDateev clienteFecha = new clienteDateev();
-	// clienteTag cliente3 = new clienteTag();
-	// List<Tag> listaTags = encontrarTagsDeEvento();
-	//
-	// //Elimino tags de evento
-	// Response r;
-	// List<Tag> listaTemp;
-	// GenericType<List<Tag>> genericType;
-	// for(int i=0; i<listaTags.size(); i++){
-	// r = cliente3.encontrarTagPorNombre_XML(Response.class,
-	// listaTags.get(i).getNombre());
-	// if(r.getStatus() == 200){
-	// genericType = new GenericType<List<Tag>>(){};
-	// listaTemp = r.readEntity(genericType);
-	//
-	// if(!listaTemp.isEmpty()){
-	// eliminarTagEvento(listaTemp.get(0));
-	// }
-	// }
-	// }
-	//
-	// //Elimino Evento
-	// r = clienteFecha.encontrarFechaPorID_XML(Response.class,
-	// ev.getDateevId().getId().toString());
-	// if (r.getStatus() == 200) {
-	// GenericType<List<Dateev>> genericType2 = new GenericType<List<Dateev>>()
-	// {
-	// };
-	// List<Dateev> listaFecha = r.readEntity(genericType2);
-	//
-	// cliente.remove(ev.getId().toString());
-	//
-	// //Elimino Fecha de Evento
-	// r = cliente.encontrarEventosPorFecha_XML(Response.class,
-	// listaFecha.get(0).getId().toString());
-	// if (r.getStatus() == 200) {
-	// GenericType<List<Evento>> genericType3 = new GenericType<List<Evento>>()
-	// {
-	// };
-	// List<Evento> listaEvento = r.readEntity(genericType3);
-	//
-	// if (listaEvento.isEmpty()) {
-	// clienteFecha.remove(ev.getDateevId().getId().toString());
-	// }
-	// }
-	// }
-	//
-	// crearNotificacion("Has eliminado el evento con exito!", usuario);
-	//
-	// return "todoloseventos.xhtml";
-	// }
+	
+	public String borrarEvento(Evento ev) {
+		EventoFacade ef = new EventoFacade();
+		DateevFacade def = new DateevFacade();
+	 	TagFacade tf = new TagFacade();
+	 	List<Tag> listaTags = encontrarTagsDeEvento();
+	
+	 	//Elimino tags de evento
+	 	List<Tag> listaTemp;
+	 	for(int i = 0; i < listaTags.size(); i++)
+	 	{
+	 		listaTemp = tf.encontrarTagPorNombre(listaTags.get(0).getNombre());
+	 		if(!listaTemp.isEmpty())
+	 			;//eliminarTagEvento(listaTemp.get(0));
+	 	}
+	
+	 	//Elimino Evento
+	 	//List<Dateev> listaFecha = def.encontrarFechaPorID(ev.getDateevId().toString());
+	 	ef.eliminarEventoPorID(ev.getId());
+	 	//Elimino Fecha de Evento
+	 	//List<Evento> listaEvento = ef.encontrarEventosPorFecha(listaFecha.get(0).getId());
+	 	//if(listaEvento.isEmpty())
+	 		def.eliminarDateevPorID(ev.getDateevId());
+	 	//crearNotificacion("Has eliminado el evento con exito!", usuario);
+	
+	 	return "todoloseventos.xhtml";
+	 }
+	
 	public List<Evento> mostrarEventosOrdenadosAlfabeticamente() {
 		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
@@ -734,7 +708,7 @@ public class DiarioSurBean implements Serializable {
 	// // pf.
 	// }
 	// }
-	public double mostrarPuntuacionMedia(Evento ev) {
+	/*public double mostrarPuntuacionMedia(Evento ev) {
 		// PuntuacionFacade pf = new PuntuacionFacade();
 		// List<Puntuacion> puntuaciones =
 		// pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
@@ -746,7 +720,7 @@ public class DiarioSurBean implements Serializable {
 
 		return 5;// puntuacionTotal / puntuaciones.size();
 
-	}
+	}*/
 
 	/*
 	 * TagFacade
@@ -937,8 +911,7 @@ public class DiarioSurBean implements Serializable {
 	 */
 	public List<Notificacion> mostrarNotificacionesNoLeidas() {
 		NotificacionFacade nf = new NotificacionFacade();
-		// return
-		// nf.encontrarNotificacionesNoLeidasDeUsuario(usuario.getId().toString());
+		// return nf.encontrarNotificacionesNoLeidasDeUsuario(usuario.getId().toString());
 		Notificacion n = new Notificacion();
 		n.setDescripcion("asd");
 		n.setId(1);
@@ -953,12 +926,10 @@ public class DiarioSurBean implements Serializable {
 	 */
 	public String marcarNotificacionComoLeida(Notificacion not) {
 		NotificacionFacade nf = new NotificacionFacade();
-		// clienteNotificacion cliente = new clienteNotificacion();
 		// Notificacion notTemp = not;
 		// notTemp.setLeida(1);
 		//
-		// cliente.edit_XML(notTemp, notTemp.getId().toString());
-		// nf.editarblablalba(notTemp);
+		// nf.editarNotificacion(notTemp), notTemp.getId());
 
 		return "index.xhtml";
 	}
@@ -1074,5 +1045,74 @@ public class DiarioSurBean implements Serializable {
 		return puntuacionTotal;
 
 	}
+	
+	public String validarEvento(Evento ev) {
+		EventoFacade ef = new EventoFacade();
+		Evento eventoTemporal = ev;
+		
+		eventoTemporal.setEstarevisado(1);
+		
+		//ef.editarEvento(eventoTemporal, ev.getId().toString());
+		
+		crearNotificacion("El evento se ha validad con exito!", usuario);
+		
+		return "validarEvento.xhtml";
+	}
+	
+	public void adjuntarTagsUsuario() {
+		TagusuarioFacade tuf = new TagusuarioFacade();
+		String[] partes = tagsUsuario.trim().toLowerCase().split(",");
+		Tag tagCreado;
+		Tagusuario tagUs = new Tagusuario();
+		
+		for (int i = 0; i < partes.length; i++)
+		{
+			tagCreado = crearTag(partes[i]);
+			//List<Tagusuario> lista = tuf.encontrarTagUsuarioPorTagYUsuario(tagCreado.getId().toString(), usuario.getId().toString());
+			
+			//if(lista.isEmpty())
+			{
+			//	tagUs.setUsuarioId(usuario); //seria usuario.getID()?
+			//	tagUs.setTagId(tagCreado);
+				
+				tuf.crearTagusuario(tagUs);
+			}
+		}
+		
+		crearNotificacion("Tus tags se han añadido con exito!", usuario);
+		
+		irPerfil();
+	}
+	
+	public void eliminarTagDeUsuario(Tag tagUsuario) {
+		TagFacade tf = new TagFacade();
+		TagusuarioFacade tuf = new TagusuarioFacade();
+		TageventoFacade tef = new TageventoFacade();
+		
+		//List<Tagusuario> lista = tuf.encontrarTagUsuarioPorTagYUsuario(tagUsuario.getId().toString(), usuario.getId().toString());
+		//tuf.eliminarTagusuario(lista.get(0).getId());
+		
+		//lista = tuf.encontrarTagusuarioPorID(tagUsuario.getId().toString());
+		//if(lista.isEmpty()){
+			List<Tagevento> lista2 = tef.encontrarTageventoPorID(tagUsuario.getId());
+			
+			if(lista2.isEmpty())
+			;//	tf.eliminarTag(tagUsuario.getId());
+		//}
+		
+		crearNotificacion("Has eliminado el tag con exito!", usuario);
 
+        irPerfil();
+	}
+	
+	public void crearNotificacion(String contenido, Usuario user) {
+		NotificacionFacade nf = new NotificacionFacade();
+		
+		Notificacion not = new Notificacion();
+		not.setDescripcion(contenido);
+		not.setLeida(0);
+		not.setUsuarioId(user.getId());
+		
+		nf.crearNotificacion(contenido, user.getId());
+	}
 }
