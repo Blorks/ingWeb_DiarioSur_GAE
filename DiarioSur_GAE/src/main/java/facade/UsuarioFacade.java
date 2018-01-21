@@ -85,7 +85,7 @@ public class UsuarioFacade implements Serializable{
 
 	
 	
-	//Métodos Públicos
+	//Métodos Públicos - CRUD
 	public void crearUsuario(Usuario user) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Usuario");
@@ -98,18 +98,44 @@ public class UsuarioFacade implements Serializable{
 		
 		ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
-
-		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("nombre", user.getNombre() != null ? user.getNombre() : initStr);
-		entidad.setProperty("apellidos", user.getApellidos() != null ? user.getApellidos() : initStr);
-		entidad.setProperty("email", user.getEmail() != null ? user.getEmail() : initStr);
-		entidad.setProperty("hashpassword", user.getHashpassword() != null ? user.getHashpassword() : initStr);
-		entidad.setProperty("rol", user.getRol() != null ? user.getRol() : initStr);
-		entidad.setProperty("fileevId", user.getFileev() != null ? user.getFileev() : init);
+		
+		try {
+			entidad.setProperty("ID", ultimoID);
+			entidad.setProperty("nombre", user.getNombre() != null ? user.getNombre() : initStr);
+			entidad.setProperty("apellidos", user.getApellidos() != null ? user.getApellidos() : initStr);
+			entidad.setProperty("email", user.getEmail() != null ? user.getEmail() : initStr);
+			entidad.setProperty("hashpassword", user.getHashpassword() != null ? user.getHashpassword() : initStr);
+			entidad.setProperty("rol", user.getRol() != null ? user.getRol() : initStr);
+			entidad.setProperty("fileevId", user.getFileev() != null ? user.getFileev() : init);
+			
+			conexion = datastore.beginTransaction();
+			
+			datastore.put(conexion, entidad);
+		}catch (Exception e) {
+			System.out.println("Error en UsuarioFacade -> crearUsuario");
+		}finally {
+			conexion.commit();
+		}
+	}
+	
+	public void eliminarUsuarioPorID(Integer id) {
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		
 		conexion = datastore.beginTransaction();
 		
-		datastore.put(conexion, entidad);
+		Query q = new Query("Usuario").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
+		q.setFilter(filtro);
+
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			Key key = listaEntidades.get(0).getKey();
+			
+			datastore.delete(conexion, key);
+		}catch (Exception e) {
+			System.out.println("Error en UsuarioFacade -> eliminarUsuarioPorID");
+		}
+		
 		conexion.commit();
 	}
 	
@@ -139,12 +165,14 @@ public class UsuarioFacade implements Serializable{
 			 datastore.put(conexion, entidad);
 
 		}catch (Exception e) {
-			System.out.println("Usuario " + user.getNombre() + " " + user.getApellidos() + " no encontrado. UsuarioFacade.editarUsuario");
+			System.out.println("Error en UsuarioFacade -> editarUsuario");
 		}
 		
 		conexion.commit();
 	}
 	
+	
+	//Métodos Públicos - CRUD
 	public List<Usuario> encontrarUsuarioPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Usuario> lista = new ArrayList<>();
@@ -156,13 +184,13 @@ public class UsuarioFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 
 			if(!listaEntidades.isEmpty()){
 				lista = crearEntidades(listaEntidades.subList(0, 1));				
 			}
 		}catch (Exception e) {
-			System.out.println("Usuario " + id + " no encontrado. UsuarioFacade.encontrarUsuarioPorID");
+			System.out.println("Error en UsuarioFacade -> encontrarUsuarioPorID");
 		}finally {
 			conexion.commit();
 		}
@@ -181,40 +209,23 @@ public class UsuarioFacade implements Serializable{
 		q.setFilter(filtro);
 		
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 
 			if(!listaEntidades.isEmpty()){
 				lista = crearEntidades(listaEntidades.subList(0, 1));				
 			}
 
 		}catch (Exception e) {
-			System.out.println("Usuario " + email + " no encontrado. (UsuarioFacade.encontrarUsuarioPorEmail())");
+			System.out.println("Error en UsuarioFacade -> encontrarUsuarioPorEmail");
 		}finally {
 			conexion.commit();
 		}
 		return lista;
 	}
-	
-	public void eliminarUsuarioPorID(Integer id) {
-		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
-		
-		conexion = datastore.beginTransaction();
-		
-		Query q = new Query("Usuario").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
-		q.setFilter(filtro);
 
-		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
-			Key key = listaEntidades.get(0).getKey();
-			
-			datastore.delete(conexion, key);
-		}catch (Exception e) {
-			System.out.println("Usuario " + id + " no encontrado. (UsuarioFacade.eliminarUsuarioPorID");
-		}
-		
-		conexion.commit();
-	}
+	
+	
+
 	
 	
 	

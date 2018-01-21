@@ -8,7 +8,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -21,7 +20,6 @@ public class TagFacade implements Serializable{
 
 	private DatastoreService datastore;
 	private Entity entidad;
-	Key key;
 	Transaction conexion;
 	
 	public TagFacade(){}
@@ -43,8 +41,8 @@ public class TagFacade implements Serializable{
 	}
 	
 	private Integer incrementarID(Integer id) {
-		Integer aux = id + 1;
-		return aux;
+		id = id + 1;
+		return id;
 	}
 	
 	private List<Tag> crearEntidades(List<Entity> listaEntidades) {
@@ -67,8 +65,7 @@ public class TagFacade implements Serializable{
 	}
 
 	
-	
-	//Métodos Públicos
+	//Métodos Públicos - CRUD
 	public void crearTag(Tag tag) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Tag");
@@ -78,15 +75,22 @@ public class TagFacade implements Serializable{
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
-		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("nombre", tag.getNombre() != null ? tag.getNombre() : "vacio");
-		
-		conexion = datastore.beginTransaction();
-		
-		datastore.put(conexion, entidad);
-		conexion.commit();
+		try {
+			entidad.setProperty("ID", ultimoID);
+			entidad.setProperty("nombre", tag.getNombre() != null ? tag.getNombre() : "vacio");
+			
+			conexion = datastore.beginTransaction();
+			
+			datastore.put(conexion, entidad);
+		}catch (Exception e) {
+			System.out.println("Error en TagFacade -> crearTag");
+		}finally {
+			conexion.commit();
+		}
 	}
+
 	
+	//Métodos Públicos - FIND
 	public List<Tag> encontrarTagPorNombre(String nombre) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Tag> lista = new ArrayList<>();
@@ -101,7 +105,7 @@ public class TagFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Tag '" + nombre + "' no encontrado");
+			System.out.println("Error en TagFacade -> encontrarTagPorNombre");
 		}finally {
 			conexion.commit();
 		}
@@ -123,11 +127,10 @@ public class TagFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en TagFacade -> encontrarTagPorID");
 		}finally {
 			conexion.commit();
 		}
-
 		return lista;
 	}
 }

@@ -22,7 +22,6 @@ public class TageventoFacade implements Serializable{
 	
 	private DatastoreService datastore;
 	private Entity entidad;
-	Key key;
 	Transaction conexion;
 	
 	public TageventoFacade(){}
@@ -69,10 +68,8 @@ public class TageventoFacade implements Serializable{
 		return lista;
 	}
 
-	
-	
 
-	//Mï¿½todos Pï¿½blicos
+	//Métodos Públicos - CRUD
 	public void crearTagevento(Tagevento tag) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Tagevento");
@@ -81,16 +78,44 @@ public class TageventoFacade implements Serializable{
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
-		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("eventoId", tag.getEventoId() != null ? tag.getEventoId() : init);
-		entidad.setProperty("tagId", tag.getTagId() != null ? tag.getTagId() : init);
+		try {
+			entidad.setProperty("ID", ultimoID);
+			entidad.setProperty("eventoId", tag.getEventoId() != null ? tag.getEventoId() : init);
+			entidad.setProperty("tagId", tag.getTagId() != null ? tag.getTagId() : init);
+			
+			conexion = datastore.beginTransaction();
+			
+			datastore.put(conexion, entidad);
+		}catch (Exception e) {
+			System.out.println("Error en TageventoFacade -> crearTagevento");
+		}finally {
+			conexion.commit();
+		}
+	}
+	
+	public void eliminarTagEventoPorID(Integer id) {
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		
 		conexion = datastore.beginTransaction();
 		
-		datastore.put(conexion, entidad);
-		conexion.commit();
+		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
+		q.setFilter(filtro);
+		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			Key key = listaEntidades.get(0).getKey();
+			datastore.delete(conexion, key);
+			
+		}catch (Exception e) {
+			System.out.println("Error en TageventoFacade -> eliminarTagEventoPorID");
+		}finally {
+			conexion.commit();
+		}
 	}
+
 	
+	//Métodos Públicos - FIND
 	public List<Tagevento> encontrarTageventoPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Tagevento> lista = new ArrayList<>();
@@ -105,7 +130,7 @@ public class TageventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en TageventoFacade -> encontrarTageventoID");
 		}finally {
 			conexion.commit();
 		}
@@ -130,7 +155,7 @@ public class TageventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en TageventoFacade -> encontrarTagEventoPorTagYEvento");
 		}finally {
 			conexion.commit();
 		}
@@ -149,10 +174,10 @@ public class TageventoFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en TageventoFacade -> encontrarTageventoPorEvento");
 		}finally {
 			conexion.commit();
 		}
@@ -171,37 +196,15 @@ public class TageventoFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en TageventoFacade -> encontrarTageventoPorTag");
 		}finally {
 			conexion.commit();
 		}
 
 		return lista;
 	}
-	
 
-	public void eliminarTagEventoPorID(Integer id) {
-		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
-		
-		conexion = datastore.beginTransaction();
-		
-		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
-		q.setFilter(filtro);
-		
-		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
-			Key key = listaEntidades.get(0).getKey();
-			datastore.delete(conexion, key);
-			
-		}catch (Exception e) {
-			//System.out.println("Fecha " + id + " no encontrada");
-		}finally {
-			conexion.commit();
-		}
-		
-	}
 }
