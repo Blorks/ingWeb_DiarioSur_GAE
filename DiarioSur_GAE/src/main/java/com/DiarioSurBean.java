@@ -934,17 +934,19 @@ public class DiarioSurBean implements Serializable {
 
 	public String mostrarFechaDeEvento(Evento ev) {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		DateevFacade dateevFacade = new DateevFacade();
+		Dateev fecha = new Dateev();
+		
+		fecha = dateevFacade.encontrarFechaPorID(ev.getDateevId()).get(0);
 
-		// if (ev.getDateevId().getEsunico() == 1) {
-		// return formato.format(ev.getDateevId().getDia());
-		// } else if (ev.getDateevId().getTodoslosdias() == 1) {
-		// return formato.format(ev.getDateevId().getDesde()) + " - " +
-		// formato.format(ev.getDateevId().getHasta());
-		// } else {
-		// arFecha = ev.getDateevId().getListadias().trim().split(",");
-
-		return "01/01/2001";// arFecha[0] + " y varias fechas m�s.";
-
+		if (fecha.getEsunico() == 1) {
+			return formato.format(fecha.getDia());
+		} else if (fecha.getTodoslosdias() == 1) {
+			return formato.format(fecha.getDesde()) + " - " + formato.format(fecha.getHasta());
+		} else {
+			arFecha = fecha.getListadias().trim().split(",");
+			return arFecha[0] + " y varias fechas mas.";
+		}
 	}
 
 	/*
@@ -952,15 +954,7 @@ public class DiarioSurBean implements Serializable {
 	 */
 	public List<Notificacion> mostrarNotificacionesNoLeidas() {
 		NotificacionFacade nf = new NotificacionFacade();
-		// return
-		// nf.encontrarNotificacionesNoLeidasDeUsuario(usuario.getId().toString());
-		Notificacion n = new Notificacion();
-		n.setDescripcion("asd");
-		n.setId(1);
-		n.setLeida(0);
-		List<Notificacion> ln = new ArrayList<>();
-		ln.add(n);
-		return ln;
+		return nf.encontrarNotificacionesNoLeidasDeUsuario(usuario.getId());
 	}
 
 	/*
@@ -968,19 +962,14 @@ public class DiarioSurBean implements Serializable {
 	 */
 	public String marcarNotificacionComoLeida(Notificacion not) {
 		NotificacionFacade nf = new NotificacionFacade();
-		// Notificacion notTemp = not;
-		// notTemp.setLeida(1);
-		//
-		// nf.editarNotificacion(notTemp), notTemp.getId());
+		Notificacion notTemp = not;
+		notTemp.setLeida(1);
+		
+		nf.editarNotificacion(notTemp);
 
 		return "index.xhtml";
 	}
 
-	public void eliminarEventoPorID(Integer id) {
-		// TERMINAR; FALTA HACER DELETE EN CASCADA
-		EventoFacade ef = new EventoFacade();
-		ef.eliminarEventoPorID(id);
-	}
 
 	/*
 	 * public List<Fileev> encontrarArchivoPorURL(String url) { FileevFacade fef
@@ -992,12 +981,12 @@ public class DiarioSurBean implements Serializable {
 
 	public List<Notificacion> mostrarNotificacionesDeUsuario() {
 		NotificacionFacade nf = new NotificacionFacade();
-		return nf.encontrarTodasLasNotificacionesDeUsuario(usuario.getId().toString());
+		return nf.encontrarTodasLasNotificacionesDeUsuario(usuario.getId());
 	}
 
 	public List<Notificacion> encontrarNotificacionPorId(String id) {
 		NotificacionFacade nf = new NotificacionFacade();
-		return nf.encontrarNotificacionPorId(id);
+		return nf.encontrarNotificacionPorId(Integer.parseInt(id));
 	}
 
 	public List<Puntuacion> encontrarTodasLasPuntuaciones() {

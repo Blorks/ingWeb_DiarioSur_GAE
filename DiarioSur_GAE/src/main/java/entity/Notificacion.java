@@ -7,7 +7,7 @@ public class Notificacion implements Serializable{
 	private Integer id;
     private String descripcion;
     private Integer leida;
-    private int usuarioId;
+    private Integer usuarioId;
 
     public Notificacion() {
     }
@@ -40,11 +40,11 @@ public class Notificacion implements Serializable{
         this.leida = leida;
     }
 
-    public int getUsuarioId() {
+    public Integer getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(int usuarioId) {
+    public void setUsuarioId(Integer usuarioId) {
         this.usuarioId = usuarioId;
     }
 
