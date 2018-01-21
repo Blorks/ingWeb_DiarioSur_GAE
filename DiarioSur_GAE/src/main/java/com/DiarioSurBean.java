@@ -996,7 +996,7 @@ public class DiarioSurBean implements Serializable {
 
 	public List<Puntuacion> encontrarPuntuacionesDeUsuario(String idUser) {
 		PuntuacionFacade pf = new PuntuacionFacade();
-		return pf.encontrarPuntuacionesDeUsuario(usuario.getId().toString());
+		return pf.encontrarPuntuacionesDeUsuario(usuario.getId());
 	}
 
 	public String mostrarMapaMarcas() {
@@ -1044,7 +1044,7 @@ public class DiarioSurBean implements Serializable {
 	public void actualizarPuntuacion(String punto, String evId) {
 		PuntuacionFacade pf = new PuntuacionFacade();
 
-		List<Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEventoYUsuario(usuario.getId().toString(), evId);
+		List<Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEventoYUsuario(usuario.getId(), Integer.parseInt(evId));
 		Puntuacion pt = new Puntuacion();
 
 		if (puntuaciones.isEmpty()) {
@@ -1062,20 +1062,18 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public double mostrarPuntuacionMedia(Evento ev) {
-		// PuntuacionFacade pf = new PuntuacionFacade();
-		//
-		// List<Puntuacion> puntuaciones =
-		// pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
-		// double puntuacionTotal = 0;
-		//
-		// for (int i = 0; i < puntuaciones.size(); i++) {
-		// puntuacionTotal = puntuacionTotal +
-		// puntuaciones.get(i).getPuntuacion();
-		// }
-		//
-		// puntuacionTotal = puntuacionTotal / puntuaciones.size();
+		PuntuacionFacade pf = new PuntuacionFacade();
+		
+		List<Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEvento(ev.getId());
+		double puntuacionTotal = 0;
+		
+		for (int i = 0; i < puntuaciones.size(); i++) {
+			puntuacionTotal = puntuacionTotal + puntuaciones.get(i).getPuntuacion();
+		}
+		
+		puntuacionTotal = puntuacionTotal / puntuaciones.size();
 
-		return 5;// puntuacionTotal;
+		return puntuacionTotal;
 
 	}
 
