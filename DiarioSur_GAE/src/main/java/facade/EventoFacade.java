@@ -80,13 +80,13 @@ public class EventoFacade implements Serializable{
 			val = e.getProperty("estaRevisado");
 			ev.setEstarevisado(Integer.parseInt(val.toString()));
 			
-			val = e.getProperty("tagEventoList");
-			List<Integer> listaTagevento = (List<Integer>) val;
-			ev.setTageventoList(listaTagevento);
-			
-			val = e.getProperty("puntuacionList");
-			List<Integer> listaPuntuacion = (List<Integer>) val;
-			ev.setPuntuacionList(listaPuntuacion);
+//			val = e.getProperty("tagEventoList");
+//			List<Integer> listaTagevento = (List<Integer>) val;
+//			ev.setTageventoList(listaTagevento);
+//			
+//			val = e.getProperty("puntuacionList");
+//			List<Integer> listaPuntuacion = (List<Integer>) val;
+//			ev.setPuntuacionList(listaPuntuacion);
 			
 			val = e.getProperty("dateevID");
 			ev.setDateevId(Integer.parseInt(val.toString()));
@@ -227,10 +227,10 @@ public class EventoFacade implements Serializable{
 		q.setFilter(filtro);
 		
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Eventos no encontrados");
+			System.out.println("Eventos no encontrados (EventoFacade)");
 		}finally {
 			conexion.commit();
 		}
