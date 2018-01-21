@@ -3,78 +3,81 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:f="http://xmlns.jcp.org/jsf/core"
-	xmlns:h="http://xmlns.jcp.org/jsf/html">
-
-<!--
-								Mapa para la parte del index y filtrados
-								
-								Hay que añadir un IF para que solo se muestre en algunas ocaciones ***************************************************
-																			 -->
-<script type="text/javascript"
-	src="http://maps.google.com/maps/api/js?key=AIzaSyAb7jwWqPc7TD6J69V6dZS_9lucF5CxkF8"></script>
-<script type="text/javascript">
-	$(document).ready(function () {
-		/*
-		 * divClass: evento+$idEvento
-		 */
-		var eventos = { 
-			    #{diarioSurBean.mostrarMapaMarcas()}
-			}		
-		
-	    var latitud = eventos.evento1.latitud;
-	    var longitud= eventos.evento1.longitud;
-	    
-	    var mapDiv = document.getElementById('map');
-	    var latlng = new google.maps.LatLng(latitud, longitud);
-	    var options = {
-	        center: latlng,
-	        zoom: 7,
-	        mapTypeControl: false,
-	        mapTypeId: google.maps.MapTypeId.ROADMAP
-	    };
-	    var map = new google.maps.Map(mapDiv, options);
-		
-	    for (key in eventos){
-	    	marca(eventos[key].latitud, eventos[key].longitud, eventos[key].titulo, eventos[key].titulo, eventos[key].divClass);
-	    }
+	xmlns:h="http://xmlns.jcp.org/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 	
+<c:if test="#{diarioSurBean.isMostrarMapaEventos()}">
+	<!--
+									Mapa para la parte del index y filtrados
+									
+									Hay que añadir un IF para que solo se muestre en algunas ocaciones ***************************************************
+																				 -->
+	<script type="text/javascript"
+		src="http://maps.google.com/maps/api/js?key=AIzaSyAb7jwWqPc7TD6J69V6dZS_9lucF5CxkF8"></script>
+	<script type="text/javascript">
+		$(document).ready(function () {
+			/*
+			 * divClass: evento+$idEvento
+			 */
+			var eventos = { 
+				    #{diarioSurBean.mostrarMapaMarcas()}
+				}		
+			
+		    var latitud = eventos.evento1.latitud;
+		    var longitud= eventos.evento1.longitud;
+		    
+		    var mapDiv = document.getElementById('map');
+		    var latlng = new google.maps.LatLng(latitud, longitud);
+		    var options = {
+		        center: latlng,
+		        zoom: 7,
+		        mapTypeControl: false,
+		        mapTypeId: google.maps.MapTypeId.ROADMAP
+		    };
+		    var map = new google.maps.Map(mapDiv, options);
+			
+		    for (key in eventos){
+		    	marca(eventos[key].latitud, eventos[key].longitud, eventos[key].titulo, eventos[key].titulo, eventos[key].divClass);
+		    }
+		
+		
+		    function marca(lat, lon, tit, cont, divClass) {
+		        var marker = new google.maps.Marker({
+		            position: new google.maps.LatLng(lat, lon),
+		            map: map,
+		            title: tit
+		        });
+		        // evento de clicar encima de la marca
+		        google.maps.event.addListener(marker, 'click', function (ev) {
+		            var infowindow = new google.maps.InfoWindow({
+		                content: '<a href="#' + divClass + '">' + cont + '</a>'
+		            });
+		            infowindow.open(map, marker);
+		            $('a[href^="#"]').on('click', function(event) {
 	
-	    function marca(lat, lon, tit, cont, divClass) {
-	        var marker = new google.maps.Marker({
-	            position: new google.maps.LatLng(lat, lon),
-	            map: map,
-	            title: tit
-	        });
-	        // evento de clicar encima de la marca
-	        google.maps.event.addListener(marker, 'click', function (ev) {
-	            var infowindow = new google.maps.InfoWindow({
-	                content: '<a href="#' + divClass + '">' + cont + '</a>'
-	            });
-	            infowindow.open(map, marker);
-	            $('a[href^="#"]').on('click', function(event) {
-
-	                var target = $(this.getAttribute('href'));
-
-	                if( target.length ) {
-	                    event.preventDefault();
-	                    $('html, body').stop().animate({
-	                        scrollTop: target.offset().top - 100
-	                    }, 1000);
-	                }
-
-	            });
-	        });
-	        google.maps.event.addListener(marker, 'mouseover', function () {
-	        	$('*[class*="evento"]').css("border-color", "#9c9c9c");
-	        	$("." + divClass).css("border-color", "red");	        	
-	        });
-	    }
-	});
-	</script>
-<div class="row">
-	<h2>Ubicación de los eventos</h2>
-	<div id="map" style="height: 500px"></div>
-</div>
+		                var target = $(this.getAttribute('href'));
+	
+		                if( target.length ) {
+		                    event.preventDefault();
+		                    $('html, body').stop().animate({
+		                        scrollTop: target.offset().top - 100
+		                    }, 1000);
+		                }
+	
+		            });
+		        });
+		        google.maps.event.addListener(marker, 'mouseover', function () {
+		        	$('*[class*="evento"]').css("border-color", "#9c9c9c");
+		        	$("." + divClass).css("border-color", "red");	        	
+		        });
+		    }
+		});
+		</script>
+	<div class="row">
+		<h2>Ubicación de los eventos</h2>
+		<div id="map" style="height: 500px"></div>
+	</div>
+</c:if>
 <!--    
                                 Contenido col 4 para sidebar
                                                                              -->

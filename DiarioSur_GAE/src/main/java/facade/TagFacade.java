@@ -43,7 +43,8 @@ public class TagFacade implements Serializable{
 	}
 	
 	private Integer incrementarID(Integer id) {
-		return id++;
+		Integer aux = id + 1;
+		return aux;
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -116,4 +117,24 @@ public class TagFacade implements Serializable{
 		return lista;
 	}
 	
+	public List<Tag> encontrarTagPorID(Integer id) {
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		List<Tag> lista = new ArrayList<>();
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Tag").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
+		q.setFilter(filtro);
+
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			conexion.commit();
+			return lista;
+		}
+		
+		return lista;
+	}
 }
