@@ -79,15 +79,16 @@ public class TagFacade implements Serializable{
 	public void crearTag(Tag tag) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Tag");
-		key = entidad.getKey();
+		List<Integer> listaNumero = new ArrayList<>();
+		listaNumero.add(-1);
 		
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("nombre", tag.getNombre());
-		entidad.setProperty("tagEventoList", tag.getTageventoList());
-		entidad.setProperty("tagUsuarioList", tag.getTagusuarioList());
+		entidad.setProperty("nombre", tag.getNombre() != null ? tag.getNombre() : "vacio");
+		entidad.setProperty("tagEventoList", tag.getTageventoList() != null ? tag.getTageventoList() : listaNumero);
+		entidad.setProperty("tagUsuarioList", tag.getTagusuarioList() != null ? tag.getTagusuarioList() : listaNumero);
 		
 		conexion = datastore.beginTransaction();
 		

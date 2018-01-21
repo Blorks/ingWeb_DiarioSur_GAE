@@ -31,7 +31,7 @@ public class TageventoFacade implements Serializable{
 	public Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
-		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.DESCENDING);
+		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
 		Integer id;
 		
 		try {
@@ -45,7 +45,8 @@ public class TageventoFacade implements Serializable{
 	}
 	
 	private Integer incrementarID(Integer id) {
-		return id++;
+		id = id + 1;
+		return id;
 	}
 	
 	private List<Tagevento> crearEntidades(List<Entity> listaEntidades) {
@@ -76,14 +77,14 @@ public class TageventoFacade implements Serializable{
 	public void crearTagevento(Tagevento tag) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Tagevento");
-		key = entidad.getKey();
+		Integer init = -1;
 		
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("eventoId", tag.getEventoId());
-		entidad.setProperty("tagId", tag.getTagId());
+		entidad.setProperty("eventoId", tag.getEventoId() != null ? tag.getEventoId() : init);
+		entidad.setProperty("tagId", tag.getTagId() != null ? tag.getTagId() : init);
 		
 		conexion = datastore.beginTransaction();
 		

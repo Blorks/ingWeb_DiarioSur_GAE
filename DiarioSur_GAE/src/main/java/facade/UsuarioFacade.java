@@ -103,7 +103,8 @@ public class UsuarioFacade implements Serializable{
 		entidad = new Entity("Usuario");
 		List<Integer> listaNumero = new ArrayList<>();
 		listaNumero.add(-1);
-		String hash = "";
+		Integer init = -1;
+		String initStr = "vacio";
 
 		Integer ultimoID;
 		
@@ -111,15 +112,15 @@ public class UsuarioFacade implements Serializable{
 		ultimoID = incrementarID(ultimoID);
 
 		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("nombre", user.getNombre());
-		entidad.setProperty("apellidos", user.getApellidos());
-		entidad.setProperty("email", user.getEmail());
-		entidad.setProperty("hashpassword", "vacio");
-		entidad.setProperty("rol", user.getRol());
-		entidad.setProperty("fileevId", user.getFileev() != null ? user.getFileev() : new Integer(-1));
+		entidad.setProperty("nombre", user.getNombre() != null ? user.getNombre() : initStr);
+		entidad.setProperty("apellidos", user.getApellidos() != null ? user.getApellidos() : initStr);
+		entidad.setProperty("email", user.getEmail() != null ? user.getEmail() : initStr);
+		entidad.setProperty("hashpassword", user.getHashpassword() != null ? user.getHashpassword() : initStr);
+		entidad.setProperty("rol", user.getRol() != null ? user.getRol() : initStr);
+		entidad.setProperty("fileevId", user.getFileev() != null ? user.getFileev() : init);
 		entidad.setProperty("tagUsuarioList", user.getTagusuarioList() != null ? user.getTagusuarioList() : listaNumero);
 		entidad.setProperty("notificacionList", user.getNotificacionList() != null ? user.getTagusuarioList() : listaNumero);
-		entidad.setProperty("eventoListt", user.getEventoList() != null ? user.getTagusuarioList() : listaNumero);
+		entidad.setProperty("eventoList", user.getEventoList() != null ? user.getTagusuarioList() : listaNumero);
 		
 		conexion = datastore.beginTransaction();
 		
@@ -151,7 +152,7 @@ public class UsuarioFacade implements Serializable{
 			 entidad.setProperty("fileevId", user.getFileev());
 			 entidad.setProperty("tagUsuarioList", user.getTagusuarioList());
 			 entidad.setProperty("notificacionList", user.getNotificacionList());
-			 entidad.setProperty("eventoListt", user.getEventoList());
+			 entidad.setProperty("eventoList", user.getEventoList());
 				
 			 datastore.put(conexion, entidad);
 

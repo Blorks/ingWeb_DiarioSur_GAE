@@ -314,7 +314,7 @@ public class DiarioSurBean implements Serializable {
 			// Adjunto el usuario creador
 
 			List<Usuario> listaUsuario = usuarioFacade.encontrarUsuarioPorEmail(usuario.getEmail());
-			evento.setUsuarioId(listaUsuario.get(0).getId());
+			evento.setUsuarioId(1); //HARDCODEADO
 
 			// Adjunto la fecha del evento
 			adjuntarFecha();
@@ -327,21 +327,19 @@ public class DiarioSurBean implements Serializable {
 			}
 
 			eventoFacade.crearEvento(evento);
-			// evento.setId(eventoFacade.ultimoIdInsertado());
+			evento.setId(eventoFacade.ultimoIdInsertado());
 
 			// Adjunto tags al evento
 			adjuntarTagsEvento();
 
-			// fecha.setEventoId(eventoFacade.ultimoIdInsertado());
-			// clienteFecha.edit_XML(fecha, fecha.getId().toString());
+			fecha.setEventoId(eventoFacade.ultimoIdInsertado());
+			dateevFacade.editarFecha(fecha);
 
 			// Creo notificacion para usuario
 			if (esPeriodista()) {
-				// crearNotificacion("Has creado el evento con exito!",
-				// usuario);
+				notificacionFacade.crearNotificacion("Has creado el evento con exito!", usuario.getId());
 			} else {
-				// crearNotificacion("Tu evento estï¿½ a la espera de ser
-				// validado", usuario);
+				notificacionFacade.crearNotificacion("Tu evento está a la espera de ser validado", usuario.getId());
 			}
 
 			// reset variables
@@ -409,7 +407,7 @@ public class DiarioSurBean implements Serializable {
 
 		if (encontrado == false) {
 			dateevFacade.crearFecha(fecha);
-			// fecha.setId(actualizarIDFecha());
+			fecha.setId(dateevFacade.ultimoIdInsertado());
 		}
 	}
 
@@ -442,7 +440,7 @@ public class DiarioSurBean implements Serializable {
 
 		if (encontrado == false) {
 			dateevFacade.crearFecha(fecha);
-			// fecha.setId(actualizarIDFecha());
+			fecha.setId(dateevFacade.ultimoIdInsertado());
 		}
 
 	}
@@ -469,13 +467,14 @@ public class DiarioSurBean implements Serializable {
 
 		if (encontrado == false) {
 			dateevFacade.crearFecha(fecha);
-			// fecha.setId(actualizarIDFecha());
+			fecha.setId(dateevFacade.ultimoIdInsertado());
 		}
 
 	}
 
 	public void adjuntarFecha() {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		DateevFacade dateevFacade = new DateevFacade();
 
 		if (fecha.getEsunico() == 1) {
 
@@ -515,7 +514,7 @@ public class DiarioSurBean implements Serializable {
 			crearFechaListaDias();
 		}
 
-		// evento.setDateevId(actualizarIDFecha());
+		evento.setDateevId(dateevFacade.ultimoIdInsertado());
 	}
 
 	/*
