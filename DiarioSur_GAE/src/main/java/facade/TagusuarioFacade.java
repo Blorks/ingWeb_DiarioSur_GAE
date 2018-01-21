@@ -8,7 +8,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
@@ -23,7 +22,6 @@ public class TagusuarioFacade implements Serializable{
 	
 	private DatastoreService datastore;
 	private Entity entidad;
-	Key key;
 	Transaction conexion;
 	
 	public TagusuarioFacade(){}
@@ -31,7 +29,7 @@ public class TagusuarioFacade implements Serializable{
 	public Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
-		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
+		Query q = new Query("Tagusuario").addSort("ID", Query.SortDirection.DESCENDING);
 		Integer id;
 		
 		try {
@@ -71,8 +69,7 @@ public class TagusuarioFacade implements Serializable{
 	}
 
 	
-
-	//Métodos Públicos
+	//Métodos Públicos - CRUD
 	public void crearTagusuario(Tagusuario tag) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Tagusuario");
@@ -81,16 +78,23 @@ public class TagusuarioFacade implements Serializable{
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
-		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("usuarioId", tag.getUsuarioId() != null ? tag.getUsuarioId() : initInt);
-		entidad.setProperty("tagId", tag.getTagId() != null ? tag.getTagId() : initInt);
-		
-		conexion = datastore.beginTransaction();
-		
-		datastore.put(conexion, entidad);
-		conexion.commit();
+		try {
+			entidad.setProperty("ID", ultimoID);
+			entidad.setProperty("usuarioId", tag.getUsuarioId() != null ? tag.getUsuarioId() : initInt);
+			entidad.setProperty("tagId", tag.getTagId() != null ? tag.getTagId() : initInt);
+			
+			conexion = datastore.beginTransaction();
+			
+			datastore.put(conexion, entidad);
+		}catch (Exception e) {
+			System.out.println("Error en TagusuarioFacade -> crearTagusuario");
+		}finally {
+			conexion.commit();
+		}
 	}
 	
+	
+	//Métodos Públicos - FIND
 	public List<Tagusuario> encontrarTagusuarioPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Tagusuario> lista = new ArrayList<>();
@@ -105,7 +109,7 @@ public class TagusuarioFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en TagusuarioFacade -> encontrarTagusuarioPorID");
 		}finally {
 			conexion.commit();
 		}
@@ -130,7 +134,7 @@ public class TagusuarioFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en TagusuarioFacade -> encontrarTagUsuarioPorTagYUsuario");
 		}finally {
 			conexion.commit();
 		}
@@ -144,15 +148,15 @@ public class TagusuarioFacade implements Serializable{
 		
 		conexion = datastore.beginTransaction();
 		
-		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("eventoId", FilterOperator.EQUAL, idUsuario);
+		Query q = new Query("Tagusuario").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("usuarioId", FilterOperator.EQUAL, idUsuario);
 		q.setFilter(filtro);
 
 		try {
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en TagusuarioFacade -> encontrarTagusuarioPorUsuario");
 		}finally {
 			conexion.commit();
 		}
