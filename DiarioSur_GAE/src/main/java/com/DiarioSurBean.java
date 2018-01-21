@@ -1031,14 +1031,14 @@ public class DiarioSurBean implements Serializable {
 		List<Tag> listaTemp;
 		for (int i = 0; i < listaTags.size(); i++) {
 			listaTemp = tf.encontrarTagPorNombre(listaTags.get(i).getNombre());
-			// if(!listaTemp.isEmpty())
-			// eliminarTagEvento(listaTemp.get(0));
+			if(!listaTemp.isEmpty())
+				eliminarTagEvento(listaTemp.get(0));
 		}
 
 		adjuntarTagsEvento();
 
 		// creo notificacion
-		// crearNotificacion("Has editado el evento con exito!", usuario);
+		crearNotificacion("Has editado el evento con exito!", usuario);
 	}
 
 	public void actualizarPuntuacion(String punto, String evId) {
