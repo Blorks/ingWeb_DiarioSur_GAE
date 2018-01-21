@@ -403,7 +403,7 @@ public class DiarioSurBean implements Serializable {
 			if (esPeriodista()) {
 				notificacionFacade.crearNotificacion("Has creado el evento con exito!", listaUsuario.get(0).getId());
 			} else {
-				notificacionFacade.crearNotificacion("Tu evento está a la espera de ser validado", listaUsuario.get(0).getId());
+				notificacionFacade.crearNotificacion("Tu evento estï¿½ a la espera de ser validado", listaUsuario.get(0).getId());
 			}
 
 			// reset variables
@@ -1106,7 +1106,7 @@ public class DiarioSurBean implements Serializable {
 			}
 		}
 
-		crearNotificacion("Tus tags se han añadido con exito!", usuario);
+		crearNotificacion("Tus tags se han aï¿½adido con exito!", usuario);
 
 		irPerfil();
 	}
