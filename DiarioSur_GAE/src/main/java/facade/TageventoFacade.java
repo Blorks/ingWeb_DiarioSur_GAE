@@ -103,13 +103,14 @@ public class TageventoFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
-		
+
 		return lista;
 	}
 	
@@ -127,13 +128,14 @@ public class TageventoFacade implements Serializable{
 		q.setFilter(filtro3);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
-		
+
 		return lista;
 	}
 	
@@ -148,13 +150,14 @@ public class TageventoFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
-		
+
 		return lista;
 	}
 	
@@ -169,18 +172,36 @@ public class TageventoFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
-		
+
 		return lista;
 	}
 
-	public void deleteTagEvento(Integer id) {
-		// TODO Auto-generated method stub
+	public void eliminarTagEventoPorID(Integer id) {
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
+		q.setFilter(filtro);
+		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			Key key = listaEntidades.get(0).getKey();
+			datastore.delete(conexion, key);
+			
+		}catch (Exception e) {
+			//System.out.println("Fecha " + id + " no encontrada");
+		}finally {
+			conexion.commit();
+		}
 		
 	}
 	

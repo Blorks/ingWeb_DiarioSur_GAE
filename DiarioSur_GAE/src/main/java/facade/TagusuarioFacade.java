@@ -91,59 +91,74 @@ public class TagusuarioFacade implements Serializable{
 		conexion.commit();
 	}
 	
-	public List<Tagusuario> encontrarTagusuarioPorID(String id) {
+	public List<Tagusuario> encontrarTagusuarioPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Tagusuario> lista = new ArrayList<>();
-		int idTemp = Integer.parseInt(id);
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Tagusuario").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
-		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
 	}
 	
-	public List<Tagusuario> encontrarTagEventoPorTagYUsuario(String idTag, String idUsuario){
+	public List<Tagusuario> encontrarTagUsuarioPorTagYUsuario(Integer idTag, Integer idUsuario){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Tagusuario> lista = new ArrayList<>();
-		int idT = Integer.parseInt(idTag);
-		int idE = Integer.parseInt(idUsuario);
 		
 		conexion = datastore.beginTransaction();
 		
-		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("usuarioId", FilterOperator.EQUAL, idE);
-		FilterPredicate filtro2 = new FilterPredicate("tagId", FilterOperator.EQUAL, idT);
+		Query q = new Query("Tagusuario").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("usuarioId", FilterOperator.EQUAL, idUsuario);
+		FilterPredicate filtro2 = new FilterPredicate("tagId", FilterOperator.EQUAL, idTag);
 		Filter filtro3 = CompositeFilterOperator.and(filtro, filtro2);
 		
 		q.setFilter(filtro3);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
-		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
 	}
 	
-	public List<Tagusuario> encontrarTagusuarioPorUsuario(String idUsuario) {
+	public List<Tagusuario> encontrarTagusuarioPorUsuario(Integer idUsuario) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Tagusuario> lista = new ArrayList<>();
-		int idTemp = Integer.parseInt(idUsuario);
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("eventoId", FilterOperator.EQUAL, idTemp);
+		FilterPredicate filtro = new FilterPredicate("eventoId", FilterOperator.EQUAL, idUsuario);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
-		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
+	
 	}
 
 	
