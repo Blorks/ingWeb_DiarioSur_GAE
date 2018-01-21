@@ -116,7 +116,7 @@ public class EventoFacade implements Serializable{
 		entidad.setProperty("precio", ev.getPrecio() != null ? ev.getPrecio() : initDbl);
 		entidad.setProperty("latitud", ev.getLatitud() != null ? ev.getLatitud() : initDbl);
 		entidad.setProperty("longitud", ev.getLongitud() != null ? ev.getLongitud() : initDbl);
-		entidad.setProperty("estaRevisado", ev.getEstarevisado() != null ? ev.getEstarevisado() : initDbl);
+		entidad.setProperty("estaRevisado", ev.getEstarevisado() != null ? ev.getEstarevisado() : initInt);
 		entidad.setProperty("dateevID", ev.getDateevId() != null ? ev.getDateevId() : initInt);
 		entidad.setProperty("usuarioID", ev.getUsuarioId() != null ? ev.getUsuarioId() : initInt);
 		

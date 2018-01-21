@@ -913,7 +913,7 @@ public class DiarioSurBean implements Serializable {
 		Tagevento tagEv = new Tagevento();
 
 		for (int i = 0; i < partes.length; i++) {
-			tagCreado = crearTag(partes[i]);
+			tagCreado = crearTag(partes[i].trim());
 
 			tagEv.setEventoId(evento.getId());
 			tagEv.setTagId(tagCreado.getId());

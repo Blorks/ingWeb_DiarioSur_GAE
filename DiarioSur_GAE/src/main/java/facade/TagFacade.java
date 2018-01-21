@@ -98,13 +98,14 @@ public class TagFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			System.out.println("Tag '" + nombre + "' no encontrado");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
-		
+
 		return lista;
 	}
 	
@@ -119,13 +120,14 @@ public class TagFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
 			conexion.commit();
-			return lista;
 		}
-		
+
 		return lista;
 	}
 }
