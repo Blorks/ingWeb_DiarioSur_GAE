@@ -180,7 +180,7 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public String irTodosLosEventos() {
-		return "todosloseventos.xhtml";
+		return "todoloseventos.xhtml";
 	}
 
 	public String irValidarEvento() {
