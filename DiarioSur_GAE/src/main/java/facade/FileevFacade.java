@@ -90,7 +90,7 @@ public class FileevFacade implements Serializable{
 		entidad.setProperty("nombre", fe.getNombre());
 		entidad.setProperty("url", fe.getUrl());
 		entidad.setProperty("tipo", fe.getTipo());
-		entidad.setProperty("usuasrioId", fe.getUsuarioId());
+		entidad.setProperty("usuarioId", fe.getUsuarioId());
 		
 		conexion = datastore.beginTransaction();
 		
@@ -125,8 +125,9 @@ public class FileevFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
-			lista = crearEntidades(listaEntidades);
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			System.out.println(listaEntidades.size() + " lista encontrarArchivo");
+			lista = crearEntidades(listaEntidades.subList(0, 1));
 		}catch (Exception e) {
 			System.out.println("Fileev " + id + " no encontrado");
 		}finally {

@@ -35,7 +35,7 @@ public class TageventoFacade implements Serializable{
 		Integer id;
 		
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			id = Integer.parseInt(listaEntidades.get(0).getProperty("ID").toString());
 		}catch (Exception e) {
 			id = 0;
@@ -45,8 +45,8 @@ public class TageventoFacade implements Serializable{
 	}
 	
 	private Integer incrementarID(Integer id) {
-		id = id + 1;
-		return id;
+		Integer aux = id + 1;
+		return aux;
 	}
 	
 	private List<Tagevento> crearEntidades(List<Entity> listaEntidades) {
@@ -73,7 +73,7 @@ public class TageventoFacade implements Serializable{
 	
 	
 
-	//Métodos Públicos
+	//Mï¿½todos Pï¿½blicos
 	public void crearTagevento(Tagevento tag) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Tagevento");
@@ -177,6 +177,11 @@ public class TageventoFacade implements Serializable{
 		}
 		
 		return lista;
+	}
+
+	public void deleteTagEvento(Integer id) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
