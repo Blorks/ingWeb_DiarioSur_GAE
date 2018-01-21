@@ -129,25 +129,22 @@ public class DateevFacade implements Serializable {
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		Date initDate = new Date();
 		try {
-			initDate = sdf.parse("01/01/1900");
+			initDate = sdf.parse("01/01/2015");
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-		
-		
-		
 		
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
 		entidad.setProperty("esUnico", dateev.getEsunico() != null ? dateev.getEsunico() : initInt);
-		entidad.setProperty("dia", dateev.getDia() != null ? dateev.getDia() : initDate);
+		entidad.setProperty("dia", dateev.getEsunico() == 1 ? dateev.getDia() : initDate);
 		entidad.setProperty("todoslosdias", dateev.getTodoslosdias() != null ? dateev.getTodoslosdias() : initInt);
-		entidad.setProperty("desde", dateev.getDesde() != null ? dateev.getDesde() : initDate);
-		entidad.setProperty("hasta", dateev.getHasta() != null ? dateev.getHasta() : initDate);
+		entidad.setProperty("desde", dateev.getTodoslosdias() == 1 ? dateev.getDesde() : initDate);
+		entidad.setProperty("hasta", dateev.getTodoslosdias() == 1 ? dateev.getHasta() : initDate);
 		entidad.setProperty("variosDias", dateev.getVariosdias() != null ? dateev.getVariosdias() : initInt);
-		entidad.setProperty("listaDias", dateev.getListadias() != null ? dateev.getListadias() : initStr);
+		entidad.setProperty("listaDias", dateev.getVariosdias() == 1 ? dateev.getListadias() : initStr);
 		entidad.setProperty("eventoID", dateev.getEventoId() != null ? dateev.getEventoId() : initInt);
 		
 		conexion = datastore.beginTransaction();
@@ -161,6 +158,18 @@ public class DateevFacade implements Serializable {
 		entidad = new Entity("Dateev");
 		List<Entity> listaEntidades = new ArrayList<>();
 		
+		Integer initInt = -1;
+		String initStr = "vacio";
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date initDate = new Date();
+		try {
+			initDate = sdf.parse("01/01/2015");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.ASCENDING);
@@ -171,14 +180,14 @@ public class DateevFacade implements Serializable {
 			 listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			 entidad = listaEntidades.get(0);
 			 
-			entidad.setProperty("esUnico", dateev.getEsunico());
-			entidad.setProperty("dia", dateev.getDia());
-			entidad.setProperty("todoslosdias", dateev.getTodoslosdias());
-			entidad.setProperty("desde", dateev.getDesde());
-			entidad.setProperty("hasta", dateev.getHasta());
-			entidad.setProperty("variosDias", dateev.getVariosdias());
-			entidad.setProperty("listaDias", dateev.getListadias());
-			entidad.setProperty("eventoID", dateev.getEventoId());
+			entidad.setProperty("esUnico", dateev.getEsunico() != null ? dateev.getEsunico() : initInt);
+			entidad.setProperty("dia", dateev.getEsunico() == 1 ? dateev.getDia() : initDate);
+			entidad.setProperty("todoslosdias", dateev.getTodoslosdias() != null ? dateev.getTodoslosdias() : initInt);
+			entidad.setProperty("desde", dateev.getTodoslosdias() == 1 ? dateev.getDesde() : initDate);
+			entidad.setProperty("hasta", dateev.getTodoslosdias() == 1 ? dateev.getHasta() : initDate);
+			entidad.setProperty("variosDias", dateev.getVariosdias() != null ? dateev.getVariosdias() : initInt);
+			entidad.setProperty("listaDias", dateev.getVariosdias() == 1 ? dateev.getListadias() : initStr);
+			entidad.setProperty("eventoID", dateev.getEventoId() != null ? dateev.getEventoId() : initInt);
 				
 			 datastore.put(conexion, entidad);
 

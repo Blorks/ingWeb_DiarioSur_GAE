@@ -12,9 +12,6 @@ public class Usuario implements Serializable{
     private String hashpassword;
     private String rol;
     private Integer fileev;
-    private List<Integer> tagusuarioList;
-    private List<Integer> notificacionList;
-    private List<Integer> eventoList;
 
     public Usuario() {
     }
@@ -71,29 +68,6 @@ public class Usuario implements Serializable{
         this.rol = rol;
     }
 
-    public List<Integer> getTagusuarioList() {
-        return tagusuarioList;
-    }
-
-    public void setTagusuarioList(List<Integer> tagusuarioList) {
-        this.tagusuarioList = tagusuarioList;
-    }
-
-    public List<Integer> getNotificacionList() {
-        return notificacionList;
-    }
-
-    public void setNotificacionList(List<Integer> notificacionList) {
-        this.notificacionList = notificacionList;
-    }
-
-    public List<Integer> getEventoList() {
-        return eventoList;
-    }
-
-    public void setEventoList(List<Integer> eventoList) {
-        this.eventoList = eventoList;
-    }
 
     @Override
     public int hashCode() {

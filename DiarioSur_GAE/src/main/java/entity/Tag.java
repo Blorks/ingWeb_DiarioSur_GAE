@@ -1,14 +1,11 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Tag implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer id;
     private String nombre;
-    private List<Integer> tageventoList;
-    private List<Integer> tagusuarioList;
 
     public Tag() {
     }
@@ -31,22 +28,6 @@ public class Tag implements Serializable{
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
-    }
-
-    public List<Integer> getTageventoList() {
-        return tageventoList;
-    }
-
-    public void setTageventoList(List<Integer> tageventoList) {
-        this.tageventoList = tageventoList;
-    }
-
-    public List<Integer> getTagusuarioList() {
-        return tagusuarioList;
-    }
-
-    public void setTagusuarioList(List<Integer> tagusuarioList) {
-        this.tagusuarioList = tagusuarioList;
     }
 
     @Override
