@@ -242,7 +242,7 @@ public class EventoFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
 			System.out.println("Error en EventoFacade -> encontrarEventoPorUsuario");

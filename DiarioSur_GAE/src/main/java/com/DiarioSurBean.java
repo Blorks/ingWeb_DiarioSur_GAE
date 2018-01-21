@@ -650,6 +650,7 @@ public class DiarioSurBean implements Serializable {
 	public void nuevoUsuario(Usuario us) {
 		UsuarioFacade uf = new UsuarioFacade();
 		List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
+		usuario = usuarios.get(0);
 		if (usuarios.isEmpty()) {
 			uf.crearUsuario(us);
 
@@ -664,7 +665,6 @@ public class DiarioSurBean implements Serializable {
 		UsuarioFacade uf = new UsuarioFacade();
 		FileevFacade ff = new FileevFacade();
 		List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
-
 		if (!usuarios.isEmpty()) {
 			usuario = usuarios.get(0);
 			if (usuario.getFileev() != -1) {
@@ -838,45 +838,17 @@ public class DiarioSurBean implements Serializable {
 		TagFacade tf = new TagFacade();
 		List<Tag> tagsUsuarioTemp = new ArrayList<>();
 
-		Tagusuario tu = new Tagusuario();
-		tu.setId(1);
-
-		// List<Tagusuario> lista =
-		// tuf.encontrarTagusuarioPorUsuario(usuario.getId().toString());
-		List<Tagusuario> lista = new ArrayList<>();
-		lista.add(tu);
-
+		List<Tagusuario> lista = tuf.encontrarTagusuarioPorUsuario(usuario.getId());	
+System.out.println(lista.size() + " lista de user");
 		for (int i = 0; i < lista.size(); i++) {
-			////////////////////////////////////////////////////////////////////////////////////////////// Otro
-			////////////////////////////////////////////////////////////////////////////////////////////// problema
-			////////////////////////////////////////////////////////////////////////////////////////////// por
-			////////////////////////////////////////////////////////////////////////////////////////////// lo
-			////////////////////////////////////////////////////////////////////////////////////////////// mismo
-			////////////////////////////////////////////////////////////////////////////////////////////// no
-			////////////////////////////////////////////////////////////////////////////////////////////// es
-			////////////////////////////////////////////////////////////////////////////////////////////// relacional
-			////////////////////////////////////////////////////////////////////////////////////////////// y
-			////////////////////////////////////////////////////////////////////////////////////////////// estamos
-			////////////////////////////////////////////////////////////////////////////////////////////// cogiendo
-			////////////////////////////////////////////////////////////////////////////////////////////// el
-			////////////////////////////////////////////////////////////////////////////////////////////// getNombre
-			////////////////////////////////////////////////////////////////////////////////////////////// a
-			////////////////////////////////////////////////////////////////////////////////////////////// una
-			////////////////////////////////////////////////////////////////////////////////////////////// id!!!
-			////////////////////////////////////////////////////////////////////////////////////////////// (
-			////////////////////////////////////////////////////////////////////////////////////////////// getTagId())
-			Tag g = new Tag();
-			g.setId(1);
-			g.setNombre("hardcodeado");
 
-			// List<Tag> lista2 =
-			// tf.encontrarTagPorNombre(lista.get(i).getTagId().getNombre());
-			List<Tag> lista2 = new ArrayList<>();
-			lista2.add(g);
-			tagsUsuarioTemp.add(lista2.get(0));
-
+			List<Tag> lista2 = tf.encontrarTagPorID(lista.get(i).getTagId());
+			
+			if(!lista2.isEmpty()){
+				tagsUsuarioTemp.add(lista2.get(0));
+			}
 		}
-
+System.out.println(tagsUsuarioTemp.size() + " <--------------");
 		return tagsUsuarioTemp;
 	}
 
@@ -1101,22 +1073,16 @@ public class DiarioSurBean implements Serializable {
 		String[] partes = tagsUsuario.trim().toLowerCase().split(",");
 		Tag tagCreado;
 		Tagusuario tagUs = new Tagusuario();
-
 		for (int i = 0; i < partes.length; i++) {
 			tagCreado = crearTag(partes[i]);
-			// List<Tagusuario> lista =
-			// tuf.encontrarTagUsuarioPorTagYUsuario(tagCreado.getId().toString(),
-			// usuario.getId().toString());
+			List<Tagusuario> lista = tuf.encontrarTagUsuarioPorTagYUsuario(tagCreado.getId(), usuario.getId());
+			if(lista.isEmpty()) {
+				 tagUs.setUsuarioId(usuario.getId());
+				 tagUs.setTagId(tagCreado.getId());
 
-			// if(lista.isEmpty())
-			{
-				// tagUs.setUsuarioId(usuario); //seria usuario.getID()?
-				// tagUs.setTagId(tagCreado);
-
-				tuf.crearTagusuario(tagUs);
+				 tuf.crearTagusuario(tagUs);
 			}
 		}
-
 		crearNotificacion("Tus tags se han a�adido con exito!", usuario);
 
 		irPerfil();
@@ -1157,7 +1123,6 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public String mostrarFotoUsuario(Integer idUs) {
-		System.out.println("----------------------------------------->");
 		UsuarioFacade uf = new UsuarioFacade();
 		FileevFacade ff = new FileevFacade();
 
