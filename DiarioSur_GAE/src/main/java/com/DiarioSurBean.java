@@ -65,12 +65,12 @@ public class DiarioSurBean implements Serializable {
 
 	private List<Evento> eventosConFiltros = new ArrayList<>();
 
-//	 @PostConstruct
-//	 public void init() {
-	// DatastoreService datastore;
-	// Entity entidad;
-	// Transaction conexion;
-	// datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized
+	 @PostConstruct
+	 public void init() {
+	//	 DatastoreService datastore;
+	//	 Entity entidad;
+	//	 Transaction conexion;
+	//	 datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized
 	// // Datastore
 	// // service
 	// TagFacade tf = new TagFacade();
@@ -128,16 +128,12 @@ public class DiarioSurBean implements Serializable {
 //	
 //	 u.setApellidos("ape");
 //	 u.setEmail("asd@gmail.com");
-//	 u.setEventoList(i);
 //	 u.setFileev(2);
 //	 u.setHashpassword("vacio");
 //	 u.setNombre("asd");
-//	 u.setNotificacionList(i);
-//	 u.setTagusuarioList(i);
 //	 u.setRol("Periodista");
-//	 u.setNotificacionList(i);
 //	 uf.crearUsuario(u);
-	 
+//	 
 //	 FileevFacade ff = new FileevFacade();
 //	 Fileev f = new Fileev();
 //	 f.setId(1);
@@ -146,7 +142,7 @@ public class DiarioSurBean implements Serializable {
 //	 f.setUrl("http://images3.wikia.nocookie.net/__cb20121216194440/dragoncity/es/images/thumb/4/47/Caca_1.png/120px-Caca_1.png");
 //	 f.setUsuarioId(2);
 //	 ff.crearFileev(f);
-//	 }
+	 }
 
 	/*
 	 * Go to
@@ -164,7 +160,7 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public String irPerfil() {
-		mostrarTagsDeUsuario();
+		agsDeUsuario();
 
 		return "perfil.xhtml";
 	}
@@ -180,7 +176,7 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public String irTodosLosEventos() {
-		return "todosloseventos.xhtml";
+		return "todoloseventos.xhtml";
 	}
 
 	public String irValidarEvento() {
@@ -194,6 +190,36 @@ public class DiarioSurBean implements Serializable {
 	public String irEventosFiltradosDireccion() {
 		return "eventosFiltradosDireccion";
 	}
+	
+    public String irIntroducirFechaBusqueda() {
+        return "introducirFechaBusqueda.xhtml";
+    }
+
+    public String irIntroducirDistanciaMaxima() {
+        return "introducirDistanciaMaxima.xhtml";
+    }
+
+    public String irEventosFiltradosPrecio() {
+        return "eventosFiltradosPrecio";
+    }
+
+    public String irIntroducirPrecioMaximo() {
+        return "introducirPrecioMaximo.xhtml";
+    }
+    
+    public String irElegirSentidoAlfabetico() {
+        return "elegirSentidoAlfabetico.xhtml";
+    }
+	
+    public String irElegirSentidoFecha() {
+        return "elegirSentidoFecha.xhtml";
+    }
+    
+    public String irElegirSentidoPrecio() {
+        return "elegirSentidoPrecio.xhtml";
+    }
+	
+	
 	/*
 	 * Construct
 	 */
@@ -671,37 +697,29 @@ public class DiarioSurBean implements Serializable {
 		for (int i = 0; i < listaTags.size(); i++) {
 			listaTemp = tf.encontrarTagPorNombre(listaTags.get(0).getNombre());
 			if (!listaTemp.isEmpty())
-				;// eliminarTagEvento(listaTemp.get(0));
+				eliminarTagEvento(listaTemp.get(0));
 		}
 
 		// Elimino Evento
-		// List<Dateev> listaFecha =
-		// def.encontrarFechaPorID(ev.getDateevId().toString());
+		List<Dateev> listaFecha = def.encontrarFechaPorID(ev.getDateevId());
 		ef.eliminarEventoPorID(ev.getId());
 		// Elimino Fecha de Evento
-		// List<Evento> listaEvento =
-		// ef.encontrarEventosPorFecha(listaFecha.get(0).getId());
-		// if(listaEvento.isEmpty())
-		def.eliminarDateevPorID(ev.getDateevId());
-		// crearNotificacion("Has eliminado el evento con exito!", usuario);
+		List<Evento> listaEvento = ef.encontrarEventosPorFecha(listaFecha.get(0).getId());
+		if(listaEvento.isEmpty()) {
+			def.eliminarDateevPorID(ev.getDateevId());
+		}
+		
+		crearNotificacion("Has eliminado el evento con exito!", usuario);
 
 		return "todoloseventos.xhtml";
 	}
 	
 	public String eliminarTagEvento(Tag tagEvento){
-		TagFacade tf = new TagFacade();
 		TageventoFacade tef = new TageventoFacade();
-		TagusuarioFacade tuf = new TagusuarioFacade();
-		
-//        clienteTag cliente = new clienteTag();
-//        clienteTagevento cliente2 = new clienteTagevento();
-//        clienteTagUsuario cliente3 = new clienteTagUsuario();
-		//(Response.class, tagEvento.getId().toString(), evento.getId().toString())
+
 		Tagevento tagEv = tef.encontrarTagEventoPorTagYEvento(tagEvento.getId(), evento.getId()).get(0);
-        
         tef.eliminarTagEventoPorID(tagEv.getId());          
         
-
         return "evento";
     }
 

@@ -182,13 +182,6 @@ public class TageventoFacade implements Serializable{
 		return lista;
 	}
 	
-	public void deleteTagEvento(Tagevento te) {
-		datastore = DatastoreServiceFactory.getDatastoreService();		
-		conexion = datastore.beginTransaction();
-		
-		Query query = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, te.getId());
-		query.setFilter(filtro);
 
 	public void eliminarTagEventoPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
