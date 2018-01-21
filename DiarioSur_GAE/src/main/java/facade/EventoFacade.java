@@ -46,7 +46,6 @@ public class EventoFacade implements Serializable{
 		return id;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private List<Evento> crearEntidades(List<Entity> listaEntidades) {
 		List<Evento> lista = new ArrayList<>();
 		
@@ -79,14 +78,6 @@ public class EventoFacade implements Serializable{
 			
 			val = e.getProperty("estaRevisado");
 			ev.setEstarevisado(Integer.parseInt(val.toString()));
-			
-			val = e.getProperty("tagEventoList");
-			List<Integer> listaTagevento = (List<Integer>) val;
-			ev.setTageventoList(listaTagevento);
-			
-			val = e.getProperty("puntuacionList");
-			List<Integer> listaPuntuacion = (List<Integer>) val;
-			ev.setPuntuacionList(listaPuntuacion);
 			
 			val = e.getProperty("dateevID");
 			ev.setDateevId(Integer.parseInt(val.toString()));
@@ -126,8 +117,6 @@ public class EventoFacade implements Serializable{
 		entidad.setProperty("latitud", ev.getLatitud() != null ? ev.getLatitud() : initDbl);
 		entidad.setProperty("longitud", ev.getLongitud() != null ? ev.getLongitud() : initDbl);
 		entidad.setProperty("estaRevisado", ev.getEstarevisado() != null ? ev.getEstarevisado() : initDbl);
-		entidad.setProperty("tagEventoList", ev.getTageventoList() != null ? ev.getTageventoList() : listaNumero);
-		entidad.setProperty("puntuacionList", ev.getPuntuacionList() != null ? ev.getPuntuacionList() : listaNumero);
 		entidad.setProperty("dateevID", ev.getDateevId() != null ? ev.getDateevId() : initInt);
 		entidad.setProperty("usuarioID", ev.getUsuarioId() != null ? ev.getUsuarioId() : initInt);
 		
@@ -160,8 +149,6 @@ public class EventoFacade implements Serializable{
 			entidad.setProperty("latitud", ev.getLatitud());
 			entidad.setProperty("longitud", ev.getLongitud());
 			entidad.setProperty("estaRevisado", ev.getEstarevisado());
-			entidad.setProperty("tagEventoList", ev.getTageventoList());
-			entidad.setProperty("puntuacionList", ev.getPuntuacionList());
 			entidad.setProperty("dateevID", ev.getDateevId());
 			entidad.setProperty("usuarioID", ev.getUsuarioId());
 				

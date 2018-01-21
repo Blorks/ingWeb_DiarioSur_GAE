@@ -31,11 +31,11 @@ public class TageventoFacade implements Serializable{
 	public Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
-		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
+		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.DESCENDING);
 		Integer id;
 		
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			id = Integer.parseInt(listaEntidades.get(0).getProperty("ID").toString());
 		}catch (Exception e) {
 			id = 0;
@@ -45,8 +45,8 @@ public class TageventoFacade implements Serializable{
 	}
 	
 	private Integer incrementarID(Integer id) {
-		Integer aux = id + 1;
-		return aux;
+		id = id + 1;
+		return id;
 	}
 	
 	private List<Tagevento> crearEntidades(List<Entity> listaEntidades) {

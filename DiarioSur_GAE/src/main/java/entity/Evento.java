@@ -1,7 +1,6 @@
 package entity;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class Evento implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -14,8 +13,6 @@ public class Evento implements Serializable{
     private Double latitud;
     private Double longitud;
     private Integer estarevisado;
-    private List<Integer> tageventoList;
-    private List<Integer> puntuacionList;
     private Integer dateevId;
     private Integer usuarioId;
 
@@ -98,15 +95,6 @@ public class Evento implements Serializable{
         this.estarevisado = estarevisado;
     }
 
-
-    public List<Integer> getTageventoList() {
-        return tageventoList;
-    }
-
-    public void setTageventoList(List<Integer> tageventoList) {
-        this.tageventoList = tageventoList;
-    }
-
     public Integer getDateevId() {
         return dateevId;
     }
@@ -148,11 +136,4 @@ public class Evento implements Serializable{
         return "entity.Evento[ id=" + id + " ]";
     }
 
-	public List<Integer> getPuntuacionList() {
-		return puntuacionList;
-	}
-
-	public void setPuntuacionList(List<Integer> puntuacionList) {
-		this.puntuacionList = puntuacionList;
-	}
 }

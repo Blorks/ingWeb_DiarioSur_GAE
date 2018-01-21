@@ -47,7 +47,6 @@ public class TagFacade implements Serializable{
 		return aux;
 	}
 	
-	@SuppressWarnings("unchecked")
 	private List<Tag> crearEntidades(List<Entity> listaEntidades) {
 		List<Tag> lista = new ArrayList<>();
 		
@@ -60,13 +59,6 @@ public class TagFacade implements Serializable{
 			val = e.getProperty("nombre");
 			tag.setNombre(val.toString());
 
-			val = e.getProperty("tagUsuarioList");
-			List<Integer> listaTagusuario = (List<Integer>) val;
-			tag.setTagusuarioList(listaTagusuario);
-			
-			val = e.getProperty("tagEventoList");
-			List<Integer> listaTagevento = (List<Integer>) val;
-			tag.setTageventoList(listaTagevento);
 
 			lista.add(tag);
 		}
@@ -88,8 +80,6 @@ public class TagFacade implements Serializable{
 		
 		entidad.setProperty("ID", ultimoID);
 		entidad.setProperty("nombre", tag.getNombre() != null ? tag.getNombre() : "vacio");
-		entidad.setProperty("tagEventoList", tag.getTageventoList() != null ? tag.getTageventoList() : listaNumero);
-		entidad.setProperty("tagUsuarioList", tag.getTagusuarioList() != null ? tag.getTagusuarioList() : listaNumero);
 		
 		conexion = datastore.beginTransaction();
 		

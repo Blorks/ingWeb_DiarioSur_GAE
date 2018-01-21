@@ -401,9 +401,9 @@ public class DiarioSurBean implements Serializable {
 
 			// Creo notificacion para usuario
 			if (esPeriodista()) {
-				notificacionFacade.crearNotificacion("Has creado el evento con exito!", usuario.getId());
+				notificacionFacade.crearNotificacion("Has creado el evento con exito!", listaUsuario.get(0).getId());
 			} else {
-				notificacionFacade.crearNotificacion("Tu evento está a la espera de ser validado", usuario.getId());
+				notificacionFacade.crearNotificacion("Tu evento está a la espera de ser validado", listaUsuario.get(0).getId());
 			}
 
 			// reset variables
