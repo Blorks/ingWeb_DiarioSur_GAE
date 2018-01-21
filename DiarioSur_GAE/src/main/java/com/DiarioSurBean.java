@@ -5,16 +5,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
-import javax.sound.midi.Synthesizer;
 
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.Transaction;
-import com.google.apphosting.api.ApiProxy.LogRecord.Level;
-
-import java.io.IOError;
-import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,7 +13,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import facade.*;
 import entity.*;
@@ -218,6 +208,22 @@ public class DiarioSurBean implements Serializable {
     public String irElegirSentidoPrecio() {
         return "elegirSentidoPrecio.xhtml";
     }
+    
+	public String getPuntuacion_evId() {
+		return puntuacion_evId;
+	}
+
+	public void setPuntuacion_evId(String puntuacion_evId) {
+		this.puntuacion_evId = puntuacion_evId;
+	}
+
+	public String getPuntuacion() {
+		return puntuacion;
+	}
+
+	public void setPuntuacion(String puntuacion) {
+		this.puntuacion = puntuacion;
+	}
 	
 	
 	/*
@@ -439,7 +445,7 @@ public class DiarioSurBean implements Serializable {
 
 			return "index";
 		} else {
-			// editarEvento();
+			editarEvento();
 			edit = 0;
 
 			return "todoloseventos.xhtml";
@@ -1017,7 +1023,7 @@ public class DiarioSurBean implements Serializable {
 		// Edicion de la Fecha
 		Integer idFechaTemp = evento.getDateevId();
 
-		evento.setDateevId(null);
+		evento.setDateevId(-1);
 		ef.editarEvento(evento);
 
 		def.eliminarDateevPorID(idFechaTemp);
@@ -1083,7 +1089,7 @@ public class DiarioSurBean implements Serializable {
 
 		eventoTemporal.setEstarevisado(1);
 
-		// ef.editarEvento(eventoTemporal, ev.getId().toString());
+		ef.editarEvento(eventoTemporal);
 
 		crearNotificacion("El evento se ha validad con exito!", usuario);
 
@@ -1167,5 +1173,7 @@ public class DiarioSurBean implements Serializable {
 
 		return us != null ? us.getNombre() + " " + us.getApellidos() : "(autor no encontrado)";
 	}
+
+
 
 }
