@@ -118,7 +118,7 @@ $(document).ready(function () {
                 evId: evId,
                 puntos: value
             },
-            url: "/ingWeb_DiarioSur_REST_JSF/faces/resources/template/starrrAjax.xhtml"
+            url: "/faces/resources/template/starrrAjax.xhtml"
         });
     });
 });
