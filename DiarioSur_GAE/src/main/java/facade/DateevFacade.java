@@ -27,7 +27,7 @@ public class DateevFacade implements Serializable {
 	
 	public DateevFacade(){}
 	
-	private Integer ultimoIdInsertado(){
+	public Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
 		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.DESCENDING);

@@ -1038,4 +1038,41 @@ public class DiarioSurBean implements Serializable {
 		// creo notificacion
 		// crearNotificacion("Has editado el evento con exito!", usuario);
 	}
+
+	public void actualizarPuntuacion(String punto, String evId) {
+		PuntuacionFacade pf = new PuntuacionFacade();
+
+		List<Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEventoYUsuario(usuario.getId().toString(), evId);
+		Puntuacion pt = new Puntuacion();
+
+		if (puntuaciones.isEmpty()) {
+			pt.setPuntuacion(Double.parseDouble(punto));
+			pt.setEventoId(Integer.parseInt(evId));
+			pt.setUsuarioId(usuario.getId());
+			pf.crearPuntuacion(pt);
+
+		} else {
+			pt = puntuaciones.get(0);
+			pt.setPuntuacion(Double.parseDouble(punto));
+			pf.editarPuntuacion(pt);
+
+		}
+	}
+
+	public double mostrarPuntuacionMedia(Evento ev) {
+		PuntuacionFacade pf = new PuntuacionFacade();
+
+		List<Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
+		double puntuacionTotal = 0;
+
+		for (int i = 0; i < puntuaciones.size(); i++) {
+			puntuacionTotal = puntuacionTotal + puntuaciones.get(i).getPuntuacion();
+		}
+
+		puntuacionTotal = puntuacionTotal / puntuaciones.size();
+
+		return puntuacionTotal;
+
+	}
+
 }
