@@ -15,7 +15,6 @@ import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
 import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
-
 import entity.Tagevento;
 
 public class TageventoFacade implements Serializable{
@@ -178,10 +177,18 @@ public class TageventoFacade implements Serializable{
 		
 		return lista;
 	}
-
-	public void deleteTagEvento(Integer id) {
-		// TODO Auto-generated method stub
-		
-	}
 	
+	public void deleteTagEvento(Tagevento te) {
+		datastore = DatastoreServiceFactory.getDatastoreService();		
+		conexion = datastore.beginTransaction();
+		
+		Query query = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, te.getId());
+		query.setFilter(filtro);
+
+		List<Entity> entities = datastore.prepare(query).asList(FetchOptions.Builder.withDefaults());
+		
+		datastore.delete(conexion, entities.get(0).getKey());
+		conexion.commit();
+	}
 }

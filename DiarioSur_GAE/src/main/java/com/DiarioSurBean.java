@@ -700,7 +700,7 @@ public class DiarioSurBean implements Serializable {
 		//(Response.class, tagEvento.getId().toString(), evento.getId().toString())
 		Tagevento tagEv = tef.encontrarTagEventoPorTagYEvento(tagEvento.getId(), evento.getId()).get(0);
         
-        tef.deleteTagEvento(tagEv.getId());          
+        tef.deleteTagEvento(tagEv);          
         
 
         return "evento";
