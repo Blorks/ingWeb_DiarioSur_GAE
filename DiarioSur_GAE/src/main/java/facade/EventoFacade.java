@@ -92,10 +92,7 @@ public class EventoFacade implements Serializable{
 	}
 
 	
-	
-	
-	
-	//Métodos Públicos
+	//Métodos Públicos - CRUD
 	public void crearEvento(Evento ev) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Evento");
@@ -108,22 +105,27 @@ public class EventoFacade implements Serializable{
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
-		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("titulo", ev.getTitulo() != null ? ev.getTitulo() : initStr);
-		entidad.setProperty("subtitulo", ev.getSubtitulo() != null ? ev.getSubtitulo() : initStr);
-		entidad.setProperty("descripcion", ev.getDescripcion() != null ? ev.getDescripcion() : initStr);
-		entidad.setProperty("direccionFisica", ev.getDireccionfisica() != null ? ev.getDireccionfisica() : initStr);
-		entidad.setProperty("precio", ev.getPrecio() != null ? ev.getPrecio() : initDbl);
-		entidad.setProperty("latitud", ev.getLatitud() != null ? ev.getLatitud() : initDbl);
-		entidad.setProperty("longitud", ev.getLongitud() != null ? ev.getLongitud() : initDbl);
-		entidad.setProperty("estaRevisado", ev.getEstarevisado() != null ? ev.getEstarevisado() : initInt);
-		entidad.setProperty("dateevID", ev.getDateevId() != null ? ev.getDateevId() : initInt);
-		entidad.setProperty("usuarioID", ev.getUsuarioId() != null ? ev.getUsuarioId() : initInt);
-		
-		conexion = datastore.beginTransaction();
-		
-		datastore.put(conexion, entidad);
-		conexion.commit();
+		try {
+			entidad.setProperty("ID", ultimoID);
+			entidad.setProperty("titulo", ev.getTitulo() != null ? ev.getTitulo() : initStr);
+			entidad.setProperty("subtitulo", ev.getSubtitulo() != null ? ev.getSubtitulo() : initStr);
+			entidad.setProperty("descripcion", ev.getDescripcion() != null ? ev.getDescripcion() : initStr);
+			entidad.setProperty("direccionFisica", ev.getDireccionfisica() != null ? ev.getDireccionfisica() : initStr);
+			entidad.setProperty("precio", ev.getPrecio() != null ? ev.getPrecio() : initDbl);
+			entidad.setProperty("latitud", ev.getLatitud() != null ? ev.getLatitud() : initDbl);
+			entidad.setProperty("longitud", ev.getLongitud() != null ? ev.getLongitud() : initDbl);
+			entidad.setProperty("estaRevisado", ev.getEstarevisado() != null ? ev.getEstarevisado() : initInt);
+			entidad.setProperty("dateevID", ev.getDateevId() != null ? ev.getDateevId() : initInt);
+			entidad.setProperty("usuarioID", ev.getUsuarioId() != null ? ev.getUsuarioId() : initInt);
+			
+			conexion = datastore.beginTransaction();
+			
+			datastore.put(conexion, entidad);
+		}catch (Exception e) {
+			System.out.println("Error en EventoFacade -> crearEvento");
+		}finally {
+			conexion.commit();
+		}	
 	}
 	
 	public void editarEvento(Evento ev) {
@@ -155,10 +157,10 @@ public class EventoFacade implements Serializable{
 			 datastore.put(conexion, entidad);
 
 		}catch (Exception e) {
-			System.out.println("Evento" + ev.getId() + " no encontrada.");
+			System.out.println("Error en EventoFacade -> editarEvento");
+		}finally {
+			conexion.commit();
 		}
-		
-		conexion.commit();
 	}
 	
 	public void eliminarEventoPorID(Integer id) {
@@ -176,15 +178,14 @@ public class EventoFacade implements Serializable{
 			datastore.delete(conexion, key);
 			
 		}catch (Exception e) {
-			System.out.println("Fecha " + id + " no encontrada");
+			System.out.println("Error en EventoFacade -> eliminarEventoPorID");
 		}finally {
 			conexion.commit();
 		}
 	}
 	
 	
-	
-	
+	//Métodos Públicos - Find
 	public List<Evento> encontrarEventoPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Evento> lista = new ArrayList<>();
@@ -199,7 +200,7 @@ public class EventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en EventoFacade -> encontrarEventoPorID");
 		}finally {
 			conexion.commit();
 		}
@@ -219,10 +220,10 @@ public class EventoFacade implements Serializable{
 		q.setFilter(filtro);
 		
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Eventos no encontrados (EventoFacade)");
+			System.out.println("Error en EventoFacade -> encontrarEventosRevisados");
 		}finally {
 			conexion.commit();
 		}
@@ -244,7 +245,7 @@ public class EventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Evento con idUsuario " + idUsuario + " no encontrado");
+			System.out.println("Error en EventoFacade -> encontrarEventoPorUsuario");
 		}finally {
 			conexion.commit();
 		}
@@ -266,7 +267,7 @@ public class EventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Eventos no encontrados");
+			System.out.println("Error en EventoFacade -> encontrarEventoPorPrecioMaximo");
 		}finally {
 			conexion.commit();
 		}
@@ -289,7 +290,7 @@ public class EventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Usuarios no encontrados");
+			System.out.println("Error en EventoFacade -> encontrarEventosNoRevisados");
 		}finally {
 			conexion.commit();
 		}
@@ -311,7 +312,7 @@ public class EventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Evento no encontrado");
+			System.out.println("Error en EventoFacade -> encontrarEventoPorFecha");
 		}finally {
 			conexion.commit();
 		}
@@ -319,10 +320,28 @@ public class EventoFacade implements Serializable{
 		return lista;
 	}
 
+	public List<Evento> encontrarTodosLosEventos(){
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		List<Evento> lista = new ArrayList<>();
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
+
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			System.out.println("Error en EventoFacade -> encontrarTodosLosEventos");
+		}finally {
+			conexion.commit();
+		}
+
+		return lista;
+	}
 	
 	
-	
-	
+	//Métodos Públicos - Sort
 	public List<Evento> ordenarEventosAlfabeticamente(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Evento> lista = new ArrayList<>();
@@ -335,7 +354,7 @@ public class EventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Evento no encontrado");
+			System.out.println("Error en EventoFacade -> ordenarEventosAlfabeticamente");
 		}finally {
 			conexion.commit();
 		}
@@ -355,7 +374,7 @@ public class EventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Evento no encontrado");
+			System.out.println("Error en EventoFacade -> ordenarEventosAlfabeticamenteDESC");
 		}finally {
 			conexion.commit();
 		}
@@ -375,7 +394,7 @@ public class EventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Evento no encontrado");
+			System.out.println("Error en EventoFacade -> ordenarEventosPorPrecio");
 		}finally {
 			conexion.commit();
 		}
@@ -395,27 +414,7 @@ public class EventoFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Evento no encontrado");
-		}finally {
-			conexion.commit();
-		}
-
-		return lista;
-	}
-	
-	public List<Evento> encontrarTodosLosEventos(){
-		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
-		List<Evento> lista = new ArrayList<>();
-		
-		conexion = datastore.beginTransaction();
-		
-		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
-
-		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
-			lista = crearEntidades(listaEntidades);
-		}catch (Exception e) {
-			System.out.println("Evento no encontrado");
+			System.out.println("Error en EventoFacade -> ordenarEventosPorPrecioDESC");
 		}finally {
 			conexion.commit();
 		}

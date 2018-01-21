@@ -8,7 +8,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -21,7 +20,6 @@ public class FileevFacade implements Serializable{
 	
 	private DatastoreService datastore;
 	private Entity entidad;
-	Key key;
 	Transaction conexion;
 	
 	public FileevFacade(){}
@@ -78,7 +76,7 @@ public class FileevFacade implements Serializable{
 
 	
 	
-	//Métodos Públicos
+	//Métodos Públicos - CRUD
 	public void crearFileev(Fileev fe) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Fileev");
@@ -88,18 +86,56 @@ public class FileevFacade implements Serializable{
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
-		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("nombre", fe.getNombre() != null ? fe.getNombre() : initStr);
-		entidad.setProperty("url", fe.getUrl() != null ? fe.getUrl() : initStr);
-		entidad.setProperty("tipo", fe.getTipo() != null ? fe.getTipo() : initStr);
-		entidad.setProperty("usuarioId", fe.getUsuarioId() != null ? fe.getUsuarioId() : initInt);
+		try {
+			entidad.setProperty("ID", ultimoID);
+			entidad.setProperty("nombre", fe.getNombre() != null ? fe.getNombre() : initStr);
+			entidad.setProperty("url", fe.getUrl() != null ? fe.getUrl() : initStr);
+			entidad.setProperty("tipo", fe.getTipo() != null ? fe.getTipo() : initStr);
+			entidad.setProperty("usuarioId", fe.getUsuarioId() != null ? fe.getUsuarioId() : initInt);
+			
+			conexion = datastore.beginTransaction();
+			
+			datastore.put(conexion, entidad);
+		}catch (Exception e) {
+			System.out.println("Error en FileevFacade -> crearFileev");
+		}finally {
+			conexion.commit();
+		}
+	}
+
+	public void editarFileev(Fileev fe){
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		entidad = new Entity("Fileev");
+		List<Entity> listaEntidades = new ArrayList<>();
+		String initStr = "vacio";
+		Integer initInt = -1;
 		
 		conexion = datastore.beginTransaction();
 		
-		datastore.put(conexion, entidad);
-		conexion.commit();
+		Query q = new Query("Fileev").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, fe.getId());
+		q.setFilter(filtro);
+
+		try {
+			 listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			 entidad = listaEntidades.get(0);
+			 
+			 entidad.setProperty("nombre", fe.getNombre() != null ? fe.getNombre() : initStr);
+			 entidad.setProperty("url", fe.getUrl() != null ? fe.getUrl() : initStr);
+			 entidad.setProperty("tipo", fe.getTipo() != null ? fe.getTipo() : initStr);
+			 entidad.setProperty("usuarioId", fe.getUsuarioId() != null ? fe.getUsuarioId() : initInt);
+				
+			 datastore.put(conexion, entidad);
+
+		}catch (Exception e) {
+			System.out.println("Error en FileevFacade -> editarFileev");
+		}finally {
+			conexion.commit();
+		}
 	}
 	
+	
+	//Métodos Públicos - Find
 	public List<Fileev> encontrarArchivoPorURL(String url) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Fileev> lista = new ArrayList<>();
@@ -110,9 +146,15 @@ public class FileevFacade implements Serializable{
 		FilterPredicate filtro = new FilterPredicate("url", FilterOperator.EQUAL, url);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
-		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			System.out.println("Error en FileevFacade -> encontrarArchivoPorURL");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
 	}
 	
@@ -127,11 +169,10 @@ public class FileevFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
-			System.out.println(listaEntidades.size() + " lista encontrarArchivo");
-			lista = crearEntidades(listaEntidades.subList(0, 1));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Fileev " + id + " no encontrado");
+			System.out.println("Error en FileevFacade -> encontrarArchivoPorID");
 		}finally {
 			conexion.commit();
 		}

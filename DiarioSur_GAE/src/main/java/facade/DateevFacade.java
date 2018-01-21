@@ -106,10 +106,7 @@ public class DateevFacade implements Serializable {
 	}
 		
 	
-	
-	
-	
-	//Métodos Públicos
+	//Métodos Públicos - CRUD
 	public void crearFecha(Dateev dateev) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Dateev");
@@ -127,20 +124,26 @@ public class DateevFacade implements Serializable {
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
-		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("esUnico", dateev.getEsunico() != null ? dateev.getEsunico() : initInt);
-		entidad.setProperty("dia", dateev.getEsunico() == 1 ? dateev.getDia() : initDate);
-		entidad.setProperty("todoslosdias", dateev.getTodoslosdias() != null ? dateev.getTodoslosdias() : initInt);
-		entidad.setProperty("desde", dateev.getTodoslosdias() == 1 ? dateev.getDesde() : initDate);
-		entidad.setProperty("hasta", dateev.getTodoslosdias() == 1 ? dateev.getHasta() : initDate);
-		entidad.setProperty("variosDias", dateev.getVariosdias() != null ? dateev.getVariosdias() : initInt);
-		entidad.setProperty("listaDias", dateev.getVariosdias() == 1 ? dateev.getListadias() : initStr);
-		entidad.setProperty("eventoID", dateev.getEventoId() != null ? dateev.getEventoId() : initInt);
-		
-		conexion = datastore.beginTransaction();
-		
-		datastore.put(conexion, entidad);
-		conexion.commit();
+
+		try {
+			entidad.setProperty("ID", ultimoID);
+			entidad.setProperty("esUnico", dateev.getEsunico() != null ? dateev.getEsunico() : initInt);
+			entidad.setProperty("dia", dateev.getEsunico() == 1 ? dateev.getDia() : initDate);
+			entidad.setProperty("todoslosdias", dateev.getTodoslosdias() != null ? dateev.getTodoslosdias() : initInt);
+			entidad.setProperty("desde", dateev.getTodoslosdias() == 1 ? dateev.getDesde() : initDate);
+			entidad.setProperty("hasta", dateev.getTodoslosdias() == 1 ? dateev.getHasta() : initDate);
+			entidad.setProperty("variosDias", dateev.getVariosdias() != null ? dateev.getVariosdias() : initInt);
+			entidad.setProperty("listaDias", dateev.getVariosdias() == 1 ? dateev.getListadias() : initStr);
+			entidad.setProperty("eventoID", dateev.getEventoId() != null ? dateev.getEventoId() : initInt);
+			
+			conexion = datastore.beginTransaction();
+			
+			datastore.put(conexion, entidad);
+		}catch (Exception e) {
+			System.out.println("Error en DateevFacade -> crearFecha");
+		}finally {
+			conexion.commit();
+		}
 	}
 
 	public void editarFecha(Dateev dateev) {
@@ -182,7 +185,7 @@ public class DateevFacade implements Serializable {
 			 datastore.put(conexion, entidad);
 
 		}catch (Exception e) {
-			System.out.println("Fecha" + dateev.getId() + " no encontrada.");
+			System.out.println("Error en DateevFacade -> editarFecha");
 		}finally {
 			conexion.commit();
 		}
@@ -203,15 +206,14 @@ public class DateevFacade implements Serializable {
 			datastore.delete(conexion, key);
 			
 		}catch (Exception e) {
-			System.out.println("Fecha " + id + " no encontrada");
+			System.out.println("Error en DateevFacade -> eliminarDateevPorID");
 		}finally {
 			conexion.commit();
 		}
 	}
 
 	
-	
-	
+	//Métodos Públicos - Find
 	public List<Dateev> encontrarFechaPorID(Integer id){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Dateev> lista = new ArrayList<>();
@@ -226,7 +228,7 @@ public class DateevFacade implements Serializable {
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Dateev " + id + " no encontrada");
+			System.out.println("Error en DateevFacade -> encontrarFechaPorID");
 		}finally {
 			conexion.commit();
 		}
@@ -249,7 +251,7 @@ public class DateevFacade implements Serializable {
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Dateev no encontradas");
+			System.out.println("Error en DateevFacade -> encontrarFechaPorUnica");
 		}finally {
 			conexion.commit();
 		}
@@ -272,7 +274,7 @@ public class DateevFacade implements Serializable {
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Dateev no encontradas");
+			System.out.println("Error en DateevFacade -> encontrarFechaPorRango");
 		}finally {
 			conexion.commit();
 		}
@@ -292,7 +294,7 @@ public class DateevFacade implements Serializable {
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			System.out.println("Dateev no encontradas");
+			System.out.println("Error en DateevFacade -> encontrarTodasLasFechas");
 		}finally {
 			conexion.commit();
 		}

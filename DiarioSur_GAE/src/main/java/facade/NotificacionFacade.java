@@ -8,7 +8,6 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
-import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
@@ -23,7 +22,6 @@ public class NotificacionFacade implements Serializable{
 	
 	private DatastoreService datastore;
 	private Entity entidad;
-	Key key;
 	Transaction conexion;
 	
 	public NotificacionFacade(){}
@@ -74,9 +72,7 @@ public class NotificacionFacade implements Serializable{
 	}
 
 	
-	
-	
-	//Métodos Públicos
+	//Métodos Públicos - CRUD
 	public void crearNotificacion(String mensaje, Integer usuarioId) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Notificacion");
@@ -87,15 +83,20 @@ public class NotificacionFacade implements Serializable{
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
-		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("descripcion", mensaje != null ? mensaje : initStr);
-		entidad.setProperty("leida", noLeida);
-		entidad.setProperty("usuarioId", usuarioId != null ? usuarioId : initInt);
-		
-		conexion = datastore.beginTransaction();
-		
-		datastore.put(conexion, entidad);
-		conexion.commit();
+		try {
+			entidad.setProperty("ID", ultimoID);
+			entidad.setProperty("descripcion", mensaje != null ? mensaje : initStr);
+			entidad.setProperty("leida", noLeida);
+			entidad.setProperty("usuarioId", usuarioId != null ? usuarioId : initInt);
+			
+			conexion = datastore.beginTransaction();
+			
+			datastore.put(conexion, entidad);
+		}catch (Exception e) {
+			System.out.println("Error en NotificacionFacade -> crearNotificacion");
+		}finally {
+			conexion.commit();
+		}
 	}
 	
 	public void editarNotificacion(Notificacion noti) {
@@ -123,14 +124,14 @@ public class NotificacionFacade implements Serializable{
 			 datastore.put(conexion, entidad);
 
 		}catch (Exception e) {
-			//System.out.println("Evento" + ev.getId() + " no encontrada.");
+			System.out.println("Error en NotificacionFacade -> editarNotificacion");
+		}finally {
+			conexion.commit();
 		}
-		
-		conexion.commit();
 	}
 	
 	
-	
+	//Métodos Públicos - Find
 	public List<Notificacion> encontrarNotificacionesNoLeidasDeUsuario(Integer idUsuario){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Notificacion> lista = new ArrayList<>();
@@ -146,10 +147,10 @@ public class NotificacionFacade implements Serializable{
 		q.setFilter(filtro3);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en NotificacionFacade -> encontrarNotificacionesNoLeidasDeUsuario");
 		}finally {
 			conexion.commit();
 		}
@@ -168,10 +169,10 @@ public class NotificacionFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en NotificacionFacade -> encontrarTodasLasNotificacionesDeUsuario");
 		}finally {
 			conexion.commit();
 		}
@@ -193,7 +194,7 @@ public class NotificacionFacade implements Serializable{
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
-			//System.out.println("Evento " + id + " no encontrado");
+			System.out.println("Error en NotificacionFacade -> encontrarNotificacionesPorId");
 		}finally {
 			conexion.commit();
 		}
