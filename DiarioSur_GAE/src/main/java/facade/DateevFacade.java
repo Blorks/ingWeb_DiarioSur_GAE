@@ -51,7 +51,6 @@ public class DateevFacade implements Serializable {
 	
 	private List<Dateev> crearEntidades(List<Entity> listaEntidades) {
 		List<Dateev> lista = new ArrayList<>();
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		
 		for(Entity e: listaEntidades) {
 			Dateev fecha = new Dateev();
@@ -65,12 +64,8 @@ public class DateevFacade implements Serializable {
 			if(fecha.getEsunico() == 1) {
 				val = e.getProperty("dia");
 				
-				try {
-					fecha.setDia(sdf.parse(val.toString()));
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				fecha.setDia((Date) val);
+
 			}else {
 				fecha.setDia(null);
 			}
@@ -82,13 +77,8 @@ public class DateevFacade implements Serializable {
 				val = e.getProperty("desde");
 				Object val2 = e.getProperty("hasta");
 				
-				try {
-					fecha.setDesde(sdf.parse(val.toString()));
-					fecha.setHasta(sdf.parse(val2.toString()));
-				} catch (ParseException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				fecha.setDesde((Date) val);
+				fecha.setHasta((Date) val2);
 				
 			}else {
 				fecha.setDesde(null);

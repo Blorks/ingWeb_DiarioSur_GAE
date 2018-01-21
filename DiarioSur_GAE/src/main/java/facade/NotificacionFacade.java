@@ -31,7 +31,7 @@ public class NotificacionFacade implements Serializable{
 	public Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
-		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
+		Query q = new Query("Notificacion").addSort("ID", Query.SortDirection.DESCENDING);
 		Integer id;
 		
 		try {
@@ -45,7 +45,8 @@ public class NotificacionFacade implements Serializable{
 	}
 	
 	private Integer incrementarID(Integer id) {
-		return id++;
+		id = id + 1;
+		return id;
 	}
 	
 	private List<Notificacion> crearEntidades(List<Entity> listaEntidades) {
@@ -97,58 +98,106 @@ public class NotificacionFacade implements Serializable{
 		conexion.commit();
 	}
 	
-	public List<Notificacion> encontrarNotificacionesNoLeidasDeUsuario(String idUsuario){
+	public void editarNotificacion(Notificacion noti) {
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		entidad = new Entity("Evento");
+		List<Entity> listaEntidades = new ArrayList<>();
+		String initStr = "vacio";
+		Integer initNoLeida = 0;
+		Integer initInt = -1;
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Notificacion").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, noti.getId());
+		q.setFilter(filtro);
+
+		try {
+			 listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			 entidad = listaEntidades.get(0);
+			 
+			 entidad.setProperty("descripcion", noti.getDescripcion() != null ? noti.getDescripcion() : initStr);
+			 entidad.setProperty("leida", noti.getLeida() != null ? noti.getLeida() : initNoLeida);
+			 entidad.setProperty("usuarioId", noti.getUsuarioId() != null ? noti.getUsuarioId() : initInt);
+				
+			 datastore.put(conexion, entidad);
+
+		}catch (Exception e) {
+			//System.out.println("Evento" + ev.getId() + " no encontrada.");
+		}
+		
+		conexion.commit();
+	}
+	
+	
+	
+	public List<Notificacion> encontrarNotificacionesNoLeidasDeUsuario(Integer idUsuario){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Notificacion> lista = new ArrayList<>();
-		int userID = Integer.parseInt(idUsuario);
 		int leida = 0;
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Notificacion").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("usuarioId", FilterOperator.EQUAL, userID);
+		FilterPredicate filtro = new FilterPredicate("usuarioId", FilterOperator.EQUAL, idUsuario);
 		FilterPredicate filtro2 = new FilterPredicate("leida", FilterOperator.EQUAL, leida);
 		Filter filtro3 = CompositeFilterOperator.and(filtro, filtro2);
 		
 		q.setFilter(filtro3);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
-		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
 	}
 	
-	public List<Notificacion> encontrarTodasLasNotificacionesDeUsuario(String idUsuario){
+	public List<Notificacion> encontrarTodasLasNotificacionesDeUsuario(Integer idUsuario){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Notificacion> lista = new ArrayList<>();
-		int userID = Integer.parseInt(idUsuario);
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Notificacion").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("usuarioId", FilterOperator.EQUAL, userID);
+		FilterPredicate filtro = new FilterPredicate("usuarioId", FilterOperator.EQUAL, idUsuario);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
-		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
 	}
 
-	public List<Notificacion> encontrarNotificacionPorId(String id){
+	public List<Notificacion> encontrarNotificacionPorId(Integer id){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Notificacion> lista = new ArrayList<>();
-		int idTemp = Integer.parseInt(id);
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Notificacion").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, idTemp);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
 		q.setFilter(filtro);
 
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-		lista = crearEntidades(listaEntidades);
-		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			//System.out.println("Evento " + id + " no encontrado");
+		}finally {
+			conexion.commit();
+		}
+
 		return lista;
 	}
 	
