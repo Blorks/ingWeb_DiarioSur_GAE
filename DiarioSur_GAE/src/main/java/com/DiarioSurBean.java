@@ -160,7 +160,7 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public String irPerfil() {
-		agsDeUsuario();
+		//agsDeUsuario();
 
 		return "perfil.xhtml";
 	}
@@ -635,7 +635,7 @@ public class DiarioSurBean implements Serializable {
 		file.setUrl(url);
 		file.setUsuarioId(usuario.getId());
 
-		usuario.setFileev(file.getId()); // Al no existir el archivo file, la BD
+		usuario.setFileev(-1); // Al no existir el archivo file, la BD
 											// lo crea automaticamente
 
 		cliente2.editarUsuario(usuario);
