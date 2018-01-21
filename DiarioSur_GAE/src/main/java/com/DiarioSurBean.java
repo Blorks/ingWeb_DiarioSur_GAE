@@ -6,6 +6,10 @@ import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Transaction;
 import com.google.apphosting.api.ApiProxy.LogRecord.Level;
 
 import java.io.Serializable;
@@ -57,16 +61,38 @@ public class DiarioSurBean implements Serializable {
 
 	private List<Evento> eventosConFiltros = new ArrayList<>();
 
-	//
 	// @PostConstruct
 	// public void init() {
-	// UsuarioFacade uf = new UsuarioFacade();
+	// DatastoreService datastore;
+	// Entity entidad;
+	// Transaction conexion;
+	// datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized
+	// // Datastore
+	// // service
 	//
-	// List<Usuario> lista = uf.encontrarUsuarioPorEmail("blorkszb@gmail.com");
+	// for (Integer ultimoID = 1; ultimoID < 10; ultimoID++) {
+	// entidad = new Entity("Evento");
+	// entidad.setProperty("ID", ultimoID);
+	// entidad.setProperty("titulo", "tit" + ultimoID);
+	// entidad.setProperty("subtitulo", "subTit" + ultimoID);
+	// entidad.setProperty("descripcion", "des" + ultimoID);
+	// entidad.setProperty("direccionFisica", "dirf" + ultimoID);
+	// entidad.setProperty("precio", 123);
+	// entidad.setProperty("latitud", (36.71589398816918 + (ultimoID+0.2)));
+	// entidad.setProperty("longitud", (-4.477620013640262 + (ultimoID+0.2)));
+	// entidad.setProperty("estaRevisado", 1);
+	// entidad.setProperty("tagEventoList", "");
+	// entidad.setProperty("puntuacionList", 5);
+	// entidad.setProperty("dateevID", 1);
+	// entidad.setProperty("usuarioID", 1);
 	//
-	// System.out.println(lista.size());
+	// conexion = datastore.beginTransaction();
+	//
+	// datastore.put(conexion, entidad);
+	// conexion.commit();
 	// }
 	//
+	// }
 
 	/*
 	 * Go to
@@ -107,6 +133,10 @@ public class DiarioSurBean implements Serializable {
 
 	public String irCrearEvento() {
 		return "subirevento.xhtml";
+	}
+
+	public String irEventosFiltradosDireccion() {
+		return "eventosFiltradosDireccion";
 	}
 	/*
 	 * Construct
@@ -240,9 +270,8 @@ public class DiarioSurBean implements Serializable {
 	public List<Evento> mostrarTodosLosEventosRevisados() {
 		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
-
 		le = ef.encontrarEventosRevisados();
-
+		eventosConFiltros = le;
 		return le;
 	}
 
@@ -252,18 +281,27 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public List<Evento> mostrarEventosFiltradosPorPrecio() {
+		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
-		return ef.encontrarEventoPorPrecioMaximo(precioMax);
+		le = ef.encontrarEventoPorPrecioMaximo(precioMax);
+		eventosConFiltros = le;
+		return le;
 	}
 
 	public List<Evento> mostrarTodosLosEventosNoRevisados() {
+		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
-		return ef.encontrarEventosNoRevisados();
+		le = ef.encontrarEventosNoRevisados();
+		eventosConFiltros = le;
+		return le;
 	}
 
 	public List<Evento> mostrarEventosFiltradosPorFecha() {
+		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
-		return ef.encontrarEventosPorFecha(fecha.getId());
+		le = ef.encontrarEventosPorFecha(fecha.getId());
+		eventosConFiltros = le;
+		return le;
 	}
 
 	public String nuevoEvento() {
@@ -289,12 +327,12 @@ public class DiarioSurBean implements Serializable {
 			}
 
 			eventoFacade.crearEvento(evento);
-			evento.setId(eventoFacade.ultimoIdInsertado());
+			// evento.setId(eventoFacade.ultimoIdInsertado());
 
 			// Adjunto tags al evento
 			adjuntarTagsEvento();
 
-			fecha.setEventoId(eventoFacade.ultimoIdInsertado());
+			// fecha.setEventoId(eventoFacade.ultimoIdInsertado());
 			// clienteFecha.edit_XML(fecha, fecha.getId().toString());
 
 			// Creo notificacion para usuario
@@ -324,10 +362,10 @@ public class DiarioSurBean implements Serializable {
 	 * DateevFacade
 	 */
 
-	public List<Dateev> encontrarFechaPorID(String id) {
-		DateevFacade def = new DateevFacade();
-		return def.encontrarFechaPorID(id);
-	}
+	// public List<Dateev> encontrarFechaPorID(String id) {
+	// DateevFacade def = new DateevFacade();
+	// return def.encontrarFechaPorID(id);
+	// }
 
 	public List<Dateev> mostrarTodasLasFechasUnicas() {
 		DateevFacade def = new DateevFacade();
@@ -339,11 +377,11 @@ public class DiarioSurBean implements Serializable {
 		return def.encontrarFechaPorRango();
 	}
 
-	private int actualizarIDFecha() {
-		DateevFacade dateevFacade = new DateevFacade();
-
-		return dateevFacade.ultimoIdInsertado();
-	}
+	// private int actualizarIDFecha() {
+	// DateevFacade dateevFacade = new DateevFacade();
+	//
+	// return dateevFacade.ultimoIdInsertado();
+	// }
 
 	private void crearFechaUnica() {
 		boolean encontrado = false;
@@ -371,7 +409,7 @@ public class DiarioSurBean implements Serializable {
 
 		if (encontrado == false) {
 			dateevFacade.crearFecha(fecha);
-			fecha.setId(actualizarIDFecha());
+			// fecha.setId(actualizarIDFecha());
 		}
 	}
 
@@ -404,7 +442,7 @@ public class DiarioSurBean implements Serializable {
 
 		if (encontrado == false) {
 			dateevFacade.crearFecha(fecha);
-			fecha.setId(actualizarIDFecha());
+			// fecha.setId(actualizarIDFecha());
 		}
 
 	}
@@ -431,7 +469,7 @@ public class DiarioSurBean implements Serializable {
 
 		if (encontrado == false) {
 			dateevFacade.crearFecha(fecha);
-			fecha.setId(actualizarIDFecha());
+			// fecha.setId(actualizarIDFecha());
 		}
 
 	}
@@ -477,7 +515,7 @@ public class DiarioSurBean implements Serializable {
 			crearFechaListaDias();
 		}
 
-		evento.setDateevId(actualizarIDFecha());
+		// evento.setDateevId(actualizarIDFecha());
 	}
 
 	/*
@@ -614,24 +652,67 @@ public class DiarioSurBean implements Serializable {
 	// return "todoloseventos.xhtml";
 	// }
 	public List<Evento> mostrarEventosOrdenadosAlfabeticamente() {
+		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
-		return ef.ordenarEventosAlfabeticamente();
+		le = ef.ordenarEventosAlfabeticamente();
+		eventosConFiltros = le;
+		return le;
 	}
 
 	public List<Evento> mostrarEventosOrdenadosAlfabeticamenteDESC() {
+		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
-		return ef.ordenarEventosAlfabeticamenteDESC();
+		le = ef.ordenarEventosAlfabeticamenteDESC();
+		eventosConFiltros = le;
+		return le;
 	}
 
 	public List<Evento> mostrarEventosOrdenadosPorPrecio() {
+		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
-		return ef.ordenarEventosPorPrecio();
+		le = ef.ordenarEventosPorPrecio();
+		eventosConFiltros = le;
+		return le;
 	}
 
 	public List<Evento> mostrarEventosOrdenadosPorPrecioDESC() {
+		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
-		return ef.ordenarEventosPorPrecioDESC();
+		le = ef.ordenarEventosPorPrecioDESC();
+		eventosConFiltros = le;
+		return le;
 	}
+
+	public List<Evento> mostrarEventosFiltradosPorDistancia() {
+		EventoFacade ef = new EventoFacade();
+
+		List<Evento> listaTemp = new ArrayList<>();
+		List<Evento> eventos = ef.encontrarTodosLosEventos();
+
+		for (int i = 0; i < eventos.size(); i++) {
+			double distancia = calcularDistanciaHastaEvento(eventos.get(i).getLatitud(), eventos.get(i).getLongitud(),
+					usuarioLatitud, usuarioLongitud);
+			if (distancia <= distMaxima) {
+				listaTemp.add(eventos.get(i));
+			}
+		}
+		return listaTemp;
+	}
+	
+	private double calcularDistanciaHastaEvento(double latitudEvento, double longitudEvento, double latitudUsuario, double longitudUsuario) {
+        double radioTierra = 6371.137;
+        double dLat = Math.toRadians(latitudUsuario - latitudEvento) / 2;
+        double dLng = Math.toRadians(longitudUsuario - longitudEvento) / 2;
+
+        double sindLat = Math.sin(dLat);
+        double sindLng = Math.sin(dLng);
+
+        double val = Math.pow(sindLat, 2) + Math.cos(Math.toRadians(latitudEvento)) * Math.pow(sindLng, 2) * Math.cos(Math.toRadians(latitudUsuario));
+        val = Math.sqrt(val);
+        double val2 = 2 * radioTierra * Math.asin(val);
+
+        return val2;
+    }
 
 	// public void actualizarPuntuacion(String punto, String evId) {
 	// PuntuacionFacade pf = new PuntuacionFacade();
@@ -930,32 +1011,31 @@ public class DiarioSurBean implements Serializable {
 		DateevFacade def = new DateevFacade();
 		TagFacade tf = new TagFacade();
 		List<Tag> listaTags = encontrarTagsDeEvento();
-		
-		//Edicion de la Fecha
+
+		// Edicion de la Fecha
 		Integer idFechaTemp = evento.getDateevId();
-		
+
 		evento.setDateevId(null);
 		ef.editarEvento(evento);
-		
+
 		def.eliminarDateevPorID(idFechaTemp);
-		
+
 		adjuntarFecha();
-		
-		//Edicion del Evento
+
+		// Edicion del Evento
 		ef.editarEvento(evento);
-		
-		//Edicion de Tags
+
+		// Edicion de Tags
 		List<Tag> listaTemp;
-		for(int i = 0; i < listaTags.size(); i++)
-		{
+		for (int i = 0; i < listaTags.size(); i++) {
 			listaTemp = tf.encontrarTagPorNombre(listaTags.get(i).getNombre());
-			if(!listaTemp.isEmpty())
-				eliminarTagEvento(listaTemp.get(0));
+			// if(!listaTemp.isEmpty())
+			// eliminarTagEvento(listaTemp.get(0));
 		}
-		
+
 		adjuntarTagsEvento();
-		
-		//creo notificacion
-		crearNotificacion("Has editado el evento con exito!", usuario);
+
+		// creo notificacion
+		// crearNotificacion("Has editado el evento con exito!", usuario);
 	}
 }

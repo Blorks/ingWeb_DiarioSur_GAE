@@ -46,15 +46,27 @@
 	            title: tit
 	        });
 	        // evento de clicar encima de la marca
-	        google.maps.event.addListener(marker, 'click', function () {
+	        google.maps.event.addListener(marker, 'click', function (ev) {
 	            var infowindow = new google.maps.InfoWindow({
-	                content: cont
+	                content: '<a href="#' + divClass + '">' + cont + '</a>'
 	            });
 	            infowindow.open(map, marker);
+	            $('a[href^="#"]').on('click', function(event) {
+
+	                var target = $(this.getAttribute('href'));
+
+	                if( target.length ) {
+	                    event.preventDefault();
+	                    $('html, body').stop().animate({
+	                        scrollTop: target.offset().top - 100
+	                    }, 1000);
+	                }
+
+	            });
 	        });
 	        google.maps.event.addListener(marker, 'mouseover', function () {
 	        	$('*[class*="evento"]').css("border-color", "#9c9c9c");
-	        	$("." + divClass).css("border-color", "red");
+	        	$("." + divClass).css("border-color", "red");	        	
 	        });
 	    }
 	});
