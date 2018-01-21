@@ -106,7 +106,7 @@ public class PuntuacionFacade implements Serializable {
 
 		conexion = datastore.beginTransaction();
 
-		Query q = new Query("Puntacion").addSort("ID", Query.SortDirection.ASCENDING);
+		Query q = new Query("Puntuacion").addSort("ID", Query.SortDirection.ASCENDING);
 		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, pt.getId());
 		q.setFilter(filtro);
 
@@ -208,7 +208,7 @@ public class PuntuacionFacade implements Serializable {
 		q.setFilter(filtro3);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(null);
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
 			System.out.println("Error en PuntuacionFacade -> encontrarPuntuacionesDeUsuario");

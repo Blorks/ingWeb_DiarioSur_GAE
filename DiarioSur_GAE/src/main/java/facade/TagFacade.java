@@ -8,6 +8,7 @@ import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.FetchOptions;
+import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.appengine.api.datastore.Query.FilterOperator;
@@ -84,6 +85,27 @@ public class TagFacade implements Serializable{
 			datastore.put(conexion, entidad);
 		}catch (Exception e) {
 			System.out.println("Error en TagFacade -> crearTag");
+		}finally {
+			conexion.commit();
+		}
+	}
+	
+	public void eliminarTagPorID(Integer id) {
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Tag").addSort("ID", Query.SortDirection.ASCENDING);
+		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
+		q.setFilter(filtro);
+		
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			Key key = listaEntidades.get(0).getKey();
+			datastore.delete(conexion, key);
+			
+		}catch (Exception e) {
+			System.out.println("Error en TagFacade -> eliminarTagPorID");
 		}finally {
 			conexion.commit();
 		}
