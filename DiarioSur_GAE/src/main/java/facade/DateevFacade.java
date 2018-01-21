@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.google.appengine.api.datastore.DatastoreService;
@@ -122,19 +123,32 @@ public class DateevFacade implements Serializable {
 	public void crearFecha(Dateev dateev) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Dateev");
+		Integer initInt = -1;
+		String initStr = "vacio";
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		Date initDate = new Date();
+		try {
+			initDate = sdf.parse("01/01/1900");
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+		
+		
+		
 		
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("esUnico", dateev.getEsunico());
-		entidad.setProperty("dia", dateev.getDia());
-		entidad.setProperty("todoslosdias", dateev.getTodoslosdias());
-		entidad.setProperty("desde", dateev.getDesde());
-		entidad.setProperty("hasta", dateev.getHasta());
-		entidad.setProperty("variosDias", dateev.getVariosdias());
-		entidad.setProperty("listaDias", dateev.getListadias());
-		entidad.setProperty("eventoID", dateev.getEventoId());
+		entidad.setProperty("esUnico", dateev.getEsunico() != null ? dateev.getEsunico() : initInt);
+		entidad.setProperty("dia", dateev.getDia() != null ? dateev.getDia() : initDate);
+		entidad.setProperty("todoslosdias", dateev.getTodoslosdias() != null ? dateev.getTodoslosdias() : initInt);
+		entidad.setProperty("desde", dateev.getDesde() != null ? dateev.getDesde() : initDate);
+		entidad.setProperty("hasta", dateev.getHasta() != null ? dateev.getHasta() : initDate);
+		entidad.setProperty("variosDias", dateev.getVariosdias() != null ? dateev.getVariosdias() : initInt);
+		entidad.setProperty("listaDias", dateev.getListadias() != null ? dateev.getListadias() : initStr);
+		entidad.setProperty("eventoID", dateev.getEventoId() != null ? dateev.getEventoId() : initInt);
 		
 		conexion = datastore.beginTransaction();
 		

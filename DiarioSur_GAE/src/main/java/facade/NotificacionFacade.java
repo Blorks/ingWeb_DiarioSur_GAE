@@ -80,14 +80,16 @@ public class NotificacionFacade implements Serializable{
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Notificacion");
 		Integer noLeida = 0;
+		Integer initInt = -1;
+		String initStr = "vacio";
 		
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("descripcion", mensaje);
+		entidad.setProperty("descripcion", mensaje != null ? mensaje : initStr);
 		entidad.setProperty("leida", noLeida);
-		entidad.setProperty("usuarioId", usuarioId);
+		entidad.setProperty("usuarioId", usuarioId != null ? usuarioId : initInt);
 		
 		conexion = datastore.beginTransaction();
 		

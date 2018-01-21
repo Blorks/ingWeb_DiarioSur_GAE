@@ -7,6 +7,7 @@ import java.util.List;
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
@@ -27,27 +28,25 @@ public class TagusuarioFacade implements Serializable{
 	
 	public TagusuarioFacade(){}
 	
-	private String ultimoIdInsertado(){
+	public Integer ultimoIdInsertado(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		conexion = datastore.beginTransaction();
-		Query q = new Query("Tagusuario").addSort("ID", Query.SortDirection.DESCENDING);
-		String id;
+		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
+		Integer id;
 		
-		List<Entity> listaEntidades = datastore.prepare(q).asList(null);
-				
-		if(listaEntidades.isEmpty()) {
-			id = "0";
-		}else {
-			id = listaEntidades.get(0).getProperty("ID").toString();
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			id = Integer.parseInt(listaEntidades.get(0).getProperty("ID").toString());
+		}catch (Exception e) {
+			id = 0;
 		}
-				
+		
 		return id;
 	}
 	
-	private String incrementarID(String id) {
-		int num = Integer.parseInt(id);
-		num++;
-		return String.valueOf(num);
+	private Integer incrementarID(Integer id) {
+		id = id + 1;
+		return id;
 	}
 	
 	private List<Tagusuario> crearEntidades(List<Entity> listaEntidades) {
@@ -77,14 +76,14 @@ public class TagusuarioFacade implements Serializable{
 	public void crearTagusuario(Tagusuario tag) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Tagusuario");
-		key = entidad.getKey();
+		Integer initInt = -1;
 		
-		String ultimoID = ultimoIdInsertado();
+		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("usuarioId", tag.getUsuarioId());
-		entidad.setProperty("tagId", tag.getTagId());
+		entidad.setProperty("usuarioId", tag.getUsuarioId() != null ? tag.getUsuarioId() : initInt);
+		entidad.setProperty("tagId", tag.getTagId() != null ? tag.getTagId() : initInt);
 		
 		conexion = datastore.beginTransaction();
 		

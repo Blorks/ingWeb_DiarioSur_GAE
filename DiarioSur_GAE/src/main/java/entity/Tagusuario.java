@@ -5,8 +5,8 @@ import java.io.Serializable;
 public class Tagusuario implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-    private int tagId;
-    private int usuarioId;
+    private Integer tagId;
+    private Integer usuarioId;
 
     public Tagusuario() {
     }
@@ -23,19 +23,19 @@ public class Tagusuario implements Serializable{
         this.id = id;
     }
 
-    public int getTagId() {
+    public Integer getTagId() {
         return tagId;
     }
 
-    public void setTagId(int tagId) {
+    public void setTagId(Integer tagId) {
         this.tagId = tagId;
     }
 
-    public int getUsuarioId() {
+    public Integer getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(int usuarioId) {
+    public void setUsuarioId(Integer usuarioId) {
         this.usuarioId = usuarioId;
     }
 

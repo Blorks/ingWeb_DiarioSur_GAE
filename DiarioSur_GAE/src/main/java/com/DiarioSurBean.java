@@ -378,7 +378,7 @@ public class DiarioSurBean implements Serializable {
 			// Adjunto el usuario creador
 
 			List<Usuario> listaUsuario = usuarioFacade.encontrarUsuarioPorEmail(usuario.getEmail());
-			evento.setUsuarioId(1); //HARDCODEADO
+			evento.setUsuarioId(listaUsuario.get(0).getId());
 
 			// Adjunto la fecha del evento
 			adjuntarFecha();

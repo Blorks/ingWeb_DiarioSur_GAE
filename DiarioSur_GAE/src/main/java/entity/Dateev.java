@@ -2,7 +2,6 @@ package entity;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 public class Dateev implements Serializable{
 	private static final long serialVersionUID = 1L;
@@ -14,7 +13,7 @@ public class Dateev implements Serializable{
     private Date hasta;
     private Integer variosdias;
     private String listadias;
-    private int eventoId;
+    private Integer eventoId;
 
     public Dateev() {
     }
@@ -92,11 +91,11 @@ public class Dateev implements Serializable{
         this.listadias = listadias;
     }
 
-    public int getEventoId() {
+    public Integer getEventoId() {
         return eventoId;
     }
 
-    public void setEventoId(int eventoId) {
+    public void setEventoId(Integer eventoId) {
         this.eventoId = eventoId;
     }
 

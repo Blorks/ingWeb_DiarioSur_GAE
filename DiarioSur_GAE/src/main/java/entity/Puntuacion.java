@@ -15,10 +15,10 @@ import java.io.Serializable;
 public class Puntuacion implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private int id;
+	private Integer id;
 	private double puntuacion;
-	private int eventoId;
-	private int usuarioId;
+	private Integer eventoId;
+	private Integer usuarioId;
 	
 
     public Puntuacion() {
@@ -44,19 +44,19 @@ public class Puntuacion implements Serializable {
         this.puntuacion = puntuacion;
     }
 
-    public int getEventoId() {
+    public Integer getEventoId() {
         return eventoId;
     }
 
-    public void setEventoId(int eventoId) {
+    public void setEventoId(Integer eventoId) {
         this.eventoId = eventoId;
     }
 
-    public int getUsuarioId() {
+    public Integer getUsuarioId() {
         return usuarioId;
     }
 
-    public void setUsuarioId(int usuarioId) {
+    public void setUsuarioId(Integer usuarioId) {
         this.usuarioId = usuarioId;
     }
 

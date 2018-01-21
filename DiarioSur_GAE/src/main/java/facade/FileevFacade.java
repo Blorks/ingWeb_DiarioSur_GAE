@@ -82,15 +82,17 @@ public class FileevFacade implements Serializable{
 	public void crearFileev(Fileev fe) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Fileev");
+		String initStr = "vacio";
+		Integer initInt = -1;
 		
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("nombre", fe.getNombre());
-		entidad.setProperty("url", fe.getUrl());
-		entidad.setProperty("tipo", fe.getTipo());
-		entidad.setProperty("usuarioId", fe.getUsuarioId());
+		entidad.setProperty("nombre", fe.getNombre() != null ? fe.getNombre() : initStr);
+		entidad.setProperty("url", fe.getUrl() != null ? fe.getUrl() : initStr);
+		entidad.setProperty("tipo", fe.getTipo() != null ? fe.getTipo() : initStr);
+		entidad.setProperty("usuarioId", fe.getUsuarioId() != null ? fe.getUsuarioId() : initInt);
 		
 		conexion = datastore.beginTransaction();
 		

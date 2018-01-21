@@ -16,7 +16,6 @@ import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 
-import entity.Evento;
 import entity.Puntuacion;
 
 public class PuntuacionFacade implements Serializable {
@@ -81,15 +80,16 @@ public class PuntuacionFacade implements Serializable {
 	public void crearPuntuacion(Puntuacion pt) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Puntuacion");
-		key = entidad.getKey();
+		double initDbl = -1.0;
+		Integer initInt = -1;
 
 		String ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 
 		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("puntuacion", pt.getPuntuacion());
-		entidad.setProperty("eventoId", pt.getEventoId());
-		entidad.setProperty("usuarioId", pt.getUsuarioId());
+		entidad.setProperty("puntuacion", pt.getPuntuacion() != null ? pt.getPuntuacion() : initDbl);
+		entidad.setProperty("eventoId", pt.getEventoId() != null ? pt.getEventoId() : initInt);
+		entidad.setProperty("usuarioId", pt.getUsuarioId() != null ? pt.getUsuarioId() : initInt);
 
 		conexion = datastore.beginTransaction();
 
