@@ -80,13 +80,13 @@ public class EventoFacade implements Serializable{
 			val = e.getProperty("estaRevisado");
 			ev.setEstarevisado(Integer.parseInt(val.toString()));
 			
-//			val = e.getProperty("tagEventoList");
-//			List<Integer> listaTagevento = (List<Integer>) val;
-//			ev.setTageventoList(listaTagevento);
-//			
-//			val = e.getProperty("puntuacionList");
-//			List<Integer> listaPuntuacion = (List<Integer>) val;
-//			ev.setPuntuacionList(listaPuntuacion);
+			val = e.getProperty("tagEventoList");
+			List<Integer> listaTagevento = (List<Integer>) val;
+			ev.setTageventoList(listaTagevento);
+			
+			val = e.getProperty("puntuacionList");
+			List<Integer> listaPuntuacion = (List<Integer>) val;
+			ev.setPuntuacionList(listaPuntuacion);
 			
 			val = e.getProperty("dateevID");
 			ev.setDateevId(Integer.parseInt(val.toString()));
@@ -108,23 +108,28 @@ public class EventoFacade implements Serializable{
 	public void crearEvento(Evento ev) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		entidad = new Entity("Evento");
+		List<Integer> listaNumero = new ArrayList<>();
+		listaNumero.add(-1);
+		double initDbl = -1.0;
+		Integer initInt = -1;
+		String initStr = "vacio";
 		
 		Integer ultimoID = ultimoIdInsertado();
 		ultimoID = incrementarID(ultimoID);
 		
 		entidad.setProperty("ID", ultimoID);
-		entidad.setProperty("titulo", ev.getTitulo());
-		entidad.setProperty("subtitulo", ev.getSubtitulo());
-		entidad.setProperty("descripcion", ev.getDescripcion());
-		entidad.setProperty("direccionFisica", ev.getDireccionfisica());
-		entidad.setProperty("precio", ev.getPrecio());
-		entidad.setProperty("latitud", ev.getLatitud());
-		entidad.setProperty("longitud", ev.getLongitud());
-		entidad.setProperty("estaRevisado", ev.getEstarevisado());
-		entidad.setProperty("tagEventoList", ev.getTageventoList());
-		entidad.setProperty("puntuacionList", ev.getPuntuacionList());
-		entidad.setProperty("dateevID", ev.getDateevId());
-		entidad.setProperty("usuarioID", ev.getUsuarioId());
+		entidad.setProperty("titulo", ev.getTitulo() != null ? ev.getTitulo() : initStr);
+		entidad.setProperty("subtitulo", ev.getSubtitulo() != null ? ev.getSubtitulo() : initStr);
+		entidad.setProperty("descripcion", ev.getDescripcion() != null ? ev.getDescripcion() : initStr);
+		entidad.setProperty("direccionFisica", ev.getDireccionfisica() != null ? ev.getDireccionfisica() : initStr);
+		entidad.setProperty("precio", ev.getPrecio() != null ? ev.getPrecio() : initDbl);
+		entidad.setProperty("latitud", ev.getLatitud() != null ? ev.getLatitud() : initDbl);
+		entidad.setProperty("longitud", ev.getLongitud() != null ? ev.getLongitud() : initDbl);
+		entidad.setProperty("estaRevisado", ev.getEstarevisado() != null ? ev.getEstarevisado() : initDbl);
+		entidad.setProperty("tagEventoList", ev.getTageventoList() != null ? ev.getTageventoList() : listaNumero);
+		entidad.setProperty("puntuacionList", ev.getPuntuacionList() != null ? ev.getPuntuacionList() : listaNumero);
+		entidad.setProperty("dateevID", ev.getDateevId() != null ? ev.getDateevId() : initInt);
+		entidad.setProperty("usuarioID", ev.getUsuarioId() != null ? ev.getUsuarioId() : initInt);
 		
 		conexion = datastore.beginTransaction();
 		

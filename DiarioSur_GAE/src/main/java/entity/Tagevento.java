@@ -5,8 +5,8 @@ import java.io.Serializable;
 public class Tagevento implements Serializable{
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-    private int eventoId;
-    private int tagId;
+    private Integer eventoId;
+    private Integer tagId;
 
     public Tagevento() {
     }
@@ -23,19 +23,19 @@ public class Tagevento implements Serializable{
         this.id = id;
     }
 
-    public int getEventoId() {
+    public Integer getEventoId() {
         return eventoId;
     }
 
-    public void setEventoId(int eventoId) {
+    public void setEventoId(Integer eventoId) {
         this.eventoId = eventoId;
     }
 
-    public int getTagId() {
+    public Integer getTagId() {
         return tagId;
     }
 
-    public void setTagId(int tagId) {
+    public void setTagId(Integer tagId) {
         this.tagId = tagId;
     }
 

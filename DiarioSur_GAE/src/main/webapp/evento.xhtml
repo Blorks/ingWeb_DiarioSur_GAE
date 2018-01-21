@@ -14,15 +14,15 @@
             <div class="row white-evento">
                 <!-- HEADER -->
                 <div class="evento-header">
-                    <img id="banner_tag" style="width:100%" src="/ingWeb_DiarioSur_REST_JSF/faces/resources/images/bannerNoFoto.jpg" />
+                    <img id="banner_tag" style="width:100%" src="/faces/resources/images/bannerNoFoto.jpg" />
                     <div class="triangulo">
                         <h:inputText id="latitudOculta" class="hidden" value="#{diarioSurBean.evento.latitud}"/>
                         <h:inputText id="longitudOculta" class="hidden" value="#{diarioSurBean.evento.longitud}"/>
                         <h:inputText id="direccionOculta" class="hidden" value="#{diarioSurBean.evento.direccionfisica}"/>
                     </div>
                     <div class="profile">
-                        <img class="photo-author img-circle" src="#{diarioSurBean.evento.usuarioId.fileevId.url}" width="50" />
-                        <span class="name-author">por #{diarioSurBean.evento.usuarioId.nombre} #{diarioSurBean.evento.usuarioId.apellidos}</span>
+                        <img class="photo-author img-circle" src="#{diarioSurBean.mostrarFotoUsuario(diarioSurBean.evento.usuarioId)}" width="50" />
+                        <span class="name-author">por #{diarioSurBean.mostrarAutorEv(diarioSurBean.evento.usuarioId)}</span>
                     </div>
                     <h5 class="evento-sub-title">
                         <ui:repeat value="#{diarioSurBean.encontrarTagsDeEvento()}" var="tag"  varStatus="estado">  
@@ -35,6 +35,8 @@
 
                 <!-- INFO -->
                 <div class="row row-evento">
+                asd
+                #{diarioSurBean.esPeriodista()}
                     <c:if test="#{diarioSurBean.esPeriodista()}">
                         <f:view>
                             <h:form>

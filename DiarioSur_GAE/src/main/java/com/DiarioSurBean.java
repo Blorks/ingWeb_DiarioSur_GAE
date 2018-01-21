@@ -5,6 +5,7 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
+import javax.sound.midi.Synthesizer;
 
 import com.google.appengine.api.datastore.DatastoreService;
 import com.google.appengine.api.datastore.DatastoreServiceFactory;
@@ -12,6 +13,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Transaction;
 import com.google.apphosting.api.ApiProxy.LogRecord.Level;
 
+import java.io.IOError;
+import java.io.IOException;
 import java.io.Serializable;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -55,49 +58,101 @@ public class DiarioSurBean implements Serializable {
 	private Double precioMax;
 
 	private String usuarioFoto;
+	private boolean mostrarMapaEventos = true;
 
 	private String puntuacion_evId = "";
 	private String puntuacion = "";
 
 	private List<Evento> eventosConFiltros = new ArrayList<>();
 
-	// @PostConstruct
-	// public void init() {
+//	 @PostConstruct
+//	 public void init() {
 	// DatastoreService datastore;
 	// Entity entidad;
 	// Transaction conexion;
 	// datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized
 	// // Datastore
 	// // service
+	// TagFacade tf = new TagFacade();
 	//
-	// for (Integer ultimoID = 1; ultimoID < 10; ultimoID++) {
-	// entidad = new Entity("Evento");
-	// entidad.setProperty("ID", ultimoID);
-	// entidad.setProperty("titulo", "tit" + ultimoID);
-	// entidad.setProperty("subtitulo", "subTit" + ultimoID);
-	// entidad.setProperty("descripcion", "des" + ultimoID);
-	// entidad.setProperty("direccionFisica", "dirf" + ultimoID);
-	// entidad.setProperty("precio", 123);
-	// entidad.setProperty("latitud", (36.71589398816918 + (ultimoID+0.2)));
-	// entidad.setProperty("longitud", (-4.477620013640262 + (ultimoID+0.2)));
-	// entidad.setProperty("estaRevisado", 1);
-	// entidad.setProperty("tagEventoList", "");
-	// entidad.setProperty("puntuacionList", 5);
-	// entidad.setProperty("dateevID", 1);
-	// entidad.setProperty("usuarioID", 1);
+	// Tag t = new Tag();
+	// t.setId(1);
+	// t.setNombre("coche");
+	// List<Integer> i = new ArrayList<>();
+	// tageventoList.add(2);
+	// t.setTageventoList(tageventoList);
+	// t.setTagusuarioList(tageventoList);
+	// tf.crearTag(t);
 	//
-	// conexion = datastore.beginTransaction();
+	// TageventoFacade tef = new TageventoFacade();
+	// for (int i = 1; i < 10; i++) {
 	//
-	// datastore.put(conexion, entidad);
-	// conexion.commit();
+	// Tagevento te = new Tagevento();
+	// te.setId(i);
+	// te.setEventoId(i);
+	// te.setTagId(1);
+	// tef.crearTagevento(te);
 	// }
+	// System.out.println("asd");
+	// EventoFacade ef = new EventoFacade();
+	// Evento e = new Evento();
+	// e.setDateevId(1);
+	// e.setDescripcion("descccccASD");
+	// e.setDireccionfisica("asdDir");
+	// e.setEstarevisado(1);
+	// e.setId(69);
+	// e.setLatitud(36.4);
+	// e.setLongitud(-4.5);
+	// e.setPrecio(69.99);
+	// e.setPuntuacionList(i);
+	// e.setSubtitulo("subASDASD");
+	// e.setTageventoList(i);
+	// e.setTitulo("titASASDASD");
+	// e.setUsuarioId(2);
 	//
-	// }
+	// ef.crearEvento(e);
+	//
+	// TageventoFacade tef = new TageventoFacade();
+	// Tagevento te = new Tagevento();
+	// te.setId(69);
+	// te.setEventoId(10);
+	// te.setTagId(2);
+	// tef.crearTagevento(te);
+	// tef.crearTagevento(te);
+//	 System.out.println("postconstruct");
+//	
+//	 UsuarioFacade uf = new UsuarioFacade();
+//	 Usuario u = new Usuario();
+//	 List<Integer> i = new ArrayList<>();
+//	 i.add(1);
+//	
+//	 u.setApellidos("ape");
+//	 u.setEmail("asd@gmail.com");
+//	 u.setEventoList(i);
+//	 u.setFileev(2);
+//	 u.setHashpassword("vacio");
+//	 u.setNombre("asd");
+//	 u.setNotificacionList(i);
+//	 u.setTagusuarioList(i);
+//	 u.setRol("Periodista");
+//	 u.setNotificacionList(i);
+//	 uf.crearUsuario(u);
+	 
+//	 FileevFacade ff = new FileevFacade();
+//	 Fileev f = new Fileev();
+//	 f.setId(1);
+//	 f.setNombre("nombre");
+//	 f.setTipo("asd");
+//	 f.setUrl("http://images3.wikia.nocookie.net/__cb20121216194440/dragoncity/es/images/thumb/4/47/Caca_1.png/120px-Caca_1.png");
+//	 f.setUsuarioId(2);
+//	 ff.crearFileev(f);
+//	 }
 
 	/*
 	 * Go to
 	 */
 	public String volver() {
+		mostrarMapaEventos = true;
 		return "index";
 	}
 
@@ -120,6 +175,7 @@ public class DiarioSurBean implements Serializable {
 
 	public String verEvento(Evento e) {
 		evento = e;
+		mostrarMapaEventos = false;
 		return "evento";
 	}
 
@@ -149,6 +205,14 @@ public class DiarioSurBean implements Serializable {
 	/*
 	 * Set & Get
 	 */
+	public boolean isMostrarMapaEventos() {
+		return mostrarMapaEventos;
+	}
+
+	public void setMostrarMapaEventos(boolean mostrarMapaEventos) {
+		this.mostrarMapaEventos = mostrarMapaEventos;
+	}
+
 	public String getUsuarioFoto() {
 		return usuarioFoto;
 	}
@@ -314,7 +378,7 @@ public class DiarioSurBean implements Serializable {
 			// Adjunto el usuario creador
 
 			List<Usuario> listaUsuario = usuarioFacade.encontrarUsuarioPorEmail(usuario.getEmail());
-			evento.setUsuarioId(listaUsuario.get(0).getId());
+			evento.setUsuarioId(1); //HARDCODEADO
 
 			// Adjunto la fecha del evento
 			adjuntarFecha();
@@ -327,21 +391,19 @@ public class DiarioSurBean implements Serializable {
 			}
 
 			eventoFacade.crearEvento(evento);
-			// evento.setId(eventoFacade.ultimoIdInsertado());
+			evento.setId(eventoFacade.ultimoIdInsertado());
 
 			// Adjunto tags al evento
 			adjuntarTagsEvento();
 
-			// fecha.setEventoId(eventoFacade.ultimoIdInsertado());
-			// clienteFecha.edit_XML(fecha, fecha.getId().toString());
+			fecha.setEventoId(eventoFacade.ultimoIdInsertado());
+			dateevFacade.editarFecha(fecha);
 
 			// Creo notificacion para usuario
 			if (esPeriodista()) {
-				// crearNotificacion("Has creado el evento con exito!",
-				// usuario);
+				notificacionFacade.crearNotificacion("Has creado el evento con exito!", usuario.getId());
 			} else {
-				// crearNotificacion("Tu evento estï¿½ a la espera de ser
-				// validado", usuario);
+				notificacionFacade.crearNotificacion("Tu evento está a la espera de ser validado", usuario.getId());
 			}
 
 			// reset variables
@@ -362,7 +424,7 @@ public class DiarioSurBean implements Serializable {
 	 * DateevFacade
 	 */
 
-	//public List<Dateev> encontrarFechaPorID(String id) {
+	// public List<Dateev> encontrarFechaPorID(String id) {
 	// DateevFacade def = new DateevFacade();
 	// return def.encontrarFechaPorID(id);
 	// }
@@ -409,7 +471,7 @@ public class DiarioSurBean implements Serializable {
 
 		if (encontrado == false) {
 			dateevFacade.crearFecha(fecha);
-			// fecha.setId(actualizarIDFecha());
+			fecha.setId(dateevFacade.ultimoIdInsertado());
 		}
 	}
 
@@ -442,7 +504,7 @@ public class DiarioSurBean implements Serializable {
 
 		if (encontrado == false) {
 			dateevFacade.crearFecha(fecha);
-			// fecha.setId(actualizarIDFecha());
+			fecha.setId(dateevFacade.ultimoIdInsertado());
 		}
 
 	}
@@ -469,13 +531,14 @@ public class DiarioSurBean implements Serializable {
 
 		if (encontrado == false) {
 			dateevFacade.crearFecha(fecha);
-			// fecha.setId(actualizarIDFecha());
+			fecha.setId(dateevFacade.ultimoIdInsertado());
 		}
 
 	}
 
 	public void adjuntarFecha() {
 		SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+		DateevFacade dateevFacade = new DateevFacade();
 
 		if (fecha.getEsunico() == 1) {
 
@@ -515,7 +578,7 @@ public class DiarioSurBean implements Serializable {
 			crearFechaListaDias();
 		}
 
-		// evento.setDateevId(actualizarIDFecha());
+		evento.setDateevId(dateevFacade.ultimoIdInsertado());
 	}
 
 	/*
@@ -596,34 +659,52 @@ public class DiarioSurBean implements Serializable {
 		usuario.setEmail("");
 		return "index";
 	}
-	
+
 	public String borrarEvento(Evento ev) {
 		EventoFacade ef = new EventoFacade();
 		DateevFacade def = new DateevFacade();
-	 	TagFacade tf = new TagFacade();
-	 	List<Tag> listaTags = encontrarTagsDeEvento();
+		TagFacade tf = new TagFacade();
+		List<Tag> listaTags = encontrarTagsDeEvento();
+
+		// Elimino tags de evento
+		List<Tag> listaTemp;
+		for (int i = 0; i < listaTags.size(); i++) {
+			listaTemp = tf.encontrarTagPorNombre(listaTags.get(0).getNombre());
+			if (!listaTemp.isEmpty())
+				;// eliminarTagEvento(listaTemp.get(0));
+		}
+
+		// Elimino Evento
+		// List<Dateev> listaFecha =
+		// def.encontrarFechaPorID(ev.getDateevId().toString());
+		ef.eliminarEventoPorID(ev.getId());
+		// Elimino Fecha de Evento
+		// List<Evento> listaEvento =
+		// ef.encontrarEventosPorFecha(listaFecha.get(0).getId());
+		// if(listaEvento.isEmpty())
+		def.eliminarDateevPorID(ev.getDateevId());
+		// crearNotificacion("Has eliminado el evento con exito!", usuario);
+
+		return "todoloseventos.xhtml";
+	}
 	
-	 	//Elimino tags de evento
-	 	List<Tag> listaTemp;
-	 	for(int i = 0; i < listaTags.size(); i++)
-	 	{
-	 		listaTemp = tf.encontrarTagPorNombre(listaTags.get(0).getNombre());
-	 		if(!listaTemp.isEmpty())
-	 			;//eliminarTagEvento(listaTemp.get(0));
-	 	}
-	
-	 	//Elimino Evento
-	 	//List<Dateev> listaFecha = def.encontrarFechaPorID(ev.getDateevId().toString());
-	 	ef.eliminarEventoPorID(ev.getId());
-	 	//Elimino Fecha de Evento
-	 	//List<Evento> listaEvento = ef.encontrarEventosPorFecha(listaFecha.get(0).getId());
-	 	//if(listaEvento.isEmpty())
-	 		def.eliminarDateevPorID(ev.getDateevId());
-	 	//crearNotificacion("Has eliminado el evento con exito!", usuario);
-	
-	 	return "todoloseventos.xhtml";
-	 }
-	
+	public String eliminarTagEvento(Tag tagEvento){
+		TagFacade tf = new TagFacade();
+		TageventoFacade tef = new TageventoFacade();
+		TagusuarioFacade tuf = new TagusuarioFacade();
+		
+//        clienteTag cliente = new clienteTag();
+//        clienteTagevento cliente2 = new clienteTagevento();
+//        clienteTagUsuario cliente3 = new clienteTagUsuario();
+		//(Response.class, tagEvento.getId().toString(), evento.getId().toString())
+		Tagevento tagEv = tef.encontrarTagEventoPorTagYEvento(tagEvento.getId(), evento.getId()).get(0);
+        
+        tef.deleteTagEvento(tagEv.getId());          
+        
+
+        return "evento";
+    }
+
 	public List<Evento> mostrarEventosOrdenadosAlfabeticamente() {
 		List<Evento> le = new ArrayList<>();
 		EventoFacade ef = new EventoFacade();
@@ -671,21 +752,23 @@ public class DiarioSurBean implements Serializable {
 		}
 		return listaTemp;
 	}
-	
-	private double calcularDistanciaHastaEvento(double latitudEvento, double longitudEvento, double latitudUsuario, double longitudUsuario) {
-        double radioTierra = 6371.137;
-        double dLat = Math.toRadians(latitudUsuario - latitudEvento) / 2;
-        double dLng = Math.toRadians(longitudUsuario - longitudEvento) / 2;
 
-        double sindLat = Math.sin(dLat);
-        double sindLng = Math.sin(dLng);
+	private double calcularDistanciaHastaEvento(double latitudEvento, double longitudEvento, double latitudUsuario,
+			double longitudUsuario) {
+		double radioTierra = 6371.137;
+		double dLat = Math.toRadians(latitudUsuario - latitudEvento) / 2;
+		double dLng = Math.toRadians(longitudUsuario - longitudEvento) / 2;
 
-        double val = Math.pow(sindLat, 2) + Math.cos(Math.toRadians(latitudEvento)) * Math.pow(sindLng, 2) * Math.cos(Math.toRadians(latitudUsuario));
-        val = Math.sqrt(val);
-        double val2 = 2 * radioTierra * Math.asin(val);
+		double sindLat = Math.sin(dLat);
+		double sindLng = Math.sin(dLng);
 
-        return val2;
-    }
+		double val = Math.pow(sindLat, 2) + Math.cos(Math.toRadians(latitudEvento)) * Math.pow(sindLng, 2)
+				* Math.cos(Math.toRadians(latitudUsuario));
+		val = Math.sqrt(val);
+		double val2 = 2 * radioTierra * Math.asin(val);
+
+		return val2;
+	}
 
 	/*
 	 * TagFacade
@@ -778,35 +861,10 @@ public class DiarioSurBean implements Serializable {
 		TagFacade tf = new TagFacade();
 
 		List<Tag> tagsEventoTemp = new ArrayList<>();
-
 		List<Tagevento> lista = tef.encontrarTageventoPorEvento(evento.getId());
 
 		for (int i = 0; i < lista.size(); i++) {
-			////////////////////////////////////////////////////////////////////////////////////////////// Otro
-			////////////////////////////////////////////////////////////////////////////////////////////// problema
-			////////////////////////////////////////////////////////////////////////////////////////////// por
-			////////////////////////////////////////////////////////////////////////////////////////////// lo
-			////////////////////////////////////////////////////////////////////////////////////////////// mismo
-			////////////////////////////////////////////////////////////////////////////////////////////// no
-			////////////////////////////////////////////////////////////////////////////////////////////// es
-			////////////////////////////////////////////////////////////////////////////////////////////// relacional
-			////////////////////////////////////////////////////////////////////////////////////////////// y
-			////////////////////////////////////////////////////////////////////////////////////////////// estamos
-			////////////////////////////////////////////////////////////////////////////////////////////// cogiendo
-			////////////////////////////////////////////////////////////////////////////////////////////// el
-			////////////////////////////////////////////////////////////////////////////////////////////// getNombre
-			////////////////////////////////////////////////////////////////////////////////////////////// a
-			////////////////////////////////////////////////////////////////////////////////////////////// una
-			////////////////////////////////////////////////////////////////////////////////////////////// id!!!
-			////////////////////////////////////////////////////////////////////////////////////////////// (
-			////////////////////////////////////////////////////////////////////////////////////////////// getTagId())
-			// el comentario esta asi de raro porqe el shift + crt + f de
-			////////////////////////////////////////////////////////////////////////////////////////////// eclipse
-			////////////////////////////////////////////////////////////////////////////////////////////// lo
-			////////////////////////////////////////////////////////////////////////////////////////////// pone
-			////////////////////////////////////////////////////////////////////////////////////////////// asi..xD
-			List<Tag> lista2 = null;// tf.encontrarTagPorNombre(lista.get(i).getTagId().getNombre());
-			tagsEventoTemp.add(lista2.get(0));
+			tagsEventoTemp.add(tf.encontrarTagPorID(lista.get(i).getTagId()).get(0));
 		}
 		return tagsEventoTemp;
 	}
@@ -853,7 +911,7 @@ public class DiarioSurBean implements Serializable {
 	// }
 
 	public boolean esPeriodista() {
-		return false;// usuario.getRol().equals("Periodista");
+		return usuario.getRol() != null && usuario.getRol().equals("Periodista");
 	}
 
 	public String mostrarFechaDeEvento(Evento ev) {
@@ -876,7 +934,8 @@ public class DiarioSurBean implements Serializable {
 	 */
 	public List<Notificacion> mostrarNotificacionesNoLeidas() {
 		NotificacionFacade nf = new NotificacionFacade();
-		// return nf.encontrarNotificacionesNoLeidasDeUsuario(usuario.getId().toString());
+		// return
+		// nf.encontrarNotificacionesNoLeidasDeUsuario(usuario.getId().toString());
 		Notificacion n = new Notificacion();
 		n.setDescripcion("asd");
 		n.setId(1);
@@ -996,88 +1055,112 @@ public class DiarioSurBean implements Serializable {
 	}
 
 	public double mostrarPuntuacionMedia(Evento ev) {
-		PuntuacionFacade pf = new PuntuacionFacade();
+		// PuntuacionFacade pf = new PuntuacionFacade();
+		//
+		// List<Puntuacion> puntuaciones =
+		// pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
+		// double puntuacionTotal = 0;
+		//
+		// for (int i = 0; i < puntuaciones.size(); i++) {
+		// puntuacionTotal = puntuacionTotal +
+		// puntuaciones.get(i).getPuntuacion();
+		// }
+		//
+		// puntuacionTotal = puntuacionTotal / puntuaciones.size();
 
-		List<Puntuacion> puntuaciones = pf.encontrarPuntuacionesDeEvento(ev.getId().toString());
-		double puntuacionTotal = 0;
-
-		for (int i = 0; i < puntuaciones.size(); i++) {
-			puntuacionTotal = puntuacionTotal + puntuaciones.get(i).getPuntuacion();
-		}
-
-		puntuacionTotal = puntuacionTotal / puntuaciones.size();
-
-		return puntuacionTotal;
+		return 5;// puntuacionTotal;
 
 	}
-	
+
 	public String validarEvento(Evento ev) {
 		EventoFacade ef = new EventoFacade();
 		Evento eventoTemporal = ev;
-		
+
 		eventoTemporal.setEstarevisado(1);
-		
-		//ef.editarEvento(eventoTemporal, ev.getId().toString());
-		
+
+		// ef.editarEvento(eventoTemporal, ev.getId().toString());
+
 		crearNotificacion("El evento se ha validad con exito!", usuario);
-		
+
 		return "validarEvento.xhtml";
 	}
-	
+
 	public void adjuntarTagsUsuario() {
 		TagusuarioFacade tuf = new TagusuarioFacade();
 		String[] partes = tagsUsuario.trim().toLowerCase().split(",");
 		Tag tagCreado;
 		Tagusuario tagUs = new Tagusuario();
-		
-		for (int i = 0; i < partes.length; i++)
-		{
+
+		for (int i = 0; i < partes.length; i++) {
 			tagCreado = crearTag(partes[i]);
-			//List<Tagusuario> lista = tuf.encontrarTagUsuarioPorTagYUsuario(tagCreado.getId().toString(), usuario.getId().toString());
-			
-			//if(lista.isEmpty())
+			// List<Tagusuario> lista =
+			// tuf.encontrarTagUsuarioPorTagYUsuario(tagCreado.getId().toString(),
+			// usuario.getId().toString());
+
+			// if(lista.isEmpty())
 			{
-			//	tagUs.setUsuarioId(usuario); //seria usuario.getID()?
-			//	tagUs.setTagId(tagCreado);
-				
+				// tagUs.setUsuarioId(usuario); //seria usuario.getID()?
+				// tagUs.setTagId(tagCreado);
+
 				tuf.crearTagusuario(tagUs);
 			}
 		}
-		
+
 		crearNotificacion("Tus tags se han añadido con exito!", usuario);
-		
+
 		irPerfil();
 	}
-	
+
 	public void eliminarTagDeUsuario(Tag tagUsuario) {
 		TagFacade tf = new TagFacade();
 		TagusuarioFacade tuf = new TagusuarioFacade();
 		TageventoFacade tef = new TageventoFacade();
-		
-		//List<Tagusuario> lista = tuf.encontrarTagUsuarioPorTagYUsuario(tagUsuario.getId().toString(), usuario.getId().toString());
-		//tuf.eliminarTagusuario(lista.get(0).getId());
-		
-		//lista = tuf.encontrarTagusuarioPorID(tagUsuario.getId().toString());
-		//if(lista.isEmpty()){
-			List<Tagevento> lista2 = tef.encontrarTageventoPorID(tagUsuario.getId());
-			
-			if(lista2.isEmpty())
-			;//	tf.eliminarTag(tagUsuario.getId());
-		//}
-		
+
+		// List<Tagusuario> lista =
+		// tuf.encontrarTagUsuarioPorTagYUsuario(tagUsuario.getId().toString(),
+		// usuario.getId().toString());
+		// tuf.eliminarTagusuario(lista.get(0).getId());
+
+		// lista = tuf.encontrarTagusuarioPorID(tagUsuario.getId().toString());
+		// if(lista.isEmpty()){
+		List<Tagevento> lista2 = tef.encontrarTageventoPorID(tagUsuario.getId());
+
+		if (lista2.isEmpty())
+			;// tf.eliminarTag(tagUsuario.getId());
+		// }
+
 		crearNotificacion("Has eliminado el tag con exito!", usuario);
 
-        irPerfil();
+		irPerfil();
 	}
-	
+
 	public void crearNotificacion(String contenido, Usuario user) {
 		NotificacionFacade nf = new NotificacionFacade();
-		
+
 		Notificacion not = new Notificacion();
 		not.setDescripcion(contenido);
 		not.setLeida(0);
 		not.setUsuarioId(user.getId());
-		
+
 		nf.crearNotificacion(contenido, user.getId());
 	}
+
+	public String mostrarFotoUsuario(Integer idUs) {
+		System.out.println("----------------------------------------->");
+		UsuarioFacade uf = new UsuarioFacade();
+		FileevFacade ff = new FileevFacade();
+
+		Integer fileevId = uf.encontrarUsuarioPorID(idUs).get(0).getFileev();
+		System.out.println(uf.encontrarUsuarioPorID(idUs).get(0).getNombre() + " - " + uf.encontrarUsuarioPorID(idUs).get(0).getFileev());
+		return fileevId == -1 ? "/resources/images/user.png" : ff.encontrarArchivoPorID(fileevId).get(0).getUrl();
+
+	}
+
+	public String mostrarAutorEv(Integer idUs) {
+		UsuarioFacade uf = new UsuarioFacade();
+		Usuario us = uf.encontrarUsuarioPorID(idUs).get(0);
+
+		return us != null ? us.getNombre() + " " + us.getApellidos() : "(autor no encontrado)";
+	}
+
 }
