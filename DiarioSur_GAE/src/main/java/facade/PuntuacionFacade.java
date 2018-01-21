@@ -106,7 +106,7 @@ public class PuntuacionFacade implements Serializable {
 
 		conexion = datastore.beginTransaction();
 
-		Query q = new Query("Puntacion").addSort("ID", Query.SortDirection.ASCENDING);
+		Query q = new Query("Puntuacion").addSort("ID", Query.SortDirection.ASCENDING);
 		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, pt.getId());
 		q.setFilter(filtro);
 
