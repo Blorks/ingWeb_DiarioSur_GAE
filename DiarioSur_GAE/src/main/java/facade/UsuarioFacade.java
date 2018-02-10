@@ -18,7 +18,7 @@ import entity.Usuario;
 
 public class UsuarioFacade implements Serializable{
 	private static final long serialVersionUID = 1L;
-	
+		
 	private DatastoreService datastore;
 	private Entity entidad;
 	Transaction conexion;
@@ -109,7 +109,6 @@ public class UsuarioFacade implements Serializable{
 			entidad.setProperty("fileevId", user.getFileev() != null ? user.getFileev() : init);
 			
 			conexion = datastore.beginTransaction();
-			
 			datastore.put(conexion, entidad);
 		}catch (Exception e) {
 			System.out.println("Error en UsuarioFacade -> crearUsuario");
