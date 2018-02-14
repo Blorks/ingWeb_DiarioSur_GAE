@@ -305,7 +305,7 @@ public class EventoFacade implements Serializable{
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("DateevID", FilterOperator.EQUAL, idFecha);
+		FilterPredicate filtro = new FilterPredicate("dateevID", FilterOperator.EQUAL, idFecha);
 		q.setFilter(filtro);
 
 		try {

@@ -111,27 +111,27 @@ public class DiarioSurBean implements Serializable {
 	// tef.crearTagevento(te);
 //	 System.out.println("postconstruct");
 //	
-//	 UsuarioFacade uf = new UsuarioFacade();
-//	 Usuario u = new Usuario();
-//	 List<Integer> i = new ArrayList<>();
-//	 i.add(1);
-//	
-//	 u.setApellidos("ape");
-//	 u.setEmail("asd@gmail.com");
-//	 u.setFileev(2);
-//	 u.setHashpassword("vacio");
-//	 u.setNombre("asd");
-//	 u.setRol("Periodista");
-//	 uf.crearUsuario(u);
-//	 
-//	 FileevFacade ff = new FileevFacade();
-//	 Fileev f = new Fileev();
-//	 f.setId(2);
-//	 f.setNombre("nombre");
-//	 f.setTipo("asd");
-//	 f.setUrl("http://images3.wikia.nocookie.net/__cb20121216194440/dragoncity/es/images/thumb/4/47/Caca_1.png/120px-Caca_1.png");
-//	 f.setUsuarioId(1);
-//	 ff.crearFileev(f);
+//		 UsuarioFacade uf = new UsuarioFacade();
+//		 Usuario u = new Usuario();
+//		 List<Integer> i = new ArrayList<>();
+//		 i.add(1);
+//		
+//		 u.setApellidos("ape");
+//		 u.setEmail("asd@gmail.com");
+//		 u.setFileev(1);
+//		 u.setHashpassword("vacio");
+//		 u.setNombre("asd");
+//		 u.setRol("Periodista");
+//		 uf.crearUsuario(u);
+//		
+//		 FileevFacade ff = new FileevFacade();
+//		 Fileev f = new Fileev();
+//		 f.setId(1);
+//		 f.setNombre("nombre");
+//		 f.setTipo("asd");
+//		 f.setUrl("http://images3.wikia.nocookie.net/__cb20121216194440/dragoncity/es/images/thumb/4/47/Caca_1.png/120px-Caca_1.png");
+//		 f.setUsuarioId(1);
+//		 ff.crearFileev(f);
 	 }
 
 	/*
@@ -191,6 +191,11 @@ public class DiarioSurBean implements Serializable {
 
     public String irEventosFiltradosPrecio() {
         return "eventosFiltradosPrecio";
+    }
+    
+    public String irEventosFiltradosFecha(Dateev f) {
+        fecha = f;
+        return "eventosFiltradosFecha";
     }
 
     public String irIntroducirPrecioMaximo() {
@@ -456,10 +461,6 @@ public class DiarioSurBean implements Serializable {
 	 * DateevFacade
 	 */
 
-	// public List<Dateev> encontrarFechaPorID(String id) {
-	// DateevFacade def = new DateevFacade();
-	// return def.encontrarFechaPorID(id);
-	// }
 
 	public List<Dateev> mostrarTodasLasFechasUnicas() {
 		DateevFacade def = new DateevFacade();
@@ -470,12 +471,15 @@ public class DiarioSurBean implements Serializable {
 		DateevFacade def = new DateevFacade();
 		return def.encontrarFechaPorRango();
 	}
+	
+	public String formatearFecha(Date f) {
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		
+		String fechaFormateada = sdf.format(f);
+		
+		return fechaFormateada;
+	}
 
-	// private int actualizarIDFecha() {
-	// DateevFacade dateevFacade = new DateevFacade();
-	//
-	// return dateevFacade.ultimoIdInsertado();
-	// }
 
 	private void crearFechaUnica() {
 		boolean encontrado = false;

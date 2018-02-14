@@ -239,7 +239,7 @@ public class DateevFacade implements Serializable {
 	public List<Dateev> encontrarFechaPorUnica(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Dateev> lista = new ArrayList<>();
-		int condicion = 0;
+		int condicion = 1;
 		
 		conexion = datastore.beginTransaction();
 		
@@ -262,7 +262,7 @@ public class DateevFacade implements Serializable {
 	public List<Dateev> encontrarFechaPorRango(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Dateev> lista = new ArrayList<>();
-		int condicion = 0;
+		int condicion = 1;
 		
 		conexion = datastore.beginTransaction();
 		
