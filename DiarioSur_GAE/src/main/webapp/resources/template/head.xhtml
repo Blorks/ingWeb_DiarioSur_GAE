@@ -16,7 +16,7 @@
 
 
     <!-- favicon -->
-    <link rel="icon" type="image/x-icon" href="/ingWeb_DiarioSur_GAE/src/main/webapp/resources/images/favicon.ico"/>
+    <link rel="icon" type="image/x-icon" href="/resources/images/favicon.ico"/>
 
 
     <!-- Bootstrap CSS -->
@@ -31,12 +31,16 @@
     <h:outputScript name="js/hello.all.js" />
 
     <script>
+    var local   = "http://localhost:8080/faces/index.xhtml"; 
+    var appspot = "https://diariosur-b4.appspot.com/faces/index.xhtml"; 
+    var uri   = local; 
+    
         hello.init({
             google: '612950088841-a7jdgmhbmfjh3h6ah9h1n774mfg5i9ue.apps.googleusercontent.com',
             facebook: '2034071323504737'
         }, {
             scope: 'email',
-            redirect_uri: 'http://localhost:8080/faces/index.xhtml'	//'https://diariosur-b4.appspot.com/faces/index.xhtml'
+            redirect_uri: uri
         });
         function rrss_login(rrss) {
             hello(rrss).login();
@@ -45,9 +49,9 @@
                     $.ajax({
                         type: 'get',
                         data: resp,
-                        url: "http://localhost:8080/faces/index.xhtml"	//"https://diariosur-b4.appspot.com/faces/index.xhtml"
+                        url: uri
                     }).done(function () {
-                        window.location.href = "http://localhost:8080/faces/index.xhtml";	//"https://diariosur-b4.appspot.com/faces/index.xhtml";
+                    	window.location.href = uri
                     });
                 });
             });
