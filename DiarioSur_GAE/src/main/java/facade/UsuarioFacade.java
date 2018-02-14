@@ -208,10 +208,10 @@ public class UsuarioFacade implements Serializable{
 		q.setFilter(filtro);
 		
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
 
 			if(!listaEntidades.isEmpty()){
-				lista = crearEntidades(listaEntidades.subList(0, 1));				
+				lista = crearEntidades(listaEntidades);
 			}
 
 		}catch (Exception e) {

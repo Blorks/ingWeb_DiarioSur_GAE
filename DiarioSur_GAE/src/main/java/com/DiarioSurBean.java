@@ -650,7 +650,6 @@ public class DiarioSurBean implements Serializable {
 	public void nuevoUsuario(Usuario us) {
 		UsuarioFacade uf = new UsuarioFacade();
 		List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
-		//usuario = usuarios.get(0);
 		if (usuarios.isEmpty()) {
 			uf.crearUsuario(us);
 
@@ -673,7 +672,7 @@ public class DiarioSurBean implements Serializable {
 			}
 			return true;
 		} else {
-			usuario.setEmail("");
+
 			return false;
 		}
 	}
