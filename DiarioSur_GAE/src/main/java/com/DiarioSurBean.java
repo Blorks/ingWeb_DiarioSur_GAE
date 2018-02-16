@@ -54,9 +54,19 @@ public class DiarioSurBean implements Serializable {
 	private String puntuacion = "";
 
 	private List<Evento> eventosConFiltros = new ArrayList<>();
+	
+	
+	
+	//Nuevo login
+	private String emailLoginOffline = "";
 
 	 @PostConstruct
 	 public void init() {
+		 
+		 
+		 
+		 
+
 	//	 DatastoreService datastore;
 	//	 Entity entidad;
 	//	 Transaction conexion;
@@ -133,6 +143,14 @@ public class DiarioSurBean implements Serializable {
 //		 f.setUsuarioId(1);
 //		 ff.crearFileev(f);
 	 }
+
+	public String getEmailLoginOffline() {
+		return emailLoginOffline;
+	}
+
+	public void setEmailLoginOffline(String emailLoginOffline) {
+		this.emailLoginOffline = emailLoginOffline;
+	}
 
 	/*
 	 * Go to
@@ -620,6 +638,82 @@ public class DiarioSurBean implements Serializable {
 	/*
 	 * UsuarioFacade
 	 */
+	
+	public Fileev crearFotoPredeterminada() {
+		//Crea un Fileev si no hay ninguno para los usuarios que no tengan foto
+		 FileevFacade fileevFacade = new FileevFacade();
+		 Fileev res = new Fileev();
+		 
+		 List<Fileev> fotoPredeterminada = fileevFacade.encontrarArchivoPorURL("http://www.azafatamalaga.com/wp-content/uploads/2013/03/diariosur.jpg");
+		 if(fotoPredeterminada.isEmpty()) {
+			 Fileev fotoPred = new Fileev();
+			 
+			 fotoPred.setNombre("Foto Predeterminada");
+			 fotoPred.setTipo("Imagen");
+			 fotoPred.setUrl("http://www.azafatamalaga.com/wp-content/uploads/2013/03/diariosur.jpg");
+			 
+			 fileevFacade.crearFileev(fotoPred);
+			 fotoPredeterminada = fileevFacade.encontrarArchivoPorURL("http://www.azafatamalaga.com/wp-content/uploads/2013/03/diariosur.jpg");
+			 
+			 if(!fotoPredeterminada.isEmpty()) {
+				 res = fotoPredeterminada.get(0);
+			 }
+		 }else {
+			 res = fotoPredeterminada.get(0);
+		 }
+		 
+		 return res;
+	}
+	
+	public boolean existeUsuario(String email) {
+		UsuarioFacade usuarioFacade = new UsuarioFacade();
+		boolean res = false;
+		
+		List<Usuario> listaUsuarios = usuarioFacade.encontrarUsuarioPorEmail(email);
+		if(!listaUsuarios.isEmpty()) {
+			res = true;
+		}
+		
+		return res;
+	}
+	
+	public String encontrarFotoUsuarioURL() {
+		FileevFacade fileevFacade = new FileevFacade();
+		Fileev foto = new Fileev();
+		
+		List<Fileev> listaFile = fileevFacade.encontrarArchivoPorID(usuario.getFileev());
+		if(!listaFile.isEmpty()) {
+			foto = listaFile.get(0);
+		}
+		
+		return foto.getUrl();
+	}
+	
+	public String logOffline() {
+		UsuarioFacade usuarioFacade = new UsuarioFacade();
+		
+		if(existeUsuario(emailLoginOffline)) {
+			usuario = usuarioFacade.encontrarUsuarioPorEmail(emailLoginOffline).get(0);
+			usuarioFoto = encontrarFotoUsuarioURL();
+		}else {
+			Usuario crearUsuario = new Usuario();
+			
+			Fileev file = crearFotoPredeterminada();
+			crearUsuario.setEmail(emailLoginOffline);
+			crearUsuario.setFileev(file.getId());
+			
+			usuarioFacade.crearUsuario(crearUsuario);
+			
+			if(existeUsuario(emailLoginOffline)) {
+				usuario = usuarioFacade.encontrarUsuarioPorEmail(emailLoginOffline).get(0);
+				usuarioFoto = encontrarFotoUsuarioURL();
+			}
+		}
+		
+		return "index";
+	}
+	
+	
 	public void rrssLogin() {
 		FacesContext facesContext = FacesContext.getCurrentInstance();
 		ExternalContext externalContext = facesContext.getExternalContext();
@@ -664,7 +758,7 @@ public class DiarioSurBean implements Serializable {
 		}
 	}
 
-	public boolean logIn() {
+	public boolean logIn(){
 		UsuarioFacade uf = new UsuarioFacade();
 		FileevFacade ff = new FileevFacade();
 		List<Usuario> usuarios = uf.encontrarUsuarioPorEmail(usuario.getEmail());
@@ -676,7 +770,6 @@ public class DiarioSurBean implements Serializable {
 			}
 			return true;
 		} else {
-
 			return false;
 		}
 	}
