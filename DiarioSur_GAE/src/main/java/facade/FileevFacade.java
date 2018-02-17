@@ -139,23 +139,29 @@ public class FileevFacade implements Serializable{
 	public List<Fileev> encontrarArchivoPorURL(String url) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Fileev> lista = new ArrayList<>();
+		List<Fileev> archivo = new ArrayList<>();
 		
 		//conexion = datastore.beginTransaction();
 		
-		Query q = new Query("Fileev");
-		FilterPredicate filtro = new FilterPredicate("url", FilterOperator.EQUAL, url);
-		q.setFilter(filtro);
+		Query q = new Query("Fileev").addSort("ID", Query.SortDirection.DESCENDING);		
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<=lista.size(); i++) {
+				if(lista.get(i).getUrl().equalsIgnoreCase(url)) {
+					archivo.add(lista.get(i));
+				}
+			}
+
 		}catch (Exception e) {
 			System.out.println("Error en FileevFacade -> encontrarArchivoPorURL");
 		}finally {
 			//conexion.commit();
 		}
 
-		return lista;
+		return archivo;
 	}
 	
 	public List<Fileev> encontrarArchivoPorID(Integer id) {

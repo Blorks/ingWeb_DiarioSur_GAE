@@ -197,8 +197,6 @@ public class DateevFacade implements Serializable {
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
-		q.setFilter(filtro);
 
 		try {
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));

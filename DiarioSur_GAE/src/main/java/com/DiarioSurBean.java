@@ -689,8 +689,28 @@ public class DiarioSurBean implements Serializable {
 		return foto.getUrl();
 	}
 	
+	public void crearUsuarioPeriodista() {
+		UsuarioFacade usuarioFacade = new UsuarioFacade();
+		Usuario userTemp = new Usuario();
+		List<Usuario> listTemp = usuarioFacade.encontrarUsuarioPorEmail("asd@gmail.com");
+		
+		if(listTemp.isEmpty()) {
+			userTemp.setNombre("Periodista");
+			userTemp.setApellidos("Diario");
+			userTemp.setEmail("asd@gmail.com");
+			userTemp.setRol("Periodista");
+			
+			Fileev file = crearFotoPredeterminada();
+			userTemp.setFileev(file.getId());
+			
+			usuarioFacade.crearUsuario(userTemp);
+		}	
+	}
+	
 	public String logOffline() {
 		UsuarioFacade usuarioFacade = new UsuarioFacade();
+		
+		crearUsuarioPeriodista();
 		
 		if(existeUsuario(emailLoginOffline)) {
 			usuario = usuarioFacade.encontrarUsuarioPorEmail(emailLoginOffline).get(0);
@@ -709,6 +729,8 @@ public class DiarioSurBean implements Serializable {
 				usuarioFoto = encontrarFotoUsuarioURL();
 			}
 		}
+		
+		emailLoginOffline = "";
 		
 		return "index";
 	}
