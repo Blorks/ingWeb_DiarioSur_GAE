@@ -237,47 +237,57 @@ public class DateevFacade implements Serializable {
 	public List<Dateev> encontrarFechaPorUnica(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Dateev> lista = new ArrayList<>();
-		int condicion = 1;
+		List<Dateev> fechas = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("esUnico", FilterOperator.EQUAL, condicion);
-		q.setFilter(filtro);
 
 		try {
 			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if(lista.get(i).getEsunico() == 1) {
+					fechas.add(lista.get(i));
+				}
+			}
+			
 		}catch (Exception e) {
 			System.out.println("Error en DateevFacade -> encontrarFechaPorUnica");
 		}finally {
 			conexion.commit();
 		}
 
-		return lista;
+		return fechas;
 	}
 	
 	public List<Dateev> encontrarFechaPorRango(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Dateev> lista = new ArrayList<>();
-		int condicion = 1;
-		
+		List<Dateev> fechas = new ArrayList<>();
+
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Dateev").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("todoslosdias", FilterOperator.EQUAL, condicion);
-		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if(lista.get(i).getTodoslosdias() == 1) {
+					fechas.add(lista.get(i));
+				}
+			}
+			
 		}catch (Exception e) {
 			System.out.println("Error en DateevFacade -> encontrarFechaPorRango");
 		}finally {
 			conexion.commit();
 		}
 
-		return lista;
+		return fechas;
 	}
 
 	public List<Dateev> encontrarTodasLasFechas(){

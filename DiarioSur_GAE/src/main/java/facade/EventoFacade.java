@@ -261,23 +261,28 @@ public class EventoFacade implements Serializable{
 	public List<Evento> encontrarEventoPorPrecioMaximo(Double precioMax){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Evento> lista = new ArrayList<>();
+		List<Evento> eventos = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("precio", FilterOperator.LESS_THAN_OR_EQUAL, precioMax);
-		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if(lista.get(i).getPrecio() <= precioMax) {
+					eventos.add(lista.get(i));
+				}
+			}
 		}catch (Exception e) {
 			System.out.println("Error en EventoFacade -> encontrarEventoPorPrecioMaximo");
 		}finally {
 			conexion.commit();
 		}
 
-		return lista;
+		return eventos;
 	}
 	
 	public List<Evento> encontrarEventosNoRevisados(){
@@ -311,23 +316,29 @@ public class EventoFacade implements Serializable{
 	public List<Evento> encontrarEventosPorFecha(Integer idFecha){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Evento> lista = new ArrayList<>();
+		List<Evento> eventos = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("dateevID", FilterOperator.EQUAL, idFecha);
-		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if(lista.get(i).getDateevId() == idFecha) {
+					eventos.add(lista.get(i));
+				}
+			}
+			
 		}catch (Exception e) {
 			System.out.println("Error en EventoFacade -> encontrarEventoPorFecha");
 		}finally {
 			conexion.commit();
 		}
 
-		return lista;
+		return eventos;
 	}
 
 	public List<Evento> encontrarTodosLosEventos(){
