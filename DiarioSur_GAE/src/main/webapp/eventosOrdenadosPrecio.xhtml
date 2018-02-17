@@ -46,7 +46,7 @@
                                             <h:form>
                                                 <ui:repeat value="#{diarioSurBean.mostrarEventosOrdenadosPorPrecio()}" var="ev"  varStatus="estado">  
                                                     <div class="col-md-6">
-                                                        <div class="tuyin first evento#{ev.id}" id="evento#{ev.id}"">
+                                                        <div class="tuyin first evento#{ev.id}" id="evento#{ev.id}">
                                                             <span class="title">
                                                                 <h:commandButton class="btn btn-link title" value="#{ev.titulo}" action="#{diarioSurBean.verEvento(ev)}"/> 
                                                             </span>

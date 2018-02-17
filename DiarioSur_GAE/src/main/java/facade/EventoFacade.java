@@ -443,4 +443,45 @@ public class EventoFacade implements Serializable{
 		return lista;
 	}
 	
+	
+	public List<Evento> ordenarEventosPorFecha(){
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		List<Evento> lista = new ArrayList<>();
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Evento").addSort("ID", Query.SortDirection.DESCENDING);
+
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			System.out.println("Error en EventoFacade -> ordenarEventosPorFecha");
+		}finally {
+			conexion.commit();
+		}
+
+		return lista;
+	}
+	
+	public List<Evento> ordenarEventosPorFechaDESC(){
+		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
+		List<Evento> lista = new ArrayList<>();
+		
+		conexion = datastore.beginTransaction();
+		
+		Query q = new Query("Evento").addSort("ID", Query.SortDirection.ASCENDING);
+
+		try {
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			lista = crearEntidades(listaEntidades);
+		}catch (Exception e) {
+			System.out.println("Error en EventoFacade -> ordenarEventosPorFechaDESC");
+		}finally {
+			conexion.commit();
+		}
+
+		return lista;
+	}
+	
 }

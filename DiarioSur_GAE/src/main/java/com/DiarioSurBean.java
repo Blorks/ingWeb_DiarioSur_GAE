@@ -891,6 +891,22 @@ public class DiarioSurBean implements Serializable {
 		eventosConFiltros = le;
 		return le;
 	}
+	
+	public List<Evento> mostrarEventosOrdenadosPorFecha() {
+		List<Evento> le = new ArrayList<>();
+		EventoFacade ef = new EventoFacade();
+		le = ef.ordenarEventosPorFecha();
+		eventosConFiltros = le;
+		return le;
+	}
+
+	public List<Evento> mostrarEventosOrdenadosPorFechaDESC() {
+		List<Evento> le = new ArrayList<>();
+		EventoFacade ef = new EventoFacade();
+		le = ef.ordenarEventosPorFechaDESC();
+		eventosConFiltros = le;
+		return le;
+	}
 
 	public List<Evento> mostrarEventosFiltradosPorDistancia() {
 		EventoFacade ef = new EventoFacade();
