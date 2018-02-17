@@ -211,24 +211,29 @@ public class EventoFacade implements Serializable{
 	public List<Evento> encontrarEventosRevisados(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Evento> lista = new ArrayList<>();
-		int condicion = 1;
+		List<Evento> eventos = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("estaRevisado", FilterOperator.EQUAL, condicion);
-		q.setFilter(filtro);
 		
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if(lista.get(i).getEstarevisado() == 1) {
+					eventos.add(lista.get(i));
+				}
+			}
+			
 		}catch (Exception e) {
 			System.out.println("Error en EventoFacade -> encontrarEventosRevisados");
 		}finally {
 			conexion.commit();
 		}
 
-		return lista;
+		return eventos;
 	}
 	
 	public List<Evento> encontrarEventoPorUsuario(Integer idUsuario){
@@ -278,24 +283,29 @@ public class EventoFacade implements Serializable{
 	public List<Evento> encontrarEventosNoRevisados(){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Evento> lista = new ArrayList<>();
-		int condicion = 0;
+		List<Evento> eventos = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Evento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("estaRevisado", FilterOperator.EQUAL, condicion);
-		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if(lista.get(i).getEstarevisado() == 0) {
+					eventos.add(lista.get(i));
+				}
+			}
+				
 		}catch (Exception e) {
 			System.out.println("Error en EventoFacade -> encontrarEventosNoRevisados");
 		}finally {
 			conexion.commit();
 		}
 
-		return lista;
+		return eventos;
 	}
 	
 	public List<Evento> encontrarEventosPorFecha(Integer idFecha){
