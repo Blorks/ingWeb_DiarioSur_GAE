@@ -200,18 +200,20 @@ public class UsuarioFacade implements Serializable{
 	public List<Usuario> encontrarUsuarioPorEmail(String email) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Usuario> lista = new ArrayList<>();
+		List<Usuario> usuario = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Usuario").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("email", FilterOperator.EQUAL, email);
-		q.setFilter(filtro);
 		
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
-
-			if(!listaEntidades.isEmpty()){
-				lista = crearEntidades(listaEntidades);
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
+			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if(lista.get(i).getEmail().equalsIgnoreCase(email)) {
+					usuario.add(lista.get(i));
+				}
 			}
 
 		}catch (Exception e) {
@@ -219,7 +221,7 @@ public class UsuarioFacade implements Serializable{
 		}finally {
 			conexion.commit();
 		}
-		return lista;
+		return usuario;
 	}
 
 	
