@@ -839,7 +839,7 @@ public class DiarioSurBean implements Serializable {
 		
 		crearNotificacion("Has eliminado el evento con exito!", usuario);
 
-		return "todoloseventos.xhtml";
+		return "index.xhtml";
 	}
 	
 	public String eliminarTagEvento(Tag tagEvento){
@@ -852,7 +852,7 @@ public class DiarioSurBean implements Serializable {
         
         lista = tef.encontrarTageventoPorEvento(tagEvento.getId());
 		if(lista.isEmpty()){
-			List<Tagusuario> lista2 = tuf.encontrarTagusuarioPorUsuario(tagEvento.getId());
+			List<Tagusuario> lista2 = tuf.encontrarTagusuarioPorID(tagEvento.getId());
 			if (lista2.isEmpty()) {
 				tf.eliminarTagPorID(tagEvento.getId());
 			}

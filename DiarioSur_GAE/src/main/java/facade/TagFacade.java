@@ -144,21 +144,26 @@ public class TagFacade implements Serializable{
 	public List<Tag> encontrarTagPorID(Integer id) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Tag> lista = new ArrayList<>();
+		List<Tag> tags = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Tag").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("ID", FilterOperator.EQUAL, id);
-		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if(lista.get(i).getId() == id) {
+					tags.add(lista.get(i));
+				}
+			}
 		}catch (Exception e) {
 			System.out.println("Error en TagFacade -> encontrarTagPorID");
 		}finally {
 			conexion.commit();
 		}
-		return lista;
+		return tags;
 	}
 }

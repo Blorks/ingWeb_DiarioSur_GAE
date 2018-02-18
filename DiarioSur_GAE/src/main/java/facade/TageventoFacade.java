@@ -11,8 +11,6 @@ import com.google.appengine.api.datastore.FetchOptions;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Transaction;
-import com.google.appengine.api.datastore.Query.CompositeFilterOperator;
-import com.google.appengine.api.datastore.Query.Filter;
 import com.google.appengine.api.datastore.Query.FilterOperator;
 import com.google.appengine.api.datastore.Query.FilterPredicate;
 import entity.Tagevento;
@@ -127,7 +125,7 @@ public class TageventoFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
 			System.out.println("Error en TageventoFacade -> encontrarTageventoID");
@@ -141,48 +139,57 @@ public class TageventoFacade implements Serializable{
 	public List<Tagevento> encontrarTagEventoPorTagYEvento(Integer idTag, Integer idEvento){
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Tagevento> lista = new ArrayList<>();
+		List<Tagevento> tageventos = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("eventoId", FilterOperator.EQUAL, idEvento);
-		FilterPredicate filtro2 = new FilterPredicate("tagId", FilterOperator.EQUAL, idTag);
-		Filter filtro3 = CompositeFilterOperator.and(filtro, filtro2);
-
-		q.setFilter(filtro3);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(1));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if((lista.get(i).getEventoId() == idEvento) && (lista.get(i).getTagId() == idTag)) {
+					tageventos.add(lista.get(i));
+				}
+			}
+			
 		}catch (Exception e) {
 			System.out.println("Error en TageventoFacade -> encontrarTagEventoPorTagYEvento");
 		}finally {
 			conexion.commit();
 		}
 
-		return lista;
+		return tageventos;
 	}
 	
 	public List<Tagevento> encontrarTageventoPorEvento(Integer idEvento) {
 		datastore = DatastoreServiceFactory.getDatastoreService(); // Authorized Datastore service
 		List<Tagevento> lista = new ArrayList<>();
+		List<Tagevento> tageventos = new ArrayList<>();
 		
 		conexion = datastore.beginTransaction();
 		
 		Query q = new Query("Tagevento").addSort("ID", Query.SortDirection.ASCENDING);
-		FilterPredicate filtro = new FilterPredicate("eventoId", FilterOperator.EQUAL, idEvento);
-		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
+			
+			for(int i=0; i<lista.size(); i++) {
+				if(lista.get(i).getEventoId() == idEvento) {
+					tageventos.add(lista.get(i));
+				}
+			}
+			
 		}catch (Exception e) {
 			System.out.println("Error en TageventoFacade -> encontrarTageventoPorEvento");
 		}finally {
 			conexion.commit();
 		}
 
-		return lista;
+		return tageventos;
 	}
 	
 	public List<Tagevento> encontrarTageventoPorTag(Integer idTag) {
@@ -196,7 +203,7 @@ public class TageventoFacade implements Serializable{
 		q.setFilter(filtro);
 
 		try {
-			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withLimit(20));
+			List<Entity> listaEntidades = datastore.prepare(q).asList(FetchOptions.Builder.withDefaults());
 			lista = crearEntidades(listaEntidades);
 		}catch (Exception e) {
 			System.out.println("Error en TageventoFacade -> encontrarTageventoPorTag");
