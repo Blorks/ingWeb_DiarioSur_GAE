@@ -449,8 +449,10 @@ public class DiarioSurBean implements Serializable {
 			evento.setId(eventoFacade.ultimoIdInsertado());
 
 			// Adjunto tags al evento
-			adjuntarTagsEvento();
-
+			if(!tagsEvento.equals("")) {
+				adjuntarTagsEvento();
+			}
+			
 			fecha.setEventoId(eventoFacade.ultimoIdInsertado());
 			dateevFacade.editarFecha(fecha);
 
@@ -720,6 +722,7 @@ public class DiarioSurBean implements Serializable {
 			
 			Fileev file = crearFotoPredeterminada();
 			crearUsuario.setEmail(emailLoginOffline);
+			crearUsuario.setRol("Usuario");
 			crearUsuario.setFileev(file.getId());
 			
 			usuarioFacade.crearUsuario(crearUsuario);
